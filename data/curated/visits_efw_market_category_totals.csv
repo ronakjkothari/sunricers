@@ -1,0 +1,177 @@
+MARKET,CATEGORY,NAICS3,total_visits,store_day_rows
+Atlanta,Restaurants and Other Eating Places,722,5045648518.0,4012903
+Atlanta,Gasoline Stations,447,1584672318.0,1649892
+Atlanta,Grocery Stores,445,995909449.0,564918
+Atlanta,Traveler Accommodation,721,271240450.0,582765
+Atlanta,Other Amusement and Recreation Industries,713,89180352.0,313120
+Atlanta,Specialty Food Stores,445,4204989.0,23389
+Atlanta,Grocery and Related Product Merchant Wholesalers,424,2206501.0,5481
+Atlanta,Drinking Places (Alcoholic Beverages),722,1853631.0,7796
+Atlanta,Petroleum and Petroleum Products Merchant Wholesalers,424,1185234.0,8891
+Atlanta,Beverage Manufacturing,312,1179154.0,21802
+Atlanta,Interurban and Rural Bus Transportation,485,239271.0,12852
+Atlanta,Spectator Sports,711,153906.0,1521
+Atlanta,RV (Recreational Vehicle) Parks and Recreational Camps,721,90272.0,4326
+Atlanta,Chemical and Allied Products Merchant Wholesalers,424,83653.0,12636
+Atlanta,Amusement Parks and Arcades,713,81255.0,2133
+Atlanta,Waste Treatment and Disposal,562,65805.0,7308
+Atlanta,Freight Transportation Arrangement,488,61605.0,5481
+Atlanta,Other Support Activities for Transportation,488,23783.0,1827
+Atlanta,Waste Collection,562,10537.0,1461
+Boston,Restaurants and Other Eating Places,722,1792031656.0,1605053
+Boston,Grocery Stores,445,660226392.0,311558
+Boston,Gasoline Stations,447,414174163.0,558419
+Boston,Traveler Accommodation,721,100232132.0,176335
+Boston,Other Amusement and Recreation Industries,713,52141224.0,242017
+Boston,"Beer, Wine, and Liquor Stores",445,3895820.0,7858
+Boston,Specialty Food Stores,445,2269805.0,14283
+Boston,Drinking Places (Alcoholic Beverages),722,1931153.0,4173
+Boston,Grocery and Related Product Merchant Wholesalers,424,951818.0,3654
+Boston,Spectator Sports,711,110055.0,1827
+Boston,Petroleum and Petroleum Products Merchant Wholesalers,424,105995.0,2528
+Boston,Waste Treatment and Disposal,562,66779.0,7308
+Boston,Chemical and Allied Products Merchant Wholesalers,424,54709.0,9135
+Boston,RV (Recreational Vehicle) Parks and Recreational Camps,721,33875.0,1827
+Boston,Natural Gas Distribution,221,21625.0,1035
+Boston,Freight Transportation Arrangement,488,21388.0,1827
+Boston,Interurban and Rural Bus Transportation,485,6921.0,2437
+Dallas / Houston,Restaurants and Other Eating Places,722,13064900362.0,10288495
+Dallas / Houston,Gasoline Stations,447,3724673284.0,4368248
+Dallas / Houston,Grocery Stores,445,2298721641.0,1783324
+Dallas / Houston,Traveler Accommodation,721,729978208.0,1484758
+Dallas / Houston,Other Amusement and Recreation Industries,713,248758308.0,895144
+Dallas / Houston,"Beer, Wine, and Liquor Stores",445,64488580.0,207922
+Dallas / Houston,Specialty Food Stores,445,51696123.0,469288
+Dallas / Houston,Drinking Places (Alcoholic Beverages),722,17997758.0,27861
+Dallas / Houston,Amusement Parks and Arcades,713,15595613.0,12635
+Dallas / Houston,Special Food Services,722,5891961.0,24452
+Dallas / Houston,"Water, Sewage and Other Systems",221,4404241.0,3654
+Dallas / Houston,Grocery and Related Product Merchant Wholesalers,424,3405176.0,12789
+Dallas / Houston,RV (Recreational Vehicle) Parks and Recreational Camps,721,915739.0,26370
+Dallas / Houston,Interurban and Rural Bus Transportation,485,821347.0,49728
+Dallas / Houston,Spectator Sports,711,348687.0,3654
+Dallas / Houston,Chemical and Allied Products Merchant Wholesalers,424,337681.0,44637
+Dallas / Houston,Freight Transportation Arrangement,488,254193.0,18667
+Dallas / Houston,Waste Treatment and Disposal,562,228707.0,23751
+Dallas / Houston,Beverage Manufacturing,312,151022.0,7308
+Dallas / Houston,Petroleum and Petroleum Products Merchant Wholesalers,424,133725.0,5481
+Dallas / Houston,Other Support Activities for Transportation,488,129758.0,5481
+Dallas / Houston,Waste Collection,562,35579.0,5359
+Kansas City,Restaurants and Other Eating Places,722,3366159561.0,3078838
+Kansas City,Grocery Stores,445,648282780.0,705813
+Kansas City,Gasoline Stations,447,598359656.0,896474
+Kansas City,Traveler Accommodation,721,147248606.0,422163
+Kansas City,Other Amusement and Recreation Industries,713,43086222.0,218706
+Kansas City,Specialty Food Stores,445,6782207.0,40555
+Kansas City,Drinking Places (Alcoholic Beverages),722,6439090.0,9135
+Kansas City,Amusement Parks and Arcades,713,1395276.0,5328
+Kansas City,Special Food Services,722,1211999.0,3654
+Kansas City,"Beer, Wine, and Liquor Stores",445,374264.0,1827
+Kansas City,RV (Recreational Vehicle) Parks and Recreational Camps,721,189712.0,7308
+Kansas City,Petroleum and Petroleum Products Merchant Wholesalers,424,160931.0,3654
+Kansas City,Chemical and Allied Products Merchant Wholesalers,424,116865.0,14829
+Kansas City,Freight Transportation Arrangement,488,74130.0,5481
+Kansas City,Grocery and Related Product Merchant Wholesalers,424,67805.0,1827
+Kansas City,Waste Treatment and Disposal,562,43957.0,3654
+Kansas City,Interurban and Rural Bus Transportation,485,38050.0,15561
+Kansas City,Sugar and Confectionery Product Manufacturing,311,28179.0,1827
+Kansas City,Waste Collection,562,22873.0,1582
+Los Angeles / SF Bay Area,Restaurants and Other Eating Places,722,13279461906.0,11196767
+Los Angeles / SF Bay Area,Grocery Stores,445,4089903540.0,2648201
+Los Angeles / SF Bay Area,Gasoline Stations,447,3592515130.0,3199628
+Los Angeles / SF Bay Area,Traveler Accommodation,721,621414178.0,1035443
+Los Angeles / SF Bay Area,Other Amusement and Recreation Industries,713,353258648.0,1097350
+Los Angeles / SF Bay Area,Specialty Food Stores,445,39465239.0,233226
+Los Angeles / SF Bay Area,"Beer, Wine, and Liquor Stores",445,29489522.0,64371
+Los Angeles / SF Bay Area,Amusement Parks and Arcades,713,14671705.0,29137
+Los Angeles / SF Bay Area,Grocery and Related Product Merchant Wholesalers,424,8232733.0,36570
+Los Angeles / SF Bay Area,Petroleum and Petroleum Products Merchant Wholesalers,424,1072452.0,18787
+Los Angeles / SF Bay Area,RV (Recreational Vehicle) Parks and Recreational Camps,721,843958.0,16809
+Los Angeles / SF Bay Area,Spectator Sports,711,799633.0,8833
+Los Angeles / SF Bay Area,Chemical and Allied Products Merchant Wholesalers,424,526117.0,52189
+Los Angeles / SF Bay Area,Interurban and Rural Bus Transportation,485,512687.0,26552
+Los Angeles / SF Bay Area,Special Food Services,722,436912.0,3045
+Los Angeles / SF Bay Area,Beverage Manufacturing,312,420501.0,1827
+Los Angeles / SF Bay Area,Waste Treatment and Disposal,562,408721.0,34713
+Los Angeles / SF Bay Area,Drinking Places (Alcoholic Beverages),722,312329.0,1827
+Los Angeles / SF Bay Area,Waste Collection,562,207335.0,18058
+Los Angeles / SF Bay Area,Freight Transportation Arrangement,488,160651.0,10962
+Los Angeles / SF Bay Area,Other Support Activities for Transportation,488,132132.0,9682
+Miami,Restaurants and Other Eating Places,722,10108273630.0,6646817
+Miami,Gasoline Stations,447,2591708066.0,2379131
+Miami,Grocery Stores,445,2449587618.0,1651324
+Miami,Traveler Accommodation,721,565283407.0,816377
+Miami,Other Amusement and Recreation Industries,713,208994303.0,682393
+Miami,"Beer, Wine, and Liquor Stores",445,49486619.0,198504
+Miami,Specialty Food Stores,445,19322006.0,72663
+Miami,Drinking Places (Alcoholic Beverages),722,10249698.0,26246
+Miami,Grocery and Related Product Merchant Wholesalers,424,2418575.0,7308
+Miami,RV (Recreational Vehicle) Parks and Recreational Camps,721,2001742.0,51156
+Miami,Amusement Parks and Arcades,713,604864.0,517
+Miami,Interurban and Rural Bus Transportation,485,339959.0,21496
+Miami,Beverage Manufacturing,312,307437.0,9135
+Miami,Other Support Activities for Transportation,488,266484.0,13184
+Miami,Chemical and Allied Products Merchant Wholesalers,424,199336.0,18390
+Miami,Petroleum and Petroleum Products Merchant Wholesalers,424,158009.0,1827
+Miami,Waste Treatment and Disposal,562,138394.0,12789
+Miami,Spectator Sports,711,119666.0,1465
+Miami,Freight Transportation Arrangement,488,35898.0,3654
+Miami,Waste Collection,562,32920.0,4599
+Miami,Remediation and Other Waste Management Services,562,25870.0,1827
+New York/New Jersey,Restaurants and Other Eating Places,722,7313698514.0,5702894
+New York/New Jersey,Grocery Stores,445,2777200804.0,1534030
+New York/New Jersey,Gasoline Stations,447,1731039702.0,2175300
+New York/New Jersey,Traveler Accommodation,721,399482425.0,610775
+New York/New Jersey,Other Amusement and Recreation Industries,713,238343639.0,772955
+New York/New Jersey,Specialty Food Stores,445,36970464.0,137646
+New York/New Jersey,"Beer, Wine, and Liquor Stores",445,19231180.0,58796
+New York/New Jersey,Grocery and Related Product Merchant Wholesalers,424,11995028.0,25613
+New York/New Jersey,Amusement Parks and Arcades,713,2904844.0,8616
+New York/New Jersey,Drinking Places (Alcoholic Beverages),722,1781959.0,6516
+New York/New Jersey,Natural Gas Distribution,221,821406.0,43481
+New York/New Jersey,RV (Recreational Vehicle) Parks and Recreational Camps,721,366470.0,16474
+New York/New Jersey,Interurban and Rural Bus Transportation,485,352080.0,26646
+New York/New Jersey,Beverage Manufacturing,312,273119.0,1827
+New York/New Jersey,Animal Food Manufacturing,311,167405.0,1827
+New York/New Jersey,Freight Transportation Arrangement,488,132245.0,12789
+New York/New Jersey,Spectator Sports,711,90423.0,1827
+New York/New Jersey,Chemical and Allied Products Merchant Wholesalers,424,53749.0,5570
+New York/New Jersey,Waste Treatment and Disposal,562,53336.0,5481
+New York/New Jersey,Waste Collection,562,42947.0,3989
+New York/New Jersey,Other Support Activities for Transportation,488,6005.0,1035
+Philadelphia,Restaurants and Other Eating Places,722,3595112254.0,2931325
+Philadelphia,Grocery Stores,445,1456703515.0,763020
+Philadelphia,Gasoline Stations,447,1235384970.0,1015774
+Philadelphia,Traveler Accommodation,721,205196632.0,470437
+Philadelphia,Other Amusement and Recreation Industries,713,64675150.0,271476
+Philadelphia,"Beer, Wine, and Liquor Stores",445,15182252.0,233211
+Philadelphia,Specialty Food Stores,445,10804028.0,62206
+Philadelphia,Beverage Manufacturing,312,6004081.0,7308
+Philadelphia,Amusement Parks and Arcades,713,5015065.0,7308
+Philadelphia,Grocery and Related Product Merchant Wholesalers,424,2104230.0,6365
+Philadelphia,Drinking Places (Alcoholic Beverages),722,880594.0,5481
+Philadelphia,RV (Recreational Vehicle) Parks and Recreational Camps,721,162210.0,10962
+Philadelphia,Interurban and Rural Bus Transportation,485,131684.0,19003
+Philadelphia,Chemical and Allied Products Merchant Wholesalers,424,84197.0,11388
+Philadelphia,Waste Collection,562,35413.0,3654
+Philadelphia,Waste Treatment and Disposal,562,34492.0,5481
+Philadelphia,Natural Gas Distribution,221,26796.0,3168
+Philadelphia,Spectator Sports,711,24375.0,366
+Philadelphia,Freight Transportation Arrangement,488,23537.0,3654
+Seattle,Restaurants and Other Eating Places,722,2161076062.0,1814229
+Seattle,Grocery Stores,445,736215740.0,424043
+Seattle,Gasoline Stations,447,650273381.0,727085
+Seattle,Traveler Accommodation,721,100892749.0,233552
+Seattle,Other Amusement and Recreation Industries,713,58714304.0,223384
+Seattle,"Beer, Wine, and Liquor Stores",445,9432624.0,16443
+Seattle,Drinking Places (Alcoholic Beverages),722,4960564.0,7308
+Seattle,Specialty Food Stores,445,2288926.0,12148
+Seattle,Grocery and Related Product Merchant Wholesalers,424,1574866.0,14036
+Seattle,Interurban and Rural Bus Transportation,485,249841.0,16262
+Seattle,RV (Recreational Vehicle) Parks and Recreational Camps,721,212895.0,5481
+Seattle,Petroleum and Petroleum Products Merchant Wholesalers,424,189196.0,1827
+Seattle,Waste Treatment and Disposal,562,103698.0,9135
+Seattle,Other Support Activities for Transportation,488,90856.0,3654
+Seattle,Chemical and Allied Products Merchant Wholesalers,424,75685.0,13002
+Seattle,Freight Transportation Arrangement,488,21277.0,1827
+Seattle,Waste Collection,562,12247.0,1827

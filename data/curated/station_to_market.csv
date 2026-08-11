@@ -1,0 +1,56 @@
+station_id,host_city_canonical,dist_km,station_name,municipality,lat,lon,source
+KMGE,Atlanta,22.0,Dobbins Air Reserve Base,Marietta,33.915401,-84.516296,ourairports_nearest_host_150km
+KPUJ,Atlanta,54.2,Silver Comet Field at Paulding Northwest Atlanta Airport,Dallas,33.912328,-84.941111,ourairports_nearest_host_150km
+KVPC,Atlanta,59.5,Cartersville Airport,Cartersville,34.1231,-84.848701,ourairports_nearest_host_150km
+KAHN,Atlanta,100.6,Athens Ben Epps Airport,Athens,33.948842,-83.325634,ourairports_nearest_host_150km
+K3J7,Atlanta,116.9,Greene County Regional Airport,Greensboro,33.598008,-83.138158,ourairports_nearest_host_150km
+KMCN,Atlanta,136.1,Middle Georgia Regional Airport,Macon,32.69279861450195,-83.64920043945312,ourairports_nearest_host_150km
+KCSG,Atlanta,146.4,Columbus Airport,Columbus,32.516415,-84.939602,ourairports_nearest_host_150km
+KOWD,Boston,21.0,Norwood Memorial Airport,Norwood,42.1904983521,-71.1728973389,ourairports_nearest_host_150km
+KBVY,Boston,27.5,Beverly Regional Airport,Beverly / Danvers,42.584202,-70.916496,ourairports_nearest_host_150km
+KSFZ,Boston,60.5,North Central State Airport,Pawtucket,41.9207992554,-71.49140167239999,ourairports_nearest_host_150km
+KEWB,Boston,76.5,New Bedford Regional Airport,New Bedford,41.67610168457031,-70.95690155029297,ourairports_nearest_host_150km
+KMVY,Boston,113.6,Martha's Vineyard Airport,Martha's Vineyard,41.3931007385,-70.6143035889,ourairports_nearest_host_150km
+KIJD,Boston,115.2,Windham Airport,North Windham,41.743999,-72.180298,ourairports_nearest_host_150km
+KBAF,Boston,138.2,Westfield-Barnes Regional Airport,Westfield,42.157799,-72.715599,ourairports_nearest_host_150km
+KACK,Boston,148.3,Nantucket Memorial Airport,Nantucket,41.25310135,-70.06020355,ourairports_nearest_host_150km
+KHFD,Boston,148.5,Hartford Brainard Airport,Hartford,41.736698150635,-72.649398803711,ourairports_nearest_host_150km
+KRBD,Dallas,12.6,Dallas Executive Airport,Dallas,32.6809005737,-96.8682022095,ourairports_nearest_host_150km
+KFTW,Dallas,52.9,Fort Worth Meacham International Airport,Fort Worth,32.819919,-97.360818,ourairports_nearest_host_150km
+KJDD,Dallas,121.7,Wood County Airport - Collins Field,Mineola,32.742199,-95.496498,ourairports_nearest_host_150km
+KSEP,Dallas,143.8,Stephenville Clark Regional Airport,Stephenville,32.215302,-98.177696,ourairports_nearest_host_150km
+KDWH,Houston,37.9,David Wayne Hooks Memorial Airport,Houston,30.0618000031,-95.55280303960001,ourairports_nearest_host_150km
+KBYY,Houston,99.7,Bay City Regional Airport,Bay City,28.973301,-95.863503,ourairports_nearest_host_150km
+K66R,Houston,111.5,Robert R Wells Jr Airport,Columbus,29.6411,-96.5158,ourairports_nearest_host_150km
+KBMT,Houston,116.5,Beaumont Municipal Airport,Beaumont,30.070635,-94.215746,ourairports_nearest_host_150km
+KIXD,Kansas City,40.3,New Century AirCenter Airport,New Century,38.830898,-94.890297,ourairports_nearest_host_150km
+KFOE,Kansas City,95.2,Topeka Regional Airport,Topeka,38.950901,-95.663597,ourairports_nearest_host_150km
+KSZL,Kansas City,98.1,Whiteman Air Force Base,Knob Noster,38.730301,-93.547897,ourairports_nearest_host_150km
+KDMO,Kansas City,128.9,Sedalia Memorial Airport,Sedalia,38.70740127559999,-93.17590332030001,ourairports_nearest_host_150km
+KWHP,Los Angeles,27.8,Whiteman Airport,Pacoima,34.2593,-118.413002,ourairports_nearest_host_150km
+KTOA,Los Angeles,29.0,Zamperini Field,Torrance,33.803398132324,-118.33999633789,ourairports_nearest_host_150km
+KPMD,Los Angeles,65.8,Palmdale Regional Airport / USAF Plant 42 Airport,Palmdale,34.629398,-118.084999,ourairports_nearest_host_150km
+KAVX,Los Angeles,73.7,Catalina Airport,Avalon,33.4049,-118.416,ourairports_nearest_host_150km
+KRAL,Los Angeles,74.5,Riverside Municipal Airport,Riverside,33.9519,-117.445,ourairports_nearest_host_150km
+KNTD,Los Angeles,81.1,Point Mugu Naval Air Station (Naval Base Ventura Co),Point Mugu,34.120300293,-119.121002197,ourairports_nearest_host_150km
+KSBD,Los Angeles,92.9,San Bernardino International Airport,San Bernardino,34.096717,-117.236596,ourairports_nearest_host_150km
+KVCV,Los Angeles,99.7,Southern California Logistics Airport,Victorville,34.597499847399995,-117.383003235,ourairports_nearest_host_150km
+KCRQ,Los Angeles,136.1,McClellan-Palomar Airport,Carlsbad,33.1283,-117.279999,ourairports_nearest_host_150km
+KHST,Miami,36.0,Homestead Air Reserve Base,Homestead,25.4886,-80.383598,ourairports_nearest_host_150km
+KPBI,Miami,102.9,President Donald J. Trump International Airport,West Palm Beach,26.683201,-80.095596,ourairports_nearest_host_150km
+KISP,New York/New Jersey,76.7,Long Island MacArthur Airport,Islip,40.796324,-73.101703,ourairports_nearest_host_150km
+KSNC,New York/New Jersey,146.3,Chester Airport,Chester,41.384177,-72.506011,ourairports_nearest_host_150km
+KPHL,Philadelphia,11.1,Philadelphia International Airport,Philadelphia,39.871899,-75.241096,ourairports_nearest_host_150km
+KLOM,Philadelphia,22.2,Wings Field,Philadelphia,40.1375007629,-75.2650985718,ourairports_nearest_host_150km
+KRDG,Philadelphia,82.8,Reading Regional Airport (Carl A Spaatz Field),Reading,40.378502,-75.965202,ourairports_nearest_host_150km
+KAPG,Philadelphia,101.5,Phillips Army Air Field,Aberdeen,39.466202,-76.1688,ourairports_nearest_host_150km
+KWWD,Philadelphia,107.3,Cape May County Airport,Wildwood,39.008499145500004,-74.9083023071,ourairports_nearest_host_150km
+KMUI,Philadelphia,130.7,Muir Army Air Field (Fort Indiantown Gap) Airport,Fort Indiantown Gap(Annville),40.435214,-76.568661,ourairports_nearest_host_150km
+KPAO,San Francisco Bay Area,44.0,Palo Alto Airport,Palo Alto,37.461102,-122.114998,ourairports_nearest_host_150km
+KNUQ,San Francisco Bay Area,51.5,Moffett Federal Airfield,Mountain View,37.4161,-122.049004,ourairports_nearest_host_150km
+KSUU,San Francisco Bay Area,69.3,Travis Air Force Base,Fairfield,38.262699,-121.927002,ourairports_nearest_host_150km
+KVCB,San Francisco Bay Area,78.0,Nut Tree Airport,Vacaville,38.376801,-121.961998,ourairports_nearest_host_150km
+KWVI,San Francisco Bay Area,108.6,Watsonville Municipal Airport,Watsonville,36.9356994629,-121.790000916,ourairports_nearest_host_150km
+KPWT,Seattle,35.0,Bremerton National Airport,Bremerton,47.490200042725,-122.76499938965,ourairports_nearest_host_150km
+KNOW,Seattle,100.3,Port Angeles Cgas Airport,Port Angeles,48.141499,-123.414001,ourairports_nearest_host_150km
+KCLS,Seattle,114.4,Chehalis Centralia Airport,Chehalis,46.676998,-122.983002,ourairports_nearest_host_150km

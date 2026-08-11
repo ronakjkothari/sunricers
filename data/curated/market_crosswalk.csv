@@ -1,0 +1,12 @@
+visits_spend_market,poi_uhi_market,host_city_canonical,notes
+Atlanta,Atlanta,Atlanta,1:1
+Boston,Boston,Boston,1:1
+Dallas / Houston,Dallas,Dallas,split merged visit market
+Dallas / Houston,Houston,Houston,split merged visit market
+Kansas City,Kansas City,Kansas City,1:1
+Los Angeles / SF Bay Area,Los Angeles,Los Angeles,split merged visit market
+Los Angeles / SF Bay Area,San Francisco Bay Area,San Francisco Bay Area,split merged visit market
+Miami,Miami,Miami,1:1
+New York/New Jersey,New York/New Jersey,New York/New Jersey,1:1
+Philadelphia,Philadelphia,Philadelphia,1:1
+Seattle,Seattle,Seattle,1:1

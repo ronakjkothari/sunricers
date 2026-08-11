@@ -1,0 +1,11 @@
+efw_domain,activity_class,naics3,activity_unit,energy_kwh_per_unit,water_liters_per_unit,food_kg_co2e_per_unit,notes
+Food,Restaurants and Other Eating Places,722,visit,2.8,25.0,3.5,Approx per restaurant visit incl. prep + HVAC share
+Food,Grocery Stores,445,visit,1.2,8.0,6.0,Basket emissions dominate over store ops
+Food,Specialty Food Stores,445,visit,1.0,6.0,4.5,
+Energy,Gasoline Stations,447,visit,45.0,1.5,12.0,fuel_kg_co2e stored in food_kg_co2e_per_unit column for schema uniformity; treat as energy CO2e
+Water,Traveler Accommodation,721,visit,28.0,300.0,2.0,Guest-night proxy; water-heavy
+Energy,Cooling Degree Day uplift,,cdd_c_day,0.15,0.4,0.05,Applied to lodging+food HVAC share via weather CDD
+Energy,UHI surcharge,,uhi_index_point,0.08,0.1,0.03,Multiplier helper: kWh ≈ factor * UHI * district_visits/1000
+Water,Waste Treatment and Disposal,562,visit,5.0,40.0,8.0,Sparse in data; use carefully
+Food,Spectator Sports,711,visit,4.0,15.0,2.5,Venue concession + ops share per visit
+Food,Other Amusement and Recreation Industries,713,visit,3.0,12.0,1.8,

@@ -1,0 +1,630 @@
+MARKET,efw_layer,TOP_CATEGORY,poi_count,avg_lat,avg_lon,sum_area_sq_m
+Atlanta,Other_EFW,Urban Transit Systems,2385,33.763790345911964,-84.40300890901476,3835.7
+Atlanta,Food,Restaurants and Other Eating Places,1295,33.84256365482619,-84.47375843552112,7764704.000000002
+Atlanta,Venue,Other Amusement and Recreation Industries,334,33.860261239520945,-84.42038202994013,3871335.2000000007
+Atlanta,Food,Drinking Places (Alcoholic Beverages),153,33.777027921568624,-84.393393372549,920638.7999999998
+Atlanta,Venue,"Museums, Historical Sites, and Similar Institutions",152,33.92019394078947,-84.56607973026321,4435572.399999998
+Atlanta,Food,Grocery Stores,137,33.83947515328467,-84.59617048905112,241464.0
+Atlanta,Water,Traveler Accommodation,126,33.9011322063492,-84.51265996031744,830765.0000000002
+Atlanta,Energy,Gasoline Stations,124,33.852078379032235,-84.34545283870962,144333.4
+Atlanta,Food,Specialty Food Stores,96,33.94839778125001,-84.7042136875,239596.2
+Atlanta,Food,Special Food Services,50,33.786033060000015,-84.57497935999999,818116.8999999999
+Atlanta,Venue,Performing Arts Companies,43,33.80640960465117,-84.3876359767442,174336.0
+Atlanta,Venue,"Promoters of Performing Arts, Sports, and Similar Events",40,33.955989575000004,-84.43825210000003,302395.9000000001
+Atlanta,Other_EFW,Taxi and Limousine Service,39,33.81773638461538,-84.36378476923078,202458.99999999997
+Atlanta,Other_EFW,Transit and Ground Passenger Transportation,39,33.789313384615376,-84.39975520512823,233226.69999999995
+Atlanta,Other_EFW,Support Activities for Road Transportation,30,33.77544136666667,-84.39436446666667,32783.2
+Atlanta,Other_EFW,Scheduled Air Transportation,26,33.65580323076923,-84.43352815384615,1974987.3
+Atlanta,Food,"Beer, Wine, and Liquor Stores",24,33.81407670833333,-84.409228125,62587.399999999994
+Atlanta,Other_EFW,Other Transit and Ground Passenger Transportation,24,33.777391333333334,-84.40031079166668,258141.0000000001
+Atlanta,Other_EFW,Support Activities for Air Transportation,19,33.678991631578945,-84.41990563157894,686628.1000000001
+Atlanta,Venue,"Independent Artists, Writers, and Performers",18,33.81381355555555,-84.36099183333333,32705.200000000004
+Atlanta,Water,Waste Treatment and Disposal,16,33.87982987500001,-84.35660168750002,4383.8
+Atlanta,Food,Food Services and Drinking Places,14,33.79090078571428,-84.38577914285713,76621.39999999998
+Atlanta,Water,Remediation and Other Waste Management Services,12,33.77722391666667,-84.39690833333334,34105.8
+Atlanta,Food,Beverage Manufacturing,12,33.782100500000006,-84.41392558333335,47517.2
+Atlanta,Food,Bakeries and Tortilla Manufacturing,11,33.802845818181815,-84.4163330909091,184075.7
+Atlanta,Venue,Amusement Parks and Arcades,11,33.81357745454546,-84.36368336363635,66158.3
+Atlanta,Venue,Spectator Sports,11,33.8103330909091,-84.35724381818183,114496.2
+Atlanta,Water,Waste Collection,11,33.746369,-85.29533963636362,13343.400000000001
+Atlanta,Other_EFW,Freight Transportation Arrangement,7,33.737150285714286,-84.43242928571429,47798.1
+Atlanta,Food,Drugs and Druggists' Sundries Merchant Wholesalers,5,33.7495256,-84.39530520000001,7542.299999999999
+Atlanta,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",5,33.8526702,-84.3968058,7810.5
+Atlanta,Water,"Rooming and Boarding Houses, Dormitories, and Workers' Camps",5,33.782413399999996,-84.36336220000001,8453.3
+Atlanta,Energy,"Electric Power Generation, Transmission and Distribution",4,33.81039275,-84.409437,26839.399999999998
+Atlanta,Energy,Natural Gas Distribution,4,33.85264875,-84.4426395,10251.599999999999
+Atlanta,Water,RV (Recreational Vehicle) Parks and Recreational Camps,4,36.51545075,-86.78117600000002,4000.2999999999997
+Atlanta,Venue,Gambling Industries,4,33.79139225,-84.38458874999999,157480.1
+Atlanta,Water,Waste Management and Remediation Services,3,33.711101000000006,-84.44471133333333,5898.0
+Atlanta,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",2,33.7625795,-84.45553050000001,11829.9
+Atlanta,Energy,Utilities,2,33.651675499999996,-84.3737215,8249.900000000001
+Atlanta,Other_EFW,Charter Bus Industry,2,33.7570545,-84.4309145,1848.3
+Atlanta,Other_EFW,Other Support Activities for Transportation,1,33.619921,-84.558665,1112.4
+Atlanta,Other_EFW,Management of Companies and Enterprises,1,33.758573,-84.387734,771.3
+Atlanta,Food,Grocery and Related Product Merchant Wholesalers,1,33.867483,-84.476064,2286.0
+Atlanta,Other_EFW,Support Activities for Rail Transportation,1,33.798906,-84.419796,558.0
+Atlanta,Food,Sugar and Confectionery Product Manufacturing,1,33.754113,-84.380248,4684.9
+Atlanta,Food,Chemical and Allied Products Merchant Wholesalers,1,33.75197,-84.393653,339.0
+Atlanta,Other_EFW,Nonscheduled Air Transportation,1,33.662155,-84.428606,1937.1
+Atlanta,Food,"Beer, Wine, and Distilled Alcoholic Beverage Merchant Wholesalers",1,33.936118,-84.355664,2325.0
+Boston,Food,Restaurants and Other Eating Places,739,42.87389409066304,-67.54558248308528,2718993.900000001
+Boston,Venue,"Museums, Historical Sites, and Similar Institutions",191,42.33588338743455,-71.07781899476441,8744500.399999999
+Boston,Venue,Other Amusement and Recreation Industries,185,43.29373158378379,-64.6710173945946,1612037.8
+Boston,Other_EFW,Urban Transit Systems,133,42.510932015037596,-69.99368380451126,5157.4
+Boston,Food,Grocery Stores,87,44.05572295402298,-59.729991781609165,182692.79999999996
+Boston,Food,Drinking Places (Alcoholic Beverages),68,42.821713382352954,-67.92631925,491232.40000000014
+Boston,Water,Traveler Accommodation,68,43.64027119117649,-53.91125302941178,113021.69999999998
+Boston,Food,Specialty Food Stores,56,43.41533391071429,-63.58179569642857,178941.99999999997
+Boston,Venue,Performing Arts Companies,30,42.34686926666666,-71.0766927,63128.00000000001
+Boston,Energy,Gasoline Stations,30,43.75717423333332,-61.610515933333325,24685.300000000003
+Boston,Food,"Beer, Wine, and Liquor Stores",26,42.34969519230769,-71.07618476923076,27280.499999999996
+Boston,Other_EFW,Transit and Ground Passenger Transportation,20,42.33957684999999,-71.06900920000001,74662.09999999999
+Boston,Other_EFW,Scheduled Air Transportation,18,42.365444833333335,-71.01620994444444,389728.6
+Boston,Other_EFW,Other Transit and Ground Passenger Transportation,18,44.71519988888888,-55.27492388888888,73989.0
+Boston,Food,Special Food Services,17,44.21397417647059,-58.54488282352942,44116.2
+Boston,Other_EFW,Taxi and Limousine Service,16,44.344581937499996,-57.7483545625,125820.1
+Boston,Venue,"Promoters of Performing Arts, Sports, and Similar Events",14,42.35196364285714,-71.083052,107278.4
+Boston,Venue,Amusement Parks and Arcades,11,44.28964209090908,-58.1477480909091,69338.1
+Boston,Food,Bakeries and Tortilla Manufacturing,9,44.70211388888889,-55.28275555555555,24873.3
+Boston,Food,Beverage Manufacturing,8,42.341944125000005,-71.05653825,21826.7
+Boston,Food,Food Services and Drinking Places,8,42.350689875,-71.07361787500001,13872.4
+Boston,Other_EFW,Support Activities for Road Transportation,7,43.85863971428571,-60.90515157142857,4838.0
+Boston,Water,Remediation and Other Waste Management Services,6,44.67952916666666,-52.108115166666664,6332.4
+Boston,Other_EFW,Interurban and Rural Bus Transportation,5,42.351313000000005,-71.079234,41936.0
+Boston,Venue,"Independent Artists, Writers, and Performers",5,41.5843452,-72.4518406,3553.5
+Boston,Other_EFW,Support Activities for Air Transportation,5,42.364311799999996,-71.02685579999999,203250.09999999998
+Boston,Venue,Spectator Sports,4,42.3454385,-71.07976675,86596.0
+Boston,Water,RV (Recreational Vehicle) Parks and Recreational Camps,4,50.331555,-17.75765575,4408.6
+Boston,Water,Waste Collection,3,42.348572999999995,-71.07137866666666,6882.1
+Boston,Other_EFW,Support Activities for Rail Transportation,2,42.315574999999995,-71.0697375,7415.8
+Boston,Water,Waste Management and Remediation Services,2,42.3598355,-71.033743,43034.7
+Boston,Energy,"Electric Power Generation, Transmission and Distribution",2,42.350842,-71.064705,870.5
+Boston,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",2,42.3576475,-71.066499,208.7
+Boston,Food,Drugs and Druggists' Sundries Merchant Wholesalers,2,42.3503815,-71.0792865,323.29999999999995
+Boston,Water,Waste Treatment and Disposal,2,42.333493000000004,-71.0699765,0.0
+Boston,Energy,Natural Gas Distribution,1,42.375377,-71.053007,20.9
+Boston,Venue,Gambling Industries,1,52.977409,-0.023783,725.0
+Boston,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",1,42.3526,-71.045402,1299.0
+Boston,Food,Grocery and Related Product Merchant Wholesalers,1,42.351369,-71.037836,687.6
+Boston,Other_EFW,Other Personal Services,1,42.344883,-71.046685,25914.9
+Boston,Other_EFW,Freight Transportation Arrangement,1,42.343554,-71.023811,19888.0
+Boston,Other_EFW,Nonscheduled Air Transportation,1,42.268219,-71.094529,299.2
+Dallas,Food,Restaurants and Other Eating Places,1657,32.836578866022975,-95.66367924321067,6442529.100000011
+Dallas,Other_EFW,Urban Transit Systems,1656,32.809695145531364,-96.82776746618349,8939.5
+Dallas,Venue,Other Amusement and Recreation Industries,357,33.17607214565826,-95.83178716246498,6455451.000000003
+Dallas,Food,Grocery Stores,255,32.462402647058816,-94.44540195294117,550419.2000000002
+Dallas,Food,Drinking Places (Alcoholic Beverages),194,32.89491117010308,-96.87143333505155,696996.1000000001
+Dallas,Venue,"Museums, Historical Sites, and Similar Institutions",186,32.87387165053761,-95.51381298387095,21468760.500000007
+Dallas,Energy,Gasoline Stations,173,33.171467445086705,-95.76229275722544,308940.8000000001
+Dallas,Water,Traveler Accommodation,126,33.193413206349206,-96.55485925396825,442437.6999999999
+Dallas,Food,Specialty Food Stores,104,33.30767793269232,-96.02329228846158,414146.10000000003
+Dallas,Food,Special Food Services,60,32.84072523333334,-96.61903889999999,144756.80000000002
+Dallas,Food,"Beer, Wine, and Liquor Stores",57,33.28922577192982,-95.48158845614036,59975.700000000004
+Dallas,Other_EFW,Support Activities for Road Transportation,43,32.84790397674419,-96.5329319767442,49411.00000000001
+Dallas,Venue,"Promoters of Performing Arts, Sports, and Similar Events",39,33.12877756410257,-97.47818007692307,296962.19999999995
+Dallas,Venue,Performing Arts Companies,39,32.88029764102565,-96.39190428205129,330599.6
+Dallas,Other_EFW,Taxi and Limousine Service,29,32.9259274137931,-95.56271534482758,72253.09999999999
+Dallas,Other_EFW,Scheduled Air Transportation,27,32.889685925925924,-97.0002925185185,1329641.7999999998
+Dallas,Other_EFW,Transit and Ground Passenger Transportation,27,32.91757444444444,-95.93833229629628,41989.7
+Dallas,Food,Beverage Manufacturing,23,36.61989852173913,-99.34310395652173,97173.69999999998
+Dallas,Water,Remediation and Other Waste Management Services,23,33.093900391304345,-94.9206170869565,70502.60000000002
+Dallas,Other_EFW,Support Activities for Air Transportation,21,32.968930523809526,-95.79871533333333,704963.9000000001
+Dallas,Food,Bakeries and Tortilla Manufacturing,16,32.84250000000001,-96.8114715,45985.99999999999
+Dallas,Venue,Spectator Sports,16,32.947889249999996,-95.30358800000002,96251.4
+Dallas,Venue,Amusement Parks and Arcades,15,32.96471726666667,-95.19383813333334,193485.19999999998
+Dallas,Venue,"Independent Artists, Writers, and Performers",15,32.826547399999995,-96.7773488,27062.6
+Dallas,Other_EFW,Other Transit and Ground Passenger Transportation,13,32.826287461538456,-96.8021466153846,27461.4
+Dallas,Water,Waste Treatment and Disposal,12,33.86516508333333,-98.02164825,5533.900000000001
+Dallas,Energy,"Electric Power Generation, Transmission and Distribution",12,33.123616999999996,-94.48528775,40562.09999999999
+Dallas,Water,Waste Collection,12,32.84797008333333,-96.82927299999999,24721.8
+Dallas,Food,Grocery and Related Product Merchant Wholesalers,11,32.81655563636363,-96.826048,132696.0
+Dallas,Other_EFW,Freight Transportation Arrangement,10,32.8435689,-96.7917242,70024.1
+Dallas,Water,Waste Management and Remediation Services,10,33.01009280000001,-94.4256887,12120.1
+Dallas,Food,Drugs and Druggists' Sundries Merchant Wholesalers,6,32.85144666666667,-96.78259600000001,26748.600000000002
+Dallas,Food,Other Food Manufacturing,5,32.7488018,-96.82181200000001,23652.0
+Dallas,Energy,"Water, Sewage and Other Systems",4,32.844076,-96.7389695,7874.6
+Dallas,Venue,Gambling Industries,4,32.819295499999996,-96.80218550000001,125247.1
+Dallas,Food,Food Services and Drinking Places,4,32.77709025,-96.84976449999999,11327.5
+Dallas,Food,Petroleum and Petroleum Products Merchant Wholesalers,3,36.014936,-85.82012099999999,2766.3
+Dallas,Food,Miscellaneous Nondurable Goods Merchant Wholesalers,3,32.81356866666667,-96.78555966666666,19165.4
+Dallas,Other_EFW,Interurban and Rural Bus Transportation,3,32.77038866666667,-96.83651833333333,4826.7
+Dallas,Water,RV (Recreational Vehicle) Parks and Recreational Camps,3,33.60519733333333,-91.59470033333332,758.9
+Dallas,Venue,"Amusement, Gambling, and Recreation Industries",2,34.105727,-89.055255,4902.2
+Dallas,Food,Chemical and Allied Products Merchant Wholesalers,2,32.8349035,-96.887183,3491.9
+Dallas,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",2,32.793704,-96.7256975,5195.0
+Dallas,Energy,Utilities,2,32.864483,-96.8178145,8115.299999999999
+Dallas,Food,"Beer, Wine, and Distilled Alcoholic Beverage Merchant Wholesalers",1,32.753189,-96.893516,1359.6
+Dallas,Food,Sugar and Confectionery Product Manufacturing,1,32.795757,-96.685281,738.9
+Dallas,Other_EFW,Charter Bus Industry,1,32.911125,-96.877226,2081.0
+Dallas,Other_EFW,Software Publishers,1,32.713141,-96.813765,256.0
+Dallas,Other_EFW,Support Activities for Water Transportation,1,32.949285,-96.804429,2559.7
+Dallas,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",1,32.930235,-96.832668,17172.0
+Dallas,Food,Paper and Paper Product Merchant Wholesalers,1,32.890536,-96.886009,16845.4
+Dallas,Other_EFW,"Sporting Goods, Hobby, and Musical Instrument Stores",1,32.659935,-96.877832,26884.8
+Dallas,Other_EFW,Offices of Real Estate Agents and Brokers,1,32.862415,-96.810665,3377.0
+Dallas,Food,Animal Food Manufacturing,1,32.914863,-96.892026,25058.0
+Houston,Food,Restaurants and Other Eating Places,3563,29.85639305865841,-95.4592872152678,13756376.099999981
+Houston,Other_EFW,Urban Transit Systems,1855,29.764582631805915,-95.41025739083581,7805.7
+Houston,Venue,Other Amusement and Recreation Industries,669,29.925574437967107,-95.48553905082206,5058010.2
+Houston,Food,Grocery Stores,563,29.921196291296624,-95.39986383303732,1379374.5000000005
+Houston,Energy,Gasoline Stations,520,29.902539571153856,-95.42112241538462,1054424.2000000002
+Houston,Food,Drinking Places (Alcoholic Beverages),437,29.775635302059484,-95.41199757208233,1297928.9999999995
+Houston,Water,Traveler Accommodation,298,29.934435768456403,-95.35999603691272,883223.4999999998
+Houston,Venue,"Museums, Historical Sites, and Similar Institutions",276,29.876418579710133,-95.25779252536232,34728523.59999998
+Houston,Food,Specialty Food Stores,241,30.000909676348545,-95.53209992116186,1161446.9
+Houston,Food,Special Food Services,122,29.76860599180328,-95.43550518852464,253871.30000000005
+Houston,Food,"Beer, Wine, and Liquor Stores",117,30.060133247863252,-95.9079815470085,296570.69999999984
+Houston,Other_EFW,Support Activities for Road Transportation,91,29.79435081318681,-95.44083915384614,240481.30000000005
+Houston,Venue,Performing Arts Companies,74,29.77441340540541,-95.41823906756757,224170.2999999999
+Houston,Other_EFW,Transit and Ground Passenger Transportation,69,29.77890034782609,-95.43824153623193,271751.6
+Houston,Venue,"Promoters of Performing Arts, Sports, and Similar Events",52,30.415329653846168,-95.63484150000001,326555.5
+Houston,Food,Bakeries and Tortilla Manufacturing,46,29.793706891304357,-95.45322145652173,156757.19999999995
+Houston,Other_EFW,Other Transit and Ground Passenger Transportation,45,29.77679831111112,-95.44967835555555,141561.3
+Houston,Water,Remediation and Other Waste Management Services,43,30.359102860465125,-96.14791283720932,88468.2
+Houston,Other_EFW,Taxi and Limousine Service,37,29.77820318918919,-95.46132505405404,165252.5
+Houston,Other_EFW,Freight Transportation Arrangement,34,29.852332294117648,-95.40749688235294,165160.70000000004
+Houston,Venue,Amusement Parks and Arcades,32,29.781489343749993,-95.46904871875002,88151.8
+Houston,Venue,"Independent Artists, Writers, and Performers",30,29.759426266666665,-95.42713006666668,92858.79999999999
+Houston,Water,Waste Treatment and Disposal,29,29.938951137931035,-95.21442375862067,43430.49999999999
+Houston,Water,Waste Collection,29,29.7989845862069,-95.40778158620691,44225.299999999996
+Houston,Other_EFW,Scheduled Air Transportation,27,29.96085248148149,-95.3539222962963,841883.5
+Houston,Other_EFW,Support Activities for Air Transportation,24,29.892897958333332,-95.38508891666667,35924411.4
+Houston,Food,Drugs and Druggists' Sundries Merchant Wholesalers,23,31.17402604347826,-97.83064421739128,52355.8
+Houston,Venue,Gambling Industries,22,29.797926590909096,-95.44928731818182,68287.7
+Houston,Energy,"Electric Power Generation, Transmission and Distribution",21,30.46888285714286,-94.4227738095238,95453.29999999999
+Houston,Water,Waste Management and Remediation Services,21,30.27674985714286,-94.71357485714286,37997.60000000001
+Houston,Food,Chemical and Allied Products Merchant Wholesalers,20,29.7546784,-95.4330525,46773.0
+Houston,Food,Beverage Manufacturing,19,29.79983978947369,-95.44384552631578,173249.59999999998
+Houston,Venue,Spectator Sports,19,29.780372421052633,-95.41218589473682,137605.7
+Houston,Energy,"Water, Sewage and Other Systems",18,30.240619499999998,-95.23153477777778,26895.0
+Houston,Energy,Utilities,18,29.76913866666667,-95.41834416666669,48712.100000000006
+Houston,Water,RV (Recreational Vehicle) Parks and Recreational Camps,14,31.00103114285714,-93.71394214285715,39664.9
+Houston,Food,Grocery and Related Product Merchant Wholesalers,14,29.76855435714285,-95.40833549999999,119527.40000000001
+Houston,Food,Petroleum and Petroleum Products Merchant Wholesalers,8,29.7940525,-95.37014150000002,54111.200000000004
+Houston,Food,Food Services and Drinking Places,8,29.808456125,-95.4391655,31082.399999999998
+Houston,Food,Miscellaneous Nondurable Goods Merchant Wholesalers,7,29.807571142857142,-95.489096,30652.0
+Houston,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",6,29.768682666666667,-95.468593,7195.099999999999
+Houston,Venue,"Amusement, Gambling, and Recreation Industries",6,29.822472333333337,-95.44530033333332,39608.5
+Houston,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",6,29.754877666666662,-95.41015083333333,104863.1
+Houston,Other_EFW,Interurban and Rural Bus Transportation,5,29.7605244,-95.363784,9236.2
+Houston,Food,Other Food Manufacturing,5,31.2456472,-94.8281782,5857.5
+Houston,Energy,Natural Gas Distribution,5,29.798353600000002,-95.5023712,14808.0
+Houston,Other_EFW,Support Activities for Water Transportation,4,29.738719000000003,-95.24559024999999,1705957.5
+Houston,Other_EFW,Charter Bus Industry,4,29.851239999999997,-95.38826825000001,11979.3
+Houston,Food,Grain and Oilseed Milling,2,29.7392775,-95.4090455,2427.7
+Houston,Water,"Rooming and Boarding Houses, Dormitories, and Workers' Camps",2,29.750321999999997,-95.3398705,11430.3
+Houston,Other_EFW,Other Personal Services,2,29.75137,-95.35766849999999,102651.2
+Houston,Food,Animal Slaughtering and Processing,2,29.801102,-95.4152485,12985.5
+Houston,Food,Paper and Paper Product Merchant Wholesalers,2,29.8148555,-95.3348585,23273.9
+Houston,Other_EFW,Religious Organizations,1,29.822744,-95.320199,2056.0
+Houston,Other_EFW,Personal Care Services,1,29.789737,-95.185794,190.3
+Houston,Other_EFW,Automobile Dealers,1,29.72376,-95.48355,305.8
+Houston,Other_EFW,School and Employee Bus Transportation,1,29.788051,-95.544284,2591.0
+Houston,Food,Sugar and Confectionery Product Manufacturing,1,29.77503,-95.643169,1004.0
+Houston,Other_EFW,Air Transportation,1,29.991349,-95.483244,3061.0
+Houston,Other_EFW,Offices of Other Health Practitioners,1,29.759846,-95.394717,45381.0
+Houston,Other_EFW,Lessors of Real Estate,1,29.7022,-95.518062,16611.3
+Houston,Other_EFW,Offices of Real Estate Agents and Brokers,1,29.705394,-95.505096,504.0
+Houston,Other_EFW,Management of Companies and Enterprises,1,29.704093,-95.555725,6023.6
+Houston,Food,"Beer, Wine, and Distilled Alcoholic Beverage Merchant Wholesalers",1,29.842747,-95.519634,6379.0
+Houston,Other_EFW,Nonscheduled Air Transportation,1,29.633416,-95.499174,268.0
+Houston,Other_EFW,Offices of Physicians,1,29.743853,-95.456401,6575.0
+Houston,Other_EFW,Motion Picture and Video Industries,1,29.751841,-95.357699,95331.5
+Houston,Other_EFW,Couriers and Express Delivery Services,1,29.701384,-95.518469,16611.3
+Kansas City,Other_EFW,Urban Transit Systems,818,39.07978645110029,-94.5785873740831,0.0
+Kansas City,Food,Restaurants and Other Eating Places,619,39.097476985460425,-94.59558193376408,1497072.299999999
+Kansas City,Venue,"Museums, Historical Sites, and Similar Institutions",161,39.08086081366459,-94.5714262546584,18588361.199999996
+Kansas City,Venue,Other Amusement and Recreation Industries,132,39.095405090909075,-94.59257665909091,1962269.6000000003
+Kansas City,Energy,Gasoline Stations,101,39.096815188118825,-94.59195039603962,332528.29999999993
+Kansas City,Food,Grocery Stores,84,39.084575535714286,-94.59650264285713,235306.60000000003
+Kansas City,Food,Drinking Places (Alcoholic Beverages),74,39.08952267567568,-94.61067167567566,261534.49999999994
+Kansas City,Water,Traveler Accommodation,58,39.127359620689646,-94.6136673448276,94017.0
+Kansas City,Food,Specialty Food Stores,45,39.10123811111111,-94.60757973333334,248605.5000000001
+Kansas City,Food,"Beer, Wine, and Liquor Stores",42,39.05832804761906,-94.58726742857142,46050.20000000001
+Kansas City,Venue,Performing Arts Companies,28,39.086472642857146,-94.58142792857143,224977.20000000007
+Kansas City,Venue,"Promoters of Performing Arts, Sports, and Similar Events",19,39.084876947368414,-94.58349826315789,52377.6
+Kansas City,Other_EFW,Support Activities for Road Transportation,18,39.0776995,-94.5572355,19549.1
+Kansas City,Water,Remediation and Other Waste Management Services,15,39.077574133333336,-94.56272946666667,60573.200000000004
+Kansas City,Venue,"Independent Artists, Writers, and Performers",14,39.077447785714284,-94.59588299999999,7674.700000000001
+Kansas City,Food,Special Food Services,14,39.056235285714294,-94.58516235714286,71033.3
+Kansas City,Other_EFW,Transit and Ground Passenger Transportation,13,39.10837130769231,-94.61664376923075,15676.1
+Kansas City,Food,Beverage Manufacturing,11,39.075151999999996,-94.56652345454545,41538.3
+Kansas City,Water,Waste Collection,10,39.0695402,-94.56482139999999,30182.0
+Kansas City,Water,Waste Treatment and Disposal,9,39.110137111111115,-94.62137855555557,11849.5
+Kansas City,Venue,Amusement Parks and Arcades,8,39.03193125,-94.585753,33193.2
+Kansas City,Other_EFW,Taxi and Limousine Service,8,39.152170625000004,-94.62953037500002,11423.9
+Kansas City,Other_EFW,Scheduled Air Transportation,8,39.27971575,-94.7005915,237913.19999999998
+Kansas City,Other_EFW,Other Transit and Ground Passenger Transportation,8,39.07376225,-94.60652225000001,12438.300000000001
+Kansas City,Food,Bakeries and Tortilla Manufacturing,7,39.04673471428571,-94.595917,8141.299999999999
+Kansas City,Other_EFW,Freight Transportation Arrangement,7,39.160754,-94.58146385714285,15898.000000000002
+Kansas City,Water,Waste Management and Remediation Services,6,39.07431833333333,-94.60309116666666,17723.5
+Kansas City,Food,Food Services and Drinking Places,6,39.104170499999995,-94.65624416666667,23514.9
+Kansas City,Food,Drugs and Druggists' Sundries Merchant Wholesalers,6,39.039308,-94.57903166666667,1522.4
+Kansas City,Energy,"Electric Power Generation, Transmission and Distribution",6,39.12158,-94.57982133333333,12372.0
+Kansas City,Venue,Spectator Sports,5,39.120066,-94.6642048,43740.1
+Kansas City,Energy,"Water, Sewage and Other Systems",4,39.0837055,-94.60182449999999,5438.799999999999
+Kansas City,Water,RV (Recreational Vehicle) Parks and Recreational Camps,3,39.001720999999996,-94.56424133333333,2926.4
+Kansas City,Other_EFW,Interurban and Rural Bus Transportation,3,39.104527,-94.60681366666667,48370.7
+Kansas City,Other_EFW,Support Activities for Air Transportation,3,39.238386,-94.66818466666666,59805.8
+Kansas City,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",2,39.094751,-94.58874,2423.8
+Kansas City,Food,Chemical and Allied Products Merchant Wholesalers,2,39.1095075,-94.59815900000001,5819.1
+Kansas City,Food,Grocery and Related Product Merchant Wholesalers,2,39.196529,-94.6645005,3364.0
+Kansas City,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",2,39.102019999999996,-94.6126375,2003.4
+Kansas City,Food,Paper and Paper Product Merchant Wholesalers,2,39.092271,-94.54903200000001,51922.8
+Kansas City,Venue,"Amusement, Gambling, and Recreation Industries",2,39.072021500000005,-94.6316825,337.70000000000005
+Kansas City,Food,Other Food Manufacturing,2,39.1251885,-94.544276,9199.4
+Kansas City,Other_EFW,Lessors of Real Estate,1,39.039343,-94.486362,44305.0
+Kansas City,Food,Miscellaneous Nondurable Goods Merchant Wholesalers,1,39.199935,-94.628981,89.1
+Kansas City,Other_EFW,Religious Organizations,1,39.126597,-94.874781,11270.6
+Kansas City,Food,"Beer, Wine, and Distilled Alcoholic Beverage Merchant Wholesalers",1,39.144081,-94.514187,16360.0
+Kansas City,Food,Petroleum and Petroleum Products Merchant Wholesalers,1,39.118258,-94.549912,1098.0
+Kansas City,Other_EFW,Other Support Services,1,39.100061,-94.565869,3240.6
+Kansas City,Other_EFW,Personal Care Services,1,39.084826,-94.579943,18359.0
+Kansas City,Other_EFW,Travel Arrangement and Reservation Services,1,39.276002,-94.673154,5952.1
+Kansas City,Energy,Utilities,1,38.865258,-94.564836,1112.4
+Kansas City,Other_EFW,Printing and Related Support Activities,1,39.248519,-94.661336,2134.0
+Los Angeles,Food,Restaurants and Other Eating Places,3232,33.98377362654705,-118.26370352258651,6264204.000000004
+Los Angeles,Other_EFW,Urban Transit Systems,1695,34.03263277168142,-118.28755013392333,42297.799999999996
+Los Angeles,Venue,Other Amusement and Recreation Industries,539,34.056750435992576,-118.33418805009276,3793007.9999999995
+Los Angeles,Food,Grocery Stores,536,33.23272580783583,-117.765046113806,605840.6999999998
+Los Angeles,Energy,Gasoline Stations,303,33.80851209570954,-118.16730252805272,132604.70000000004
+Los Angeles,Venue,"Museums, Historical Sites, and Similar Institutions",283,34.079539416961126,-118.3201883922261,25498858.20000001
+Los Angeles,Food,Drinking Places (Alcoholic Beverages),250,34.059557192000014,-118.300738272,819845.4000000003
+Los Angeles,Food,Specialty Food Stores,222,33.71790176126126,-118.08614817567563,404763.09999999974
+Los Angeles,Water,Traveler Accommodation,199,32.97010130150753,-117.63195888944729,274773.0999999999
+Los Angeles,Venue,Performing Arts Companies,151,34.07152078145696,-118.31557665562907,293346.6999999999
+Los Angeles,Food,Special Food Services,137,34.05361072262773,-118.30179183211682,240989.89999999994
+Los Angeles,Food,"Beer, Wine, and Liquor Stores",114,34.03951552631579,-118.29912224561403,90699.89999999997
+Los Angeles,Venue,"Promoters of Performing Arts, Sports, and Similar Events",72,34.06442269444445,-118.31038511111112,371711.39999999997
+Los Angeles,Other_EFW,Support Activities for Road Transportation,55,34.03021945454546,-118.28984192727273,51177.09999999999
+Los Angeles,Other_EFW,Transit and Ground Passenger Transportation,53,34.02734067924528,-118.31461009433959,144565.60000000003
+Los Angeles,Food,Drugs and Druggists' Sundries Merchant Wholesalers,50,34.048732019999996,-118.30529487999996,39484.100000000006
+Los Angeles,Other_EFW,Scheduled Air Transportation,41,33.943384609756095,-118.39200373170732,2169078.9
+Los Angeles,Other_EFW,Other Transit and Ground Passenger Transportation,38,30.252321894736845,-115.90155147368421,82732.30000000002
+Los Angeles,Other_EFW,Taxi and Limousine Service,37,30.162364783783786,-115.81875343243246,53242.30000000001
+Los Angeles,Venue,"Independent Artists, Writers, and Performers",36,34.04177111111111,-118.31270847222218,104702.1
+Los Angeles,Food,Bakeries and Tortilla Manufacturing,31,34.048661,-118.2971208064516,155432.6
+Los Angeles,Water,Remediation and Other Waste Management Services,25,34.03082992,-118.25697636,66983.79999999999
+Los Angeles,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",22,34.02719213636364,-118.26074122727273,69339.79999999999
+Los Angeles,Water,Waste Treatment and Disposal,21,34.04699823809524,-118.31856828571429,7820.3
+Los Angeles,Other_EFW,Support Activities for Air Transportation,20,33.96780435,-118.37526619999998,360945.49999999994
+Los Angeles,Venue,Amusement Parks and Arcades,19,34.03409315789473,-118.32827663157892,40503.500000000015
+Los Angeles,Venue,Spectator Sports,16,34.03556199999999,-118.324635375,228907.5
+Los Angeles,Food,Food Services and Drinking Places,15,34.0661664,-118.3464612,25295.5
+Los Angeles,Food,Grocery and Related Product Merchant Wholesalers,15,34.03606753333334,-118.22543293333335,12316.4
+Los Angeles,Water,Waste Collection,13,34.042907846153845,-118.313496,12119.4
+Los Angeles,Food,Beverage Manufacturing,12,34.053672250000005,-118.28502833333336,10996.6
+Los Angeles,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",10,34.0683875,-118.34934520000002,17821.7
+Los Angeles,Other_EFW,Freight Transportation Arrangement,10,34.0056308,-118.2735449,22819.100000000002
+Los Angeles,Venue,Gambling Industries,9,34.06260255555556,-118.29438288888888,10661.400000000001
+Los Angeles,Water,Waste Management and Remediation Services,5,34.0255518,-118.3261718,2455.8
+Los Angeles,Water,RV (Recreational Vehicle) Parks and Recreational Camps,4,34.297424750000005,-118.39348874999999,2652.3
+Los Angeles,Other_EFW,Interurban and Rural Bus Transportation,3,34.056018,-118.233812,9836.1
+Los Angeles,Other_EFW,Charter Bus Industry,3,34.002288,-118.33080733333334,104072.4
+Los Angeles,Other_EFW,Religious Organizations,2,34.0407255,-118.29084950000001,3885.4
+Los Angeles,Venue,"Amusement, Gambling, and Recreation Industries",2,34.067662999999996,-118.33429000000001,354.1
+Los Angeles,Food,Chemical and Allied Products Merchant Wholesalers,2,34.0228845,-118.2907805,4799.0
+Los Angeles,Food,Miscellaneous Nondurable Goods Merchant Wholesalers,2,34.027467,-118.2444045,831.3
+Los Angeles,Energy,Utilities,2,34.0491635,-118.3455015,2069.8
+Los Angeles,Other_EFW,Personal Care Services,1,34.038407,-118.441847,2918.0
+Los Angeles,Food,Other Food Manufacturing,1,34.026108,-118.24595,1213.3
+Los Angeles,Other_EFW,Support Activities for Rail Transportation,1,34.02843,-118.227022,710.1
+Los Angeles,Food,Sugar and Confectionery Product Manufacturing,1,34.060136,-118.416495,6514.2
+Los Angeles,Other_EFW,Other Personal Services,1,34.013284,-118.28541,17481.2
+Los Angeles,Other_EFW,Offices of Physicians,1,34.074233,-118.381066,4702.5
+Los Angeles,Water,"Rooming and Boarding Houses, Dormitories, and Workers' Camps",1,34.068426,-118.438606,525.8
+Los Angeles,Other_EFW,"Religious, Grantmaking, Civic, Professional, and Similar Organizations",1,33.967103,-118.2789,382.8
+Los Angeles,Other_EFW,Motion Picture and Video Industries,1,34.097255,-118.331223,1842.5
+Los Angeles,Energy,Natural Gas Distribution,1,34.049847,-118.252673,3889.6
+Los Angeles,Energy,"Water, Sewage and Other Systems",1,34.050994,-118.23575,1475.0
+Miami,Food,Restaurants and Other Eating Places,1703,25.253405778038747,-77.7559077310628,6007245.300000002
+Miami,Other_EFW,Urban Transit Systems,1363,25.78570247542185,-80.26965656859862,25257.100000000002
+Miami,Venue,Other Amusement and Recreation Industries,397,24.10476938035265,-71.98637652896724,1534858.4999999998
+Miami,Food,Grocery Stores,302,25.604853668874178,-78.96304430463574,433304.49999999994
+Miami,Energy,Gasoline Stations,158,25.670774632911396,-78.39911544303797,222093.3000000001
+Miami,Venue,"Museums, Historical Sites, and Similar Institutions",158,26.110819158227848,-79.82791496835445,5658044.499999997
+Miami,Water,Traveler Accommodation,142,22.677081633802807,-66.28845656338028,515250.7999999998
+Miami,Food,Drinking Places (Alcoholic Beverages),137,25.606358861313865,-78.97561045255476,313206.3000000001
+Miami,Food,Specialty Food Stores,136,25.94600803676471,-80.5385158676471,597378.4
+Miami,Food,Special Food Services,87,25.77260196551725,-80.28047477011496,178800.70000000004
+Miami,Food,"Beer, Wine, and Liquor Stores",67,24.963909417910454,-76.7953074925373,246210.90000000005
+Miami,Other_EFW,Support Activities for Road Transportation,46,26.002384217391295,-80.61939815217389,62855.9
+Miami,Other_EFW,Scheduled Air Transportation,42,25.78711147619047,-80.28278745238097,1095557.9000000001
+Miami,Other_EFW,Transit and Ground Passenger Transportation,41,25.78424217073171,-80.28293468292684,99749.2
+Miami,Other_EFW,Other Transit and Ground Passenger Transportation,36,25.777293777777775,-80.26458380555556,158134.69999999998
+Miami,Other_EFW,Freight Transportation Arrangement,35,25.808866571428574,-80.29948722857144,175649.69999999998
+Miami,Water,Remediation and Other Waste Management Services,35,25.745870142857143,-80.31511131428572,44439.2
+Miami,Venue,"Promoters of Performing Arts, Sports, and Similar Events",32,24.10114115625,-72.94567996874999,87345.70000000001
+Miami,Food,Bakeries and Tortilla Manufacturing,28,23.821509857142853,-71.9547585,81329.4
+Miami,Venue,Amusement Parks and Arcades,26,25.767709884615385,-80.26480515384614,344899.79999999993
+Miami,Venue,Performing Arts Companies,26,25.754605384615385,-80.28855796153847,85634.90000000001
+Miami,Other_EFW,Taxi and Limousine Service,25,25.79661964,-80.22631024,102289.6
+Miami,Venue,"Independent Artists, Writers, and Performers",23,25.776809652173913,-80.25052260869565,71808.2
+Miami,Food,Grocery and Related Product Merchant Wholesalers,20,25.797783400000004,-80.25866599999999,70921.1
+Miami,Water,Waste Collection,16,25.7625021875,-80.2579639375,8784.9
+Miami,Other_EFW,Support Activities for Air Transportation,15,25.781664933333335,-80.27673673333334,218653.0
+Miami,Food,Food Services and Drinking Places,15,25.79019786666667,-80.2304262,90002.49999999997
+Miami,Food,Drugs and Druggists' Sundries Merchant Wholesalers,13,27.48532869230769,-82.49274346153847,28881.299999999996
+Miami,Venue,Spectator Sports,12,21.259583916666667,-60.79873575,105371.0
+Miami,Water,RV (Recreational Vehicle) Parks and Recreational Camps,11,22.40595527272727,-63.743698090909085,128168.4
+Miami,Water,Waste Treatment and Disposal,10,25.7889275,-80.2502505,1236.0
+Miami,Food,Beverage Manufacturing,9,25.792107777777776,-80.25363066666667,21709.6
+Miami,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",7,25.752877857142856,-80.27466485714285,6257.9
+Miami,Venue,Gambling Industries,6,27.5828605,-82.74755366666666,139373.30000000002
+Miami,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",6,25.81027916666667,-80.25969716666667,9990.7
+Miami,Water,Waste Management and Remediation Services,6,25.738899500000002,-80.27877466666666,3850.1000000000004
+Miami,Other_EFW,Support Activities for Water Transportation,5,25.7444398,-80.270514,11154.4
+Miami,Food,Other Food Manufacturing,5,25.696717200000002,-80.3289906,1752.7
+Miami,Food,Miscellaneous Nondurable Goods Merchant Wholesalers,3,25.66632233333333,-80.39865733333335,1889.5
+Miami,Food,Chemical and Allied Products Merchant Wholesalers,3,25.76607866666667,-80.32949866666667,3719.8
+Miami,Energy,Utilities,2,25.7813885,-80.2052765,3289.2
+Miami,Other_EFW,School and Employee Bus Transportation,2,25.755321000000002,-80.31234549999999,1699.3
+Miami,Energy,"Water, Sewage and Other Systems",2,29.591142499999997,-95.505855,9225.6
+Miami,Other_EFW,Offices of Physicians,2,25.7653375,-80.21991299999999,4939.4
+Miami,Other_EFW,Interurban and Rural Bus Transportation,1,25.779197,-80.188246,205.7
+Miami,Other_EFW,Building Finishing Contractors,1,25.920879,-80.224023,10320.3
+Miami,Food,Petroleum and Petroleum Products Merchant Wholesalers,1,25.839702,-80.196022,609.3
+Miami,Food,Fruit and Vegetable Preserving and Specialty Food Manufacturing,1,25.793337,-80.186377,4181.1
+Miami,Energy,Natural Gas Distribution,1,25.798641,-80.244109,712.0
+Miami,Water,"Rooming and Boarding Houses, Dormitories, and Workers' Camps",1,25.753464,-80.374933,2043.9
+Miami,Food,Food and Beverage Stores,1,25.788156,-80.380013,154334.4
+Miami,Other_EFW,Lessors of Real Estate,1,25.800204,-80.210154,44663.0
+Miami,Energy,"Electric Power Generation, Transmission and Distribution",1,25.705409,-80.435098,285.0
+Miami,Other_EFW,Support Activities for Rail Transportation,1,25.822014,-80.24137,3284.6
+Miami,Other_EFW,Other Support Activities for Transportation,1,25.758614,-80.344728,261.9
+Miami,Food,Food Manufacturing,1,25.772404,-80.168728,603.0
+Miami,Other_EFW,Other Schools and Instruction,1,25.766254,-80.212368,1140.0
+Miami,Other_EFW,Legal Services,1,25.757711,-80.205861,432.0
+Miami,Other_EFW,Miscellaneous Durable Goods Merchant Wholesalers,1,25.774945,-80.192987,13177.0
+Miami,Other_EFW,Drycleaning and Laundry Services,1,25.777942,-80.214306,367.2
+Miami,Venue,"Amusement, Gambling, and Recreation Industries",1,25.742157,-80.434275,54.9
+Miami,Other_EFW,Charter Bus Industry,1,25.752893,-80.262198,2059.0
+New York/New Jersey,Food,Restaurants and Other Eating Places,12420,40.06184613977453,-74.79012470257652,17468406.300000086
+New York/New Jersey,Other_EFW,Urban Transit Systems,4568,40.158480334063086,-77.77063070008747,96980.19999999997
+New York/New Jersey,Food,Grocery Stores,2754,40.294334192810574,-75.02703017283942,2394070.3999999966
+New York/New Jersey,Venue,Other Amusement and Recreation Industries,2241,39.76384677153058,-74.73363615707287,17064262.8
+New York/New Jersey,Venue,"Museums, Historical Sites, and Similar Institutions",1339,39.37943235623602,-76.27410990888708,63000555.300000034
+New York/New Jersey,Food,Specialty Food Stores,1276,40.04923659874609,-74.03520628056415,1906654.2999999982
+New York/New Jersey,Food,Drinking Places (Alcoholic Beverages),1022,39.78992301174164,-74.17011234540107,1521881.599999999
+New York/New Jersey,Energy,Gasoline Stations,810,39.867727997530864,-72.43119469999992,1004452.7
+New York/New Jersey,Water,Traveler Accommodation,673,39.56298184695395,-70.65038389153047,833790.2000000001
+New York/New Jersey,Food,"Beer, Wine, and Liquor Stores",570,39.88707088421054,-75.17495805614041,636307.5999999994
+New York/New Jersey,Venue,Performing Arts Companies,432,40.47702615046297,-74.33052778472216,680061.9999999998
+New York/New Jersey,Food,Special Food Services,319,40.50657807523507,-75.65036780250782,387951.2
+New York/New Jersey,Other_EFW,Transit and Ground Passenger Transportation,220,39.33501152272727,-72.74565445909094,367009.5999999999
+New York/New Jersey,Other_EFW,Taxi and Limousine Service,216,41.16280731018518,-70.93448685185179,201624.00000000003
+New York/New Jersey,Venue,"Promoters of Performing Arts, Sports, and Similar Events",202,39.31709150495046,-76.21022845544556,577991.3000000002
+New York/New Jersey,Other_EFW,Support Activities for Road Transportation,192,39.60247588541666,-78.1550946770833,175501.10000000003
+New York/New Jersey,Other_EFW,Other Transit and Ground Passenger Transportation,132,39.2140280378788,-72.84608343939391,198397.1
+New York/New Jersey,Food,Bakeries and Tortilla Manufacturing,131,39.90604088549618,-73.35179025954199,207699.99999999997
+New York/New Jersey,Water,Waste Treatment and Disposal,128,39.978616914062506,-78.0505920546875,35552.799999999996
+New York/New Jersey,Venue,"Independent Artists, Writers, and Performers",119,40.11950697478993,-78.03306185714283,229915.29999999996
+New York/New Jersey,Venue,Amusement Parks and Arcades,116,39.28824973275861,-77.06267614655172,369496.69999999995
+New York/New Jersey,Food,Food Services and Drinking Places,108,40.78524899074074,-74.00691349999998,126214.3
+New York/New Jersey,Water,Remediation and Other Waste Management Services,107,39.817986261682215,-77.14568174766357,174836.80000000005
+New York/New Jersey,Food,Drugs and Druggists' Sundries Merchant Wholesalers,83,39.85355414457831,-80.76902354216867,54605.00000000001
+New York/New Jersey,Water,Waste Collection,80,40.05853797499999,-77.6831536375,93863.3
+New York/New Jersey,Food,Beverage Manufacturing,67,39.22863377611941,-74.44622004477613,98079.8
+New York/New Jersey,Venue,Spectator Sports,64,39.98313804687501,-77.99467031249998,559027.0
+New York/New Jersey,Food,Grocery and Related Product Merchant Wholesalers,64,40.451561109375,-76.20401814062498,258707.99999999997
+New York/New Jersey,Water,RV (Recreational Vehicle) Parks and Recreational Camps,58,37.69982643103448,-78.02384570689657,370939.2
+New York/New Jersey,Other_EFW,Support Activities for Air Transportation,53,38.328868377358496,-75.65285873584907,29601288.7
+New York/New Jersey,Other_EFW,Scheduled Air Transportation,40,38.84441087500001,-71.560924625,767370.7999999999
+New York/New Jersey,Water,Waste Management and Remediation Services,39,40.21422505128206,-77.19033997435898,69975.5
+New York/New Jersey,Energy,"Electric Power Generation, Transmission and Distribution",35,39.910158714285714,-81.0607387714286,118665.99999999999
+New York/New Jersey,Other_EFW,Freight Transportation Arrangement,31,40.150812645161295,-78.26027574193547,121381.2
+New York/New Jersey,Other_EFW,Interurban and Rural Bus Transportation,30,33.08573703333334,-52.06793479999998,130781.4
+New York/New Jersey,Energy,"Water, Sewage and Other Systems",24,39.137766875,-83.58640020833333,23131.199999999997
+New York/New Jersey,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",21,40.740480238095245,-74.00394952380952,36377.5
+New York/New Jersey,Energy,Utilities,20,39.857780500000004,-75.3693882,80578.79999999999
+New York/New Jersey,Venue,Gambling Industries,19,40.33349305263158,-76.76281342105264,58273.49999999999
+New York/New Jersey,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",18,40.34328433333334,-75.38847316666666,15669.099999999999
+New York/New Jersey,Food,Miscellaneous Nondurable Goods Merchant Wholesalers,14,39.374271499999985,-78.78160357142858,22537.999999999996
+New York/New Jersey,Venue,"Amusement, Gambling, and Recreation Industries",14,39.50385721428572,-79.94567321428572,20161.500000000004
+New York/New Jersey,Other_EFW,Support Activities for Water Transportation,13,38.87286423076923,-81.98774584615384,26472110.000000004
+New York/New Jersey,Food,Chemical and Allied Products Merchant Wholesalers,12,38.674181749999995,-84.76464275000001,44974.299999999996
+New York/New Jersey,Food,Other Food Manufacturing,12,40.731320583333336,-79.26492333333333,43816.1
+New York/New Jersey,Water,"Rooming and Boarding Houses, Dormitories, and Workers' Camps",8,39.80153087499999,-79.67812037499999,11798.0
+New York/New Jersey,Food,Petroleum and Petroleum Products Merchant Wholesalers,8,39.789249375,-79.661954375,13405.8
+New York/New Jersey,Other_EFW,School and Employee Bus Transportation,7,39.49624071428571,-84.14278399999999,26856.9
+New York/New Jersey,Other_EFW,Nonscheduled Air Transportation,7,39.75649428571428,-80.27316900000001,19565.699999999997
+New York/New Jersey,Energy,Natural Gas Distribution,7,39.642599,-77.21344742857143,5383.9
+New York/New Jersey,Food,Paper and Paper Product Merchant Wholesalers,6,40.75424700000001,-73.94446716666666,26822.5
+New York/New Jersey,Other_EFW,Support Activities for Rail Transportation,4,40.4366425,-74.48400475,4360.5
+New York/New Jersey,Food,"Beer, Wine, and Distilled Alcoholic Beverage Merchant Wholesalers",4,21.941900750000002,-18.033217499999996,9901.0
+New York/New Jersey,Other_EFW,Offices of Physicians,4,40.7142965,-73.977491,11352.5
+New York/New Jersey,Other_EFW,Charter Bus Industry,4,40.701716000000005,-73.98493325,19943.600000000002
+New York/New Jersey,Food,Sugar and Confectionery Product Manufacturing,3,40.208706,-85.45520566666669,984.4
+New York/New Jersey,Other_EFW,Other Support Activities for Transportation,3,40.74449533333333,-74.027438,383.4
+New York/New Jersey,Food,Fruit and Vegetable Preserving and Specialty Food Manufacturing,2,37.1767335,-96.06566649999999,352.0
+New York/New Jersey,Other_EFW,Offices of Other Health Practitioners,2,40.738028,-74.029631,588.0
+New York/New Jersey,Food,Dairy Product Manufacturing,2,40.7628565,-73.959958,3802.7
+New York/New Jersey,Other_EFW,Other Personal Services,2,36.101361999999995,-81.02413949999999,11084.7
+New York/New Jersey,Food,Animal Slaughtering and Processing,2,37.005789,-85.16345100000001,398.9
+New York/New Jersey,Food,Seafood Product Preparation and Packaging,1,40.657549,-73.998436,746.9
+New York/New Jersey,Other_EFW,Travel Arrangement and Reservation Services,1,33.767886,-118.188928,3267.0
+New York/New Jersey,Other_EFW,Management of Companies and Enterprises,1,40.763142,-73.982674,1541.7
+New York/New Jersey,Food,Food and Beverage Stores,1,40.720075,-74.00119,33.0
+New York/New Jersey,Food,Farm Product Raw Material Merchant Wholesalers,1,40.663416,-73.912073,809.1
+New York/New Jersey,Other_EFW,Offices of Real Estate Agents and Brokers,1,40.643898,-73.996069,616.0
+New York/New Jersey,Other_EFW,"Sporting Goods, Hobby, and Musical Instrument Stores",1,33.76518,-118.189513,88981.2
+New York/New Jersey,Other_EFW,Other Financial Investment Activities,1,40.752573,-73.973627,1218.6
+New York/New Jersey,Other_EFW,Nondepository Credit Intermediation,1,40.585479,-73.961002,210.1
+New York/New Jersey,Other_EFW,Other Schools and Instruction,1,40.544354,-74.165955,169.4
+New York/New Jersey,Other_EFW,Elementary and Secondary Schools,1,40.821463,-73.881087,3356.1
+New York/New Jersey,Other_EFW,"Religious, Grantmaking, Civic, Professional, and Similar Organizations",1,34.237419,-80.502106,411.4
+New York/New Jersey,Other_EFW,Civic and Social Organizations,1,40.738759,-74.178256,13457.7
+New York/New Jersey,Other_EFW,Residential Building Construction,1,40.61039,-74.013123,3452.9
+New York/New Jersey,Other_EFW,Other Miscellaneous Manufacturing,1,40.839279,-73.927813,996.0
+New York/New Jersey,Food,Food Manufacturing,1,40.079616,-93.609046,32484.0
+Philadelphia,Food,Restaurants and Other Eating Places,1735,39.9056462778099,-75.29883529567722,2367760.4000000022
+Philadelphia,Other_EFW,Urban Transit Systems,1635,39.998324599388354,-75.14631011620796,3518.9
+Philadelphia,Food,Grocery Stores,548,39.86235559671531,-75.40732096532847,365612.30000000005
+Philadelphia,Venue,Other Amusement and Recreation Industries,306,39.93771231372549,-75.25180890849674,1143090.6000000003
+Philadelphia,Venue,"Museums, Historical Sites, and Similar Institutions",218,39.86648369266054,-75.39140670642202,3612344.4
+Philadelphia,Food,Drinking Places (Alcoholic Beverages),182,39.938130368131866,-75.22856447802195,260661.60000000006
+Philadelphia,Food,Specialty Food Stores,150,39.98603671333333,-75.15893185333337,360891.60000000003
+Philadelphia,Energy,Gasoline Stations,103,39.623083213592245,-75.95765752427181,118496.70000000001
+Philadelphia,Water,Traveler Accommodation,67,39.647977865671635,-75.7898965522388,140852.9
+Philadelphia,Food,Special Food Services,60,39.98327258333333,-75.14774708333334,1363233.4999999998
+Philadelphia,Venue,Performing Arts Companies,57,39.96637698245615,-75.16016198245615,126622.99999999999
+Philadelphia,Food,"Beer, Wine, and Liquor Stores",51,39.869611098039215,-75.40396039215686,60165.5
+Philadelphia,Venue,"Promoters of Performing Arts, Sports, and Similar Events",38,39.98674313157894,-75.16021139473685,696315.1
+Philadelphia,Other_EFW,Transit and Ground Passenger Transportation,28,39.9995060357143,-75.11922289285715,42525.6
+Philadelphia,Venue,"Independent Artists, Writers, and Performers",27,39.72123948148149,-75.67647714814815,41110.5
+Philadelphia,Other_EFW,Support Activities for Road Transportation,26,39.99700457692307,-75.13876484615386,25461.699999999997
+Philadelphia,Venue,Amusement Parks and Arcades,22,39.97749672727273,-75.16233881818181,468795.4
+Philadelphia,Other_EFW,Taxi and Limousine Service,20,39.97101190000001,-75.15807835000001,36743.9
+Philadelphia,Other_EFW,Scheduled Air Transportation,18,39.88732694444444,-75.23307072222224,26367.5
+Philadelphia,Food,Bakeries and Tortilla Manufacturing,16,39.5479839375,-76.03199006249997,36263.1
+Philadelphia,Other_EFW,Support Activities for Air Transportation,16,39.8963185,-75.22611400000002,163817.5
+Philadelphia,Water,Waste Treatment and Disposal,13,39.99667030769231,-75.1354903846154,0.0
+Philadelphia,Venue,Spectator Sports,13,38.87645176923077,-77.31656284615384,29120.1
+Philadelphia,Water,Waste Collection,12,39.98824816666667,-75.13620716666668,13090.700000000003
+Philadelphia,Water,Remediation and Other Waste Management Services,10,39.9948426,-75.12715370000001,27731.5
+Philadelphia,Food,Beverage Manufacturing,9,39.18992133333334,-76.70088955555555,34527.700000000004
+Philadelphia,Food,Food Services and Drinking Places,9,39.95919433333333,-75.15441855555557,5492.299999999999
+Philadelphia,Other_EFW,Other Transit and Ground Passenger Transportation,8,40.022896124999995,-75.12630687500001,10477.3
+Philadelphia,Water,Waste Management and Remediation Services,6,39.948089833333334,-75.16772516666667,26606.000000000004
+Philadelphia,Food,Grocery and Related Product Merchant Wholesalers,6,39.94300233333333,-75.13709233333333,24951.1
+Philadelphia,Other_EFW,Offices of Physicians,5,39.9676736,-75.1600394,40526.6
+Philadelphia,Water,"Rooming and Boarding Houses, Dormitories, and Workers' Camps",5,39.9630916,-75.204185,6181.1
+Philadelphia,Other_EFW,Interurban and Rural Bus Transportation,4,40.005423,-75.136697,615265.3
+Philadelphia,Venue,"Amusement, Gambling, and Recreation Industries",4,39.98303325,-75.1461865,5188.7
+Philadelphia,Energy,"Water, Sewage and Other Systems",4,38.20026275,-78.63733024999999,4685.0
+Philadelphia,Energy,"Electric Power Generation, Transmission and Distribution",4,38.1414455,-78.64645100000001,50732.0
+Philadelphia,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",4,39.94191325,-75.15953525,478.2
+Philadelphia,Food,Chemical and Allied Products Merchant Wholesalers,3,40.02410766666667,-75.06287566666667,17061.4
+Philadelphia,Food,Drugs and Druggists' Sundries Merchant Wholesalers,3,40.002263666666664,-75.12011166666666,478.0
+Philadelphia,Water,RV (Recreational Vehicle) Parks and Recreational Camps,3,37.567816666666666,-79.86350466666666,9283.0
+Philadelphia,Food,Animal Slaughtering and Processing,2,39.987550999999996,-75.145691,15597.3
+Philadelphia,Other_EFW,Freight Transportation Arrangement,2,40.0447805,-75.0546135,2193.3
+Philadelphia,Food,Petroleum and Petroleum Products Merchant Wholesalers,1,40.020815,-75.148646,183.6
+Philadelphia,Food,Food and Beverage Stores,1,39.935429,-75.176596,115.2
+Philadelphia,Other_EFW,Other Support Activities for Transportation,1,39.949372,-75.147361,1770.0
+Philadelphia,Food,Miscellaneous Nondurable Goods Merchant Wholesalers,1,40.013989,-75.118021,9018.0
+Philadelphia,Other_EFW,Other Personal Services,1,39.954281,-75.162616,2446.4
+Philadelphia,Other_EFW,"Other Professional, Scientific, and Technical Services",1,39.970241,-75.142426,147.4
+Philadelphia,Venue,Gambling Industries,1,40.082297,-75.037785,1475.1
+Philadelphia,Food,Dairy Product Manufacturing,1,40.064097,-75.084704,1706.1
+Philadelphia,Energy,Natural Gas Distribution,1,40.061287,-75.052603,54.9
+Philadelphia,Other_EFW,Charter Bus Industry,1,40.106072,-74.97425,2559.7
+San Francisco Bay Area,Food,Restaurants and Other Eating Places,7743,36.24123445938276,-107.04187885961497,20911240.10000005
+San Francisco Bay Area,Other_EFW,Urban Transit Systems,3738,38.26583991894068,-120.11585186811132,23982.5
+San Francisco Bay Area,Venue,Other Amusement and Recreation Industries,1786,36.29862598376255,-106.95856163661796,16827457.89999999
+San Francisco Bay Area,Venue,"Museums, Historical Sites, and Similar Institutions",1073,37.686404214352244,-111.33740683876971,122110932.50000001
+San Francisco Bay Area,Food,Grocery Stores,994,36.46469944164988,-105.46785869215293,1605958.5999999994
+San Francisco Bay Area,Energy,Gasoline Stations,721,36.631169012482665,-97.37011196116511,840781.2000000002
+San Francisco Bay Area,Water,Traveler Accommodation,620,29.75717681612901,-84.96658066935484,905684.3999999997
+San Francisco Bay Area,Food,Specialty Food Stores,548,36.82730965328468,-106.90568127919703,1630223.0999999982
+San Francisco Bay Area,Food,Drinking Places (Alcoholic Beverages),517,35.71961268665377,-107.60961935396524,1221091.6
+San Francisco Bay Area,Food,"Beer, Wine, and Liquor Stores",295,36.184357457627115,-107.53668690508485,455188.3
+San Francisco Bay Area,Food,Special Food Services,290,37.4254414551724,-112.92288449310342,520850.79999999976
+San Francisco Bay Area,Venue,Performing Arts Companies,231,37.26363156709957,-113.89196382683993,390544.8
+San Francisco Bay Area,Venue,"Promoters of Performing Arts, Sports, and Similar Events",149,36.484779322147666,-107.55544076510066,513076.3000000002
+San Francisco Bay Area,Other_EFW,Taxi and Limousine Service,137,36.85978068613138,-112.1156335036496,182834.4
+San Francisco Bay Area,Other_EFW,Support Activities for Road Transportation,131,36.882018824427476,-107.61549110687031,127828.10000000003
+San Francisco Bay Area,Other_EFW,Transit and Ground Passenger Transportation,117,36.03095467521368,-106.68674682051285,329703.90000000014
+San Francisco Bay Area,Venue,"Independent Artists, Writers, and Performers",116,37.79518405172414,-116.4617512413793,143172.99999999994
+San Francisco Bay Area,Water,Remediation and Other Waste Management Services,112,37.314226133928564,-108.11215751785714,248367.50000000003
+San Francisco Bay Area,Other_EFW,Other Transit and Ground Passenger Transportation,97,37.00984708247422,-109.47039553608249,367054.9000000001
+San Francisco Bay Area,Food,Beverage Manufacturing,89,33.9924717977528,-103.83281104494382,210965.09999999998
+San Francisco Bay Area,Other_EFW,Scheduled Air Transportation,88,41.267032545454555,-115.0036782840909,4250284.099999998
+San Francisco Bay Area,Venue,Amusement Parks and Arcades,85,33.589911294117655,-92.53932768235295,4115820.7999999993
+San Francisco Bay Area,Food,Bakeries and Tortilla Manufacturing,73,35.4219705479452,-101.33095471232878,178570.00000000003
+San Francisco Bay Area,Water,Waste Collection,68,36.825162617647045,-110.05132073529414,98572.4
+San Francisco Bay Area,Water,Waste Treatment and Disposal,59,38.19961089830507,-109.3634073220339,31192.499999999996
+San Francisco Bay Area,Venue,Spectator Sports,52,33.947765557692314,-90.00954503846152,3066428.8
+San Francisco Bay Area,Water,RV (Recreational Vehicle) Parks and Recreational Camps,51,36.98786717647057,-91.2713940784314,75229.09999999999
+San Francisco Bay Area,Food,Drugs and Druggists' Sundries Merchant Wholesalers,47,37.48281417021276,-119.85147585106384,53073.9
+San Francisco Bay Area,Food,Food Services and Drinking Places,38,21.0389115,-38.49464352631578,83034.7
+San Francisco Bay Area,Energy,"Electric Power Generation, Transmission and Distribution",38,38.05461071052632,-110.28328486842106,163715.80000000002
+San Francisco Bay Area,Other_EFW,Support Activities for Air Transportation,38,38.463033105263165,-116.23568721052631,12692757.799999999
+San Francisco Bay Area,Water,Waste Management and Remediation Services,29,37.56554837931034,-101.04887613793103,69827.8
+San Francisco Bay Area,Food,Grocery and Related Product Merchant Wholesalers,29,38.156873586206906,-110.24974844827588,165273.40000000002
+San Francisco Bay Area,Venue,Gambling Industries,23,39.00569956521738,-106.17667008695652,747756.9999999999
+San Francisco Bay Area,Energy,"Water, Sewage and Other Systems",19,38.41588568421053,-105.27215568421053,30340.100000000002
+San Francisco Bay Area,Other_EFW,Freight Transportation Arrangement,18,37.97714738888889,-115.01022777777777,57073.6
+San Francisco Bay Area,Food,Chemical and Allied Products Merchant Wholesalers,14,37.360458785714286,-116.03081478571428,16945.3
+San Francisco Bay Area,Food,Other Food Manufacturing,14,33.39258107142857,-93.626473,17049.7
+San Francisco Bay Area,Food,Miscellaneous Nondurable Goods Merchant Wholesalers,11,32.79711527272727,-78.60846336363637,17412.0
+San Francisco Bay Area,Other_EFW,Interurban and Rural Bus Transportation,11,31.683609727272724,-88.72842936363635,20685.100000000002
+San Francisco Bay Area,Energy,Utilities,11,39.262707090909096,-104.72975009090909,19070.9
+San Francisco Bay Area,Other_EFW,Support Activities for Water Transportation,10,38.845397299999995,-109.401058,12541954.6
+San Francisco Bay Area,Food,Petroleum and Petroleum Products Merchant Wholesalers,10,37.684583499999995,-97.7286216,7594.9
+San Francisco Bay Area,Venue,"Amusement, Gambling, and Recreation Industries",10,37.1457092,-106.9469087,8981.8
+San Francisco Bay Area,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",8,38.875899499999996,-100.508423625,11688.9
+San Francisco Bay Area,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",6,37.62766233333334,-107.37226033333333,5255.2
+San Francisco Bay Area,Energy,Natural Gas Distribution,6,39.62605166666666,-87.36317533333333,8929.0
+San Francisco Bay Area,Food,"Beer, Wine, and Distilled Alcoholic Beverage Merchant Wholesalers",4,36.959258,-91.65680849999998,13712.099999999999
+San Francisco Bay Area,Other_EFW,Support Activities for Rail Transportation,3,37.824510000000004,-122.36317566666666,2899.6
+San Francisco Bay Area,Other_EFW,Other Support Activities for Transportation,3,35.055102999999995,-113.43201700000002,7868.900000000001
+San Francisco Bay Area,Other_EFW,Nonscheduled Air Transportation,3,42.640440000000005,-106.54211600000001,10358.2
+San Francisco Bay Area,Other_EFW,Offices of Physicians,3,37.520303000000006,-122.04204499999999,4444.099999999999
+San Francisco Bay Area,Food,Farm Product Raw Material Merchant Wholesalers,2,40.875591,-104.2552915,3201.0
+San Francisco Bay Area,Water,"Rooming and Boarding Houses, Dormitories, and Workers' Camps",2,1.9806235,36.60205,2565.0
+San Francisco Bay Area,Other_EFW,Offices of Other Health Practitioners,1,37.440068,-122.161407,1359.6
+San Francisco Bay Area,Other_EFW,Offices of Real Estate Agents and Brokers,1,43.203211,-71.536755,552.0
+San Francisco Bay Area,Food,Sugar and Confectionery Product Manufacturing,1,37.783654,-122.402941,9342.9
+San Francisco Bay Area,Other_EFW,Other Crop Farming,1,35.462096,-80.740035,546.3
+San Francisco Bay Area,Other_EFW,"Advertising, Public Relations, and Related Services",1,37.762714,-122.408828,2121.9
+San Francisco Bay Area,Food,Grain and Oilseed Milling,1,29.284038,-107.030617,321.2
+San Francisco Bay Area,Other_EFW,School and Employee Bus Transportation,1,37.768672,-122.390782,5008.5
+San Francisco Bay Area,Other_EFW,Civic and Social Organizations,1,37.937288,-122.344232,12064.8
+San Francisco Bay Area,Food,Dairy Product Manufacturing,1,37.757295,-122.387605,35.1
+San Francisco Bay Area,Food,Animal Food Manufacturing,1,37.973684,-122.526829,5979.6
+San Francisco Bay Area,Other_EFW,Rail Transportation,1,37.330092,-121.890231,4057.2
+San Francisco Bay Area,Other_EFW,Other Motor Vehicle Dealers,1,37.973223,-122.483986,755.7
+San Francisco Bay Area,Other_EFW,Printing and Related Support Activities,1,39.420467,-79.399802,713.0
+San Francisco Bay Area,Other_EFW,Furniture and Home Furnishing Merchant Wholesalers,1,43.80377,-79.540853,1604.0
+San Francisco Bay Area,Other_EFW,"Business, Professional, Labor, Political, and Similar Organizations",1,37.378539,-121.985073,673.2
+San Francisco Bay Area,Food,Paper and Paper Product Merchant Wholesalers,1,37.590683,-77.409532,5169.0
+Seattle,Food,Restaurants and Other Eating Places,1231,47.623464121852074,-122.3338944857839,1699101.5000000016
+Seattle,Other_EFW,Urban Transit Systems,923,47.6061136370531,-122.32980412676052,135.3
+Seattle,Venue,Other Amusement and Recreation Industries,282,47.62577919503548,-122.33650176595752,888433.5
+Seattle,Venue,"Museums, Historical Sites, and Similar Institutions",203,47.62045964039412,-122.33320034975362,1833049.5999999996
+Seattle,Food,Grocery Stores,137,47.60761943795621,-122.32945937956198,216155.7
+Seattle,Food,Drinking Places (Alcoholic Beverages),133,47.6183717368421,-122.33582315037596,100506.8
+Seattle,Energy,Gasoline Stations,79,47.61075150632912,-122.32930683544306,79870.3
+Seattle,Food,Specialty Food Stores,76,47.60891727631579,-122.33629282894742,215080.3
+Seattle,Water,Traveler Accommodation,67,47.62586571641791,-122.33818474626865,116018.3
+Seattle,Venue,Performing Arts Companies,51,47.628454921568625,-122.33166368627451,83740.20000000001
+Seattle,Food,Special Food Services,32,47.61937753125,-122.32902103125,37883.4
+Seattle,Food,Beverage Manufacturing,32,47.630297312500005,-122.34856187500003,49980.2
+Seattle,Venue,"Promoters of Performing Arts, Sports, and Similar Events",30,47.61045903333332,-122.33079033333334,164079.4
+Seattle,Food,"Beer, Wine, and Liquor Stores",22,47.61847822727273,-122.33230004545455,26204.400000000005
+Seattle,Other_EFW,Transit and Ground Passenger Transportation,19,47.62765257894737,-122.33859357894737,38727.299999999996
+Seattle,Other_EFW,Support Activities for Road Transportation,19,47.62924584210527,-122.33667036842103,15151.8
+Seattle,Venue,"Independent Artists, Writers, and Performers",18,47.59522272222223,-122.33180383333335,79434.59999999999
+Seattle,Venue,Amusement Parks and Arcades,16,47.631197125,-122.35132812500001,17751.700000000004
+Seattle,Food,Drugs and Druggists' Sundries Merchant Wholesalers,14,47.623392214285715,-122.33089285714284,4389.6
+Seattle,Other_EFW,Other Transit and Ground Passenger Transportation,11,47.58737263636363,-122.3206591818182,15456.800000000001
+Seattle,Water,Waste Collection,9,47.59044422222222,-122.32750344444447,13898.700000000003
+Seattle,Other_EFW,Scheduled Air Transportation,8,48.509316625000004,-107.445630375,38936.3
+Seattle,Food,Bakeries and Tortilla Manufacturing,8,47.619989375,-122.33362237499999,25417.6
+Seattle,Water,Waste Treatment and Disposal,8,47.633438375,-122.330999625,5155.7
+Seattle,Food,Grocery and Related Product Merchant Wholesalers,7,47.612838571428576,-122.33688900000001,31803.9
+Seattle,Other_EFW,Interurban and Rural Bus Transportation,7,47.59742714285714,-122.32718371428572,37037.2
+Seattle,Food,Food Services and Drinking Places,6,47.61839883333334,-122.32949233333333,3379.0
+Seattle,Other_EFW,Support Activities for Air Transportation,6,47.56619583333333,-122.311112,26676.4
+Seattle,Other_EFW,Taxi and Limousine Service,6,47.61656,-122.33727433333333,11721.899999999998
+Seattle,Water,Remediation and Other Waste Management Services,4,47.54535175,-122.32423975,7707.5
+Seattle,Energy,"Electric Power Generation, Transmission and Distribution",4,47.65101025,-122.3457595,7964.6
+Seattle,Venue,Spectator Sports,4,47.598363250000006,-122.35535825000001,43744.9
+Seattle,Venue,Gambling Industries,4,47.63359775,-122.32061374999999,8155.9
+Seattle,Water,Waste Management and Remediation Services,3,47.54386833333333,-122.349423,30318.2
+Seattle,Other_EFW,Freight Transportation Arrangement,3,47.589977,-122.35419366666667,13540.9
+Seattle,Food,Chemical and Allied Products Merchant Wholesalers,3,47.608024666666665,-122.34974966666668,5392.2
+Seattle,Other_EFW,Support Activities for Water Transportation,3,47.586361000000004,-122.34762766666667,20481811.200000003
+Seattle,Venue,"Amusement, Gambling, and Recreation Industries",2,47.626295999999996,-122.3367025,6272.099999999999
+Seattle,Energy,"Water, Sewage and Other Systems",2,47.67190050000001,-122.3350055,1686.3
+Seattle,Water,RV (Recreational Vehicle) Parks and Recreational Camps,2,47.7034525,-122.32397800000001,1241.1
+Seattle,Energy,Utilities,1,47.533704,-122.329894,529.2
+Seattle,Food,"Apparel, Piece Goods, and Notions Merchant Wholesalers",1,47.632494,-122.380603,243.0
+Seattle,Food,Other Food Manufacturing,1,47.599376,-122.30746,477.4
+Seattle,Other_EFW,Other Personal Services,1,47.597635,-122.33164,1772.0
+Seattle,Other_EFW,Nonscheduled Air Transportation,1,47.538614,-122.28216,72.0
+Seattle,Venue,"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",1,47.576494,-122.320192,8843.4
+Seattle,Food,"Beer, Wine, and Distilled Alcoholic Beverage Merchant Wholesalers",1,47.611783,-122.319055,177.1
+Seattle,Food,Petroleum and Petroleum Products Merchant Wholesalers,1,47.598045,-122.334841,1662.3
+Seattle,Food,Fruit and Vegetable Preserving and Specialty Food Manufacturing,1,47.546834,-122.316638,440.0
