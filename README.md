@@ -9,6 +9,16 @@ Rice Urban Sustainability Hackathon — **Track 2: Energy–Food–Water Nexus**
 3. [`docs/PROPOSED_SOLUTION_PLANS.md`](docs/PROPOSED_SOLUTION_PLANS.md) — 4 architectures to brainstorm from  
 4. **[`data/curated/`](data/curated/)** — viz-ready CSV package (load these, not the 8 GB raw dumps)
 
+### Plan D engine (standalone)
+
+Comparative readiness playbook for 11 hosts — ready to overlay on Plan A later:
+
+```bash
+python -m engines.playbook.cli
+```
+
+See [`engines/playbook/README.md`](engines/playbook/README.md). Artifacts → [`data/playbook/`](data/playbook/).
+
 ## Rebuild curated package
 
 Requires local raw `*-rice` folders under Downloads (paths set in the script) and `duckdb`:
