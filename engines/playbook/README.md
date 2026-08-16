@@ -2,31 +2,44 @@
 
 **Role:** comparative sustainability-**readiness** scorecards for the 11 U.S. host cities, plus peer sets and transferable intervention plays. Built to plug into Plan A (Nexus Pulse) later — no A UI dependency.
 
-## Alignment
+## A integration (start here)
 
-| Concept | Implementation |
-|---------|----------------|
-| Stress model | Weighted sum of z-scores on summer Energy / CO₂e / Water / CDD / UHI |
-| Readiness | Inverted stress, min-max scaled to **0–100** (higher = more ready) |
-| Uncertainty | ±15 pts band (configurable) for synthetic-sample honesty |
-| Peers | Nearest cities in z-profile space |
-| Plays | Rule-matched interventions from a legacy-oriented play library |
-| Split markets | Dallas/Houston & LA/SF visit+spend allocated by POI share |
-
-## Run (no extra deps)
+| Artifact | Path |
+|----------|------|
+| **Frozen contract** | [`CONTRACT.md`](./CONTRACT.md) |
+| **JSON A mounts** | [`../../data/playbook/a_integration_v1.json`](../../data/playbook/a_integration_v1.json) |
+| **Preview UI** | [`../../data/playbook/preview.html`](../../data/playbook/preview.html) |
+| **City one-pagers** | `../../data/playbook/city_cards/*.md` |
 
 ```bash
 # from repo root
-python -m engines.playbook.cli
-python -m engines.playbook.cli --city Miami
-python -m engines.playbook.cli --pretty
+python -m engines.playbook.cli --validate
+python scripts/test_playbook_contract.py
 ```
 
-Artifacts land in `data/playbook/`:
+## Guarantees (v0.2 / contract 1.0.0)
 
-- `playbook_scorecards.json` — full payload (meta + 11 scorecards) for A to ingest
-- `playbook_scorecards.csv` — flat leaderboard
-- `playbook_plays_by_city.json` — plays only
+- Exactly 11 scorecards
+- `recommended_plays` only include **pressing** plays (`match_score > 0`)
+- Each play carries `owner`, `effort`, `legacy_use`, `peer_overlap`, `steal_from_peers`, `expected_effects`
+- `drivers[]` (5) ready for radar / parallel coords / pressure filters
+- Export **fails** if contract validation fails
+
+## Run
+
+```bash
+python -m engines.playbook.cli
+python -m engines.playbook.cli --city Miami
+python -m engines.playbook.cli --pretty   # dumps a_integration_v1 payload
+```
+
+Preview:
+
+```bash
+cd data/playbook
+python -m http.server 8090
+# open http://localhost:8090/preview.html
+```
 
 ## Optional HTTP API
 
@@ -35,40 +48,4 @@ pip install fastapi uvicorn
 uvicorn engines.playbook.api:app --reload --port 8081
 ```
 
-- `GET /playbook` — full payload  
-- `GET /playbook/scorecards` — array only  
-- `GET /playbook/cities/{city}` — one scorecard  
-- `POST /playbook/refresh` — recompute + rewrite artifacts  
-
-## Contract for Plan A overlay
-
-Each scorecard object:
-
-```json
-{
-  "host_city": "Miami",
-  "rank": 4,
-  "readiness_score": 62.3,
-  "readiness_band": [47.3, 77.3],
-  "stress_index": -0.12,
-  "z_components": {
-    "energy_kwh": 0.4,
-    "kg_co2e": 0.1,
-    "water_liters": -0.2,
-    "cdd": 1.1,
-    "uhi": 0.8
-  },
-  "raw_indicators": { "...": "..." },
-  "peer_cities": ["Houston", "Dallas", "Atlanta"],
-  "recommended_plays": [
-    {
-      "id": "cool_roofs_shade_uhi",
-      "title": "...",
-      "rationale": "...",
-      "expected_effects": { "energy_pct": -12, "water_pct": -2, "food_co2e_pct": 0 }
-    }
-  ]
-}
-```
-
-A can render the leaderboard strip + “Steal this play” panel from this JSON without reimplementing scoring.
+`GET /playbook` returns the full engine payload; prefer `a_integration_v1.json` for A.

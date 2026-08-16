@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan D — Playbook preview</title>
+<style>
+  :root {
+    --bg:#f7f7f5; --card:#fff; --ink:#111; --muted:#666; --line:#e4e3dc;
+    --good:#1baf7a; --warn:#eda100; --bad:#eb6834; --accent:#2a78d6;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.45 system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  .wrap { max-width:1100px; margin:0 auto; padding:24px 18px 64px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 18px; }
+  .banner { background:#fff3cd; border:1px solid #e6d89c; border-radius:8px; padding:10px 12px; margin-bottom:16px; font-size:13px; }
+  .strip { display:grid; grid-template-columns:repeat(11,minmax(0,1fr)); gap:6px; margin-bottom:14px; }
+  @media (max-width:900px){ .strip { grid-template-columns:repeat(4,1fr); } }
+  .sc { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px; cursor:pointer; }
+  .sc:hover { border-color:#aaa; }
+  .sc.on { outline:2px solid var(--ink); }
+  .sc .r { font-size:10px; color:var(--muted); text-transform:uppercase; }
+  .sc .n { font-size:12px; font-weight:600; min-height:30px; }
+  .sc .s { font-size:18px; font-weight:700; }
+  .filters { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px; align-items:center; }
+  .filters button { border:1px solid var(--line); background:var(--card); border-radius:999px; padding:5px 10px; cursor:pointer; font:inherit; }
+  .filters button.on { background:var(--ink); color:#fff; }
+  .grid { display:grid; grid-template-columns:1.1fr 1fr; gap:14px; }
+  @media (max-width:900px){ .grid { grid-template-columns:1fr; } }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .panel h2 { font-size:14px; margin:0 0 10px; }
+  .zbars { display:grid; grid-template-columns:90px 1fr 70px; gap:4px 8px; align-items:center; font-size:12px; }
+  .zb { height:8px; background:#eee; border-radius:4px; position:relative; }
+  .zb i { position:absolute; top:0; bottom:0; border-radius:4px; }
+  .peer { display:inline-block; margin:2px 4px 2px 0; padding:3px 8px; border-radius:999px; border:1px solid var(--line); cursor:pointer; font-size:12px; }
+  .peer:hover { border-color:var(--accent); color:var(--accent); }
+  .play { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:0 0 10px; }
+  .play h3 { margin:0 0 6px; font-size:13px; }
+  .meta { color:var(--muted); font-size:12px; margin:0 0 6px; }
+  .tag { display:inline-block; font-size:11px; padding:1px 7px; border-radius:999px; background:#eef6ff; color:#184f95; margin-right:4px; }
+  .tag.legacy { background:#eefaf3; color:#0f6b45; }
+  .eff { font-size:12px; color:var(--muted); }
+  .empty { color:var(--muted); font-size:13px; }
+  pre { background:#f0efea; padding:8px; border-radius:6px; overflow:auto; font-size:11px; }
+  a.download { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Plan D — Eleven Hosts Playbook</h1>
+  <p class="sub">Preview of the A-integration contract. Not the final A shell.</p>
+  <div class="banner">Loads <code>a_integration_v1.json</code> from this folder. Serve with
+    <code>cd data/playbook && python -m http.server 8090</code> then open
+    <code>http://localhost:8090/preview.html</code>.
+  </div>
+  <div class="filters" id="filters"></div>
+  <div class="strip" id="strip"></div>
+  <div class="grid">
+    <div class="panel">
+      <h2 id="cityTitle">Select a city</h2>
+      <div id="cityBody" class="empty">Click a readiness card.</div>
+    </div>
+    <div class="panel">
+      <h2>Steal this play</h2>
+      <div id="playsBody" class="empty">Pressing plays for the selected city appear here.</div>
+      <h2 style="margin-top:18px">Export</h2>
+      <div id="exportBody" class="empty"></div>
+    </div>
+  </div>
+</div>
+<script>
+const DRIVERS = [
+  ["energy_kwh","Energy"],["kg_co2e","Food CO₂e"],["water_liters","Water"],["cdd","Cooling"],["uhi","Heat"]
+];
+let DATA = null, selected = null, filter = null;
+
+const colour = s => s >= 66 ? "var(--good)" : s >= 33 ? "var(--warn)" : "var(--bad)";
+
+async function boot() {
+  const res = await fetch("./a_integration_v1.json");
+  if (!res.ok) throw new Error("Missing a_integration_v1.json — run: python -m engines.playbook.cli");
+  DATA = await res.json();
+  document.querySelector(".sub").textContent =
+    `Contract ${DATA.contract_version} · ${DATA.scorecards.length} hosts · generated ${DATA.meta.generated_at}`;
+  drawFilters();
+  drawStrip();
+  select(DATA.scorecards[0].host_city);
+}
+
+function drawFilters() {
+  const box = document.getElementById("filters");
+  box.innerHTML = `<span style="color:var(--muted);font-size:12px">Pressure filter:</span>` +
+    `<button class="on" data-f="">All</button>` +
+    DRIVERS.map(([k,l]) => `<button data-f="${k}">${l}</button>`).join("");
+  box.querySelectorAll("button").forEach(b => b.onclick = () => {
+    filter = b.dataset.f || null;
+    box.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+    drawStrip();
+  });
+}
+
+function visibleCards() {
+  const cards = [...DATA.scorecards].sort((a,b)=>a.rank-b.rank);
+  if (!filter) return cards;
+  return cards.filter(c => (c.drivers||[]).some(d => d.key === filter && d.elevated));
+}
+
+function drawStrip() {
+  const cards = visibleCards();
+  document.getElementById("strip").innerHTML = cards.map(c => `
+    <div class="sc ${c.host_city===selected?'on':''}" data-city="${c.host_city}">
+      <div class="r">#${c.rank}</div>
+      <div class="n">${c.host_city}</div>
+      <div class="s" style="color:${colour(c.readiness_score)}">${c.readiness_score.toFixed(1)}</div>
+    </div>`).join("") || `<div class="empty">No hosts elevated on that driver.</div>`;
+  document.querySelectorAll(".sc").forEach(el => el.onclick = () => select(el.dataset.city));
+}
+
+function select(city) {
+  selected = city;
+  drawStrip();
+  const c = DATA.scorecards.find(x => x.host_city === city);
+  if (!c) return;
+  document.getElementById("cityTitle").textContent = `${c.host_city} · rank #${c.rank}`;
+  const zb = (c.drivers||[]).map(d => {
+    const w = Math.min(50, Math.abs(d.z)*20);
+    return `<span>${d.label}</span>
+      <div class="zb"><i style="left:${d.z<0?50-w:50}%;width:${w}%;background:${d.z>0?'var(--bad)':'var(--good)'}"></i></div>
+      <span style="color:var(--muted)">${d.z>0?'more':'less'}</span>`;
+  }).join("");
+  const peers = (c.peer_cities||[]).map(p => `<span class="peer" data-city="${p}">${p}</span>`).join("") || "—";
+  document.getElementById("cityBody").innerHTML = `
+    <div><b>Readiness</b> ${c.readiness_score.toFixed(1)}
+      (band ${c.readiness_band[0]}–${c.readiness_band[1]}) · stress ${c.stress_index}</div>
+    <div style="margin:10px 0 6px;font-size:12px;color:var(--muted)">Peers (click to jump)</div>
+    <div>${peers}</div>
+    <div style="margin:12px 0 6px;font-size:12px;color:var(--muted)">Drivers vs other hosts</div>
+    <div class="zbars">${zb}</div>`;
+  document.querySelectorAll(".peer").forEach(el => el.onclick = () => select(el.dataset.city));
+
+  const plays = c.recommended_plays || [];
+  document.getElementById("playsBody").innerHTML = plays.length ? plays.map(p => `
+    <div class="play">
+      <h3>${p.title}</h3>
+      <div class="meta">
+        <span class="tag">${p.effort} effort</span>
+        <span class="tag legacy">legacy</span>
+        ${p.owner}
+      </div>
+      <div class="meta"><b>Legacy use:</b> ${p.legacy_use}</div>
+      <div class="meta"><b>Steal from:</b> ${(p.steal_from_peers||[]).join(", ") || "—"}</div>
+      <div class="eff">Δ energy ${p.expected_effects.energy_pct}% ·
+        food CO₂e ${p.expected_effects.food_co2e_pct}% ·
+        water ${p.expected_effects.water_pct}%</div>
+      <p style="margin:8px 0 0;font-size:13px">${p.rationale}</p>
+    </div>`).join("") : `<div class="empty">No pressing plays — all drivers at/below host average. See general options in the JSON export.</div>`;
+
+  const slug = city.toLowerCase().replace(/\//g,"_").replace(/ /g,"_");
+  document.getElementById("exportBody").innerHTML =
+    `<a class="download" href="./city_cards/${slug}.md" download>Download ${city} one-pager (.md)</a>
+     <div style="margin-top:8px;font-size:12px;color:var(--muted)">Or copy scorecard JSON:</div>
+     <pre>${escapeHtml(JSON.stringify(c, null, 2))}</pre>`;
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
+}
+
+boot().catch(err => {
+  document.querySelector(".banner").textContent = String(err);
+});
+</script>
+</body>
+</html>

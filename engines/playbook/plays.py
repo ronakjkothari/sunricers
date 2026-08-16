@@ -19,7 +19,7 @@ PLAYBOOK_LIBRARY: list[dict] = [
         },
         "why_template": (
             "{city} shows elevated food/CO₂e pressure (z={kg_co2e:.2f}). "
-            "Peers {peers} face a similar dining mix — shared catering specs travel well."
+            "Peers with similar dining pressure: {peer_overlap}."
         ),
     },
     {
@@ -36,7 +36,7 @@ PLAYBOOK_LIBRARY: list[dict] = [
         },
         "why_template": (
             "{city} water intensity is high relative to hosts (z={water_liters:.2f}). "
-            "Lodging-cluster interventions compound across visitor nights."
+            "Peers with similar water pressure: {peer_overlap}."
         ),
     },
     {
@@ -53,7 +53,7 @@ PLAYBOOK_LIBRARY: list[dict] = [
         },
         "why_template": (
             "{city} couples heat and cooling load (UHI z={uhi:.2f}, CDD z={cdd:.2f}). "
-            "Corridor-scale cool roofs cut HVAC share for hotels and dining."
+            "Peers with similar heat/cooling pressure: {peer_overlap}."
         ),
     },
     {
@@ -70,7 +70,7 @@ PLAYBOOK_LIBRARY: list[dict] = [
         },
         "why_template": (
             "{city} energy footprint is fuel-heavy (z={energy_kwh:.2f}). "
-            "Access-mode shifts are the highest-leverage energy play for visitor surges."
+            "Peers with similar energy pressure: {peer_overlap}."
         ),
     },
     {
@@ -87,7 +87,7 @@ PLAYBOOK_LIBRARY: list[dict] = [
         },
         "why_template": (
             "{city} food-service density drives water use (water z={water_liters:.2f}). "
-            "Kitchen retrofits persist as legacy infrastructure after the Cup."
+            "Peers with similar water/food pressure: {peer_overlap}."
         ),
     },
     {
@@ -104,10 +104,18 @@ PLAYBOOK_LIBRARY: list[dict] = [
         },
         "why_template": (
             "{city} summer CDD pressure is material (z={cdd:.2f}). "
-            "Operational setpoint protocols are fast to deploy and reuse annually."
+            "Peers with similar cooling pressure: {peer_overlap}."
         ),
     },
 ]
+
+DRIVER_LABELS = {
+    "energy_kwh": "Energy",
+    "kg_co2e": "Food CO₂e",
+    "water_liters": "Water",
+    "cdd": "Cooling (CDD)",
+    "uhi": "Urban heat",
+}
 
 
 def _play_score(card: Scorecard, play: dict) -> float:
@@ -115,43 +123,146 @@ def _play_score(card: Scorecard, play: dict) -> float:
     score = 0.0
     for key in play["targets"]:
         z = card.z_components.get(key, 0.0)
-        # Only reward plays that address above-average pressure
         if z > 0:
             score += z
     return score
 
 
-def recommend_plays(card: Scorecard, config: PlaybookConfig) -> list[dict]:
+def _elevated_targets(card: Scorecard, play: dict) -> list[dict]:
+    out = []
+    for key in play["targets"]:
+        z = card.z_components.get(key, 0.0)
+        if z > 0:
+            out.append(
+                {
+                    "key": key,
+                    "label": DRIVER_LABELS.get(key, key),
+                    "z": round(z, 4),
+                }
+            )
+    return out
+
+
+def _peer_overlap(
+    card: Scorecard,
+    play: dict,
+    by_city: dict[str, Scorecard],
+) -> list[dict]:
+    """Peers that also show z>0 on at least one of this play's target drivers."""
+    overlaps: list[dict] = []
+    for peer_name in card.peer_cities or []:
+        peer = by_city.get(peer_name)
+        if not peer:
+            continue
+        shared = []
+        for key in play["targets"]:
+            z_self = card.z_components.get(key, 0.0)
+            z_peer = peer.z_components.get(key, 0.0)
+            if z_self > 0 and z_peer > 0:
+                shared.append(
+                    {
+                        "key": key,
+                        "label": DRIVER_LABELS.get(key, key),
+                        "city_z": round(z_self, 4),
+                        "peer_z": round(z_peer, 4),
+                    }
+                )
+        if shared:
+            overlaps.append(
+                {
+                    "city": peer_name,
+                    "shared_elevated_drivers": shared,
+                    "readiness_score": round(peer.readiness_score, 2),
+                    "rank": peer.rank,
+                }
+            )
+    return overlaps
+
+
+def _serialize_play(
+    card: Scorecard,
+    play: dict,
+    by_city: dict[str, Scorecard],
+    *,
+    pressing: bool,
+) -> dict:
+    elevated = _elevated_targets(card, play)
+    overlap = _peer_overlap(card, play, by_city)
+    overlap_names = ", ".join(o["city"] for o in overlap) or "none among nearest peers"
+    rationale = play["why_template"].format(
+        city=card.host_city,
+        peers=", ".join(card.peer_cities or []) or "peer hosts",
+        peer_overlap=overlap_names,
+        **card.z_components,
+    )
+    if not pressing:
+        rationale = (
+            f"{card.host_city} is at or below host-average on this play's target drivers; "
+            "kept as a general option, not a pressing priority."
+        )
+    return {
+        "id": play["id"],
+        "title": play["title"],
+        "owner": play["owner"],
+        "effort": play["effort"],
+        "legacy_use": play["legacy_use"],
+        "targets": play["targets"],
+        "elevated_targets": elevated,
+        "expected_effects": play["expected_effects"],
+        "match_score": round(_play_score(card, play), 3),
+        "pressing": pressing,
+        "peer_overlap": overlap,
+        "steal_from_peers": [o["city"] for o in overlap],
+        "rationale": rationale,
+    }
+
+
+def recommend_plays(
+    card: Scorecard,
+    config: PlaybookConfig,
+    by_city: dict[str, Scorecard] | None = None,
+) -> list[dict]:
+    """
+    Return up to `plays_per_city` **pressing** plays (match_score > 0).
+
+    If fewer than needed exist, do not pad with weak matches — return what
+    qualifies. Callers that want general options can use `general_options`.
+    """
+    by_city = by_city or {card.host_city: card}
     ranked = sorted(
         PLAYBOOK_LIBRARY,
         key=lambda p: _play_score(card, p),
         reverse=True,
     )
-    peers = ", ".join(card.peer_cities or []) or "peer hosts"
+    pressing = [p for p in ranked if _play_score(card, p) > 0]
     out: list[dict] = []
-    for play in ranked[: config.plays_per_city]:
-        why = play["why_template"].format(
-            city=card.host_city,
-            peers=peers,
-            **card.z_components,
-        )
-        out.append(
-            {
-                "id": play["id"],
-                "title": play["title"],
-                "owner": play["owner"],
-                "effort": play["effort"],
-                "legacy_use": play["legacy_use"],
-                "targets": play["targets"],
-                "expected_effects": play["expected_effects"],
-                "match_score": round(_play_score(card, play), 3),
-                "rationale": why,
-            }
-        )
+    for play in pressing[: config.plays_per_city]:
+        out.append(_serialize_play(card, play, by_city, pressing=True))
     return out
 
 
+def general_options(
+    card: Scorecard,
+    config: PlaybookConfig,
+    by_city: dict[str, Scorecard] | None = None,
+    limit: int = 2,
+) -> list[dict]:
+    """Non-pressing plays (match_score == 0) for optional UI disclosure."""
+    by_city = by_city or {card.host_city: card}
+    weak = [
+        p for p in PLAYBOOK_LIBRARY if _play_score(card, p) <= 0
+    ]
+    # Prefer low-effort generals first
+    effort_rank = {"low": 0, "medium": 1, "high": 2}
+    weak.sort(key=lambda p: effort_rank.get(p["effort"], 9))
+    return [
+        _serialize_play(card, p, by_city, pressing=False) for p in weak[:limit]
+    ]
+
+
 def attach_plays(cards: list[Scorecard], config: PlaybookConfig) -> list[Scorecard]:
+    by_city = {c.host_city: c for c in cards}
     for card in cards:
-        card.recommended_plays = recommend_plays(card, config)
+        card.recommended_plays = recommend_plays(card, config, by_city)
+        card.general_options = general_options(card, config, by_city)
     return cards
