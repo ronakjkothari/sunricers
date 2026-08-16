@@ -1,0 +1,105 @@
+date,stadium,market,in_usa,stage,stage_group,team1,team2,attendance,capacity_wc
+2026-06-11,Estadio Akron,,0,Group A,Group,KOR,CZE,44985,
+2026-06-11,Estadio Azteca,,0,Group A,Group,MEX,RSA,80824,
+2026-06-12,BMO Field,,0,Group B,Group,CAN,BIH,43002,
+2026-06-12,SoFi Stadium,Los Angeles,1,Group D,Group,USA,PAR,70492,70492
+2026-06-13,BC Place,,0,Group D,Group,AUS,TUR,52497,
+2026-06-13,Gillette Stadium,Boston,1,Group C,Group,HAI,SCO,64146,64146
+2026-06-13,Levi's Stadium,San Francisco Bay Area,1,Group B,Group,QAT,SUI,67966,68827
+2026-06-13,MetLife Stadium,New York/New Jersey,1,Group C,Group,BRA,MAR,80663,80663
+2026-06-14,AT&T Stadium,Dallas,1,Group F,Group,NED,JPN,69285,70649
+2026-06-14,Estadio BBVA,,0,Group F,Group,SWE,TUN,50987,
+2026-06-14,Lincoln Financial Field,Philadelphia,1,Group E,Group,CIV,ECU,68274,68324
+2026-06-14,NRG Stadium,Houston,1,Group E,Group,GER,CUW,68021,68777
+2026-06-15,Hard Rock Stadium,Miami,1,Group H,Group,KSA,URU,62764,64478
+2026-06-15,Lumen Field,Seattle,1,Group G,Group,BEL,EGY,66775,66925
+2026-06-15,Mercedes-Benz Stadium,Atlanta,1,Group H,Group,ESP,CPV,67640,68239
+2026-06-15,SoFi Stadium,Los Angeles,1,Group G,Group,IRN,NZL,70108,70492
+2026-06-16,Arrowhead Stadium,Kansas City,1,Group J,Group,ARG,ALG,69045,69045
+2026-06-16,Gillette Stadium,Boston,1,Group I,Group,IRQ,NOR,63106,64146
+2026-06-16,Levi's Stadium,San Francisco Bay Area,1,Group J,Group,AUT,JOR,68527,68827
+2026-06-16,MetLife Stadium,New York/New Jersey,1,Group I,Group,FRA,SEN,80545,80663
+2026-06-17,AT&T Stadium,Dallas,1,Group L,Group,ENG,CRO,70389,70649
+2026-06-17,BMO Field,,0,Group L,Group,GHA,PAN,42942,
+2026-06-17,Estadio Azteca,,0,Group K,Group,UZB,COL,80824,
+2026-06-17,NRG Stadium,Houston,1,Group K,Group,POR,COD,68777,68777
+2026-06-18,BC Place,,0,Group B,Group,CAN,QAT,52497,
+2026-06-18,Estadio Akron,,0,Group A,Group,MEX,KOR,45522,
+2026-06-18,Mercedes-Benz Stadium,Atlanta,1,Group A,Group,CZE,RSA,67442,68239
+2026-06-18,SoFi Stadium,Los Angeles,1,Group B,Group,SUI,BIH,70026,70492
+2026-06-19,Gillette Stadium,Boston,1,Group C,Group,SCO,MAR,64146,64146
+2026-06-19,Levi's Stadium,San Francisco Bay Area,1,Group D,Group,TUR,PAR,68827,68827
+2026-06-19,Lincoln Financial Field,Philadelphia,1,Group C,Group,BRA,HAI,68324,68324
+2026-06-19,Lumen Field,Seattle,1,Group D,Group,USA,AUS,66925,66925
+2026-06-20,Arrowhead Stadium,Kansas City,1,Group E,Group,ECU,CUW,68598,69045
+2026-06-20,BMO Field,,0,Group E,Group,GER,CIV,43036,
+2026-06-20,Estadio BBVA,,0,Group F,Group,TUN,JPN,51243,
+2026-06-20,NRG Stadium,Houston,1,Group F,Group,NED,SWE,68777,68777
+2026-06-21,BC Place,,0,Group G,Group,NZL,EGY,52497,
+2026-06-21,Hard Rock Stadium,Miami,1,Group H,Group,URU,CPV,64003,64478
+2026-06-21,Mercedes-Benz Stadium,Atlanta,1,Group H,Group,ESP,KSA,68239,68239
+2026-06-21,SoFi Stadium,Los Angeles,1,Group G,Group,BEL,IRN,70317,70492
+2026-06-22,AT&T Stadium,Dallas,1,Group J,Group,ARG,AUT,70649,70649
+2026-06-22,Levi's Stadium,San Francisco Bay Area,1,Group J,Group,JOR,ALG,68371,68827
+2026-06-22,Lincoln Financial Field,Philadelphia,1,Group I,Group,FRA,IRQ,68324,68324
+2026-06-22,MetLife Stadium,New York/New Jersey,1,Group I,Group,NOR,SEN,80663,80663
+2026-06-23,BMO Field,,0,Group L,Group,PAN,CRO,43036,
+2026-06-23,Estadio Akron,,0,Group K,Group,COL,COD,45358,
+2026-06-23,Gillette Stadium,Boston,1,Group L,Group,ENG,GHA,63983,64146
+2026-06-23,NRG Stadium,Houston,1,Group K,Group,POR,UZB,68777,68777
+2026-06-24,BC Place,,0,Group B,Group,SUI,CAN,52497,
+2026-06-24,Estadio Azteca,,0,Group A,Group,CZE,MEX,80824,
+2026-06-24,Estadio BBVA,,0,Group A,Group,RSA,KOR,51243,
+2026-06-24,Hard Rock Stadium,Miami,1,Group C,Group,SCO,BRA,64478,64478
+2026-06-24,Lumen Field,Seattle,1,Group B,Group,BIH,QAT,66925,66925
+2026-06-24,Mercedes-Benz Stadium,Atlanta,1,Group C,Group,MAR,HAI,68239,68239
+2026-06-25,AT&T Stadium,Dallas,1,Group F,Group,JPN,SWE,70137,70649
+2026-06-25,Arrowhead Stadium,Kansas City,1,Group F,Group,TUN,NED,68391,69045
+2026-06-25,Levi's Stadium,San Francisco Bay Area,1,Group D,Group,PAR,AUS,68827,68827
+2026-06-25,Lincoln Financial Field,Philadelphia,1,Group E,Group,CUW,CIV,68324,68324
+2026-06-25,MetLife Stadium,New York/New Jersey,1,Group E,Group,ECU,GER,80663,80663
+2026-06-25,SoFi Stadium,Los Angeles,1,Group D,Group,TUR,USA,70492,70492
+2026-06-26,BC Place,,0,Group G,Group,NZL,BEL,52497,
+2026-06-26,BMO Field,,0,Group I,Group,SEN,IRQ,43036,
+2026-06-26,Estadio Akron,,0,Group H,Group,URU,ESP,45065,
+2026-06-26,Gillette Stadium,Boston,1,Group I,Group,NOR,FRA,64146,64146
+2026-06-26,Lumen Field,Seattle,1,Group G,Group,EGY,IRN,66925,66925
+2026-06-26,NRG Stadium,Houston,1,Group H,Group,CPV,KSA,68278,68777
+2026-06-27,AT&T Stadium,Dallas,1,Group J,Group,JOR,ARG,70649,70649
+2026-06-27,Arrowhead Stadium,Kansas City,1,Group J,Group,ALG,AUT,69045,69045
+2026-06-27,Hard Rock Stadium,Miami,1,Group K,Group,COL,POR,64478,64478
+2026-06-27,Lincoln Financial Field,Philadelphia,1,Group L,Group,CRO,GHA,68324,68324
+2026-06-27,Mercedes-Benz Stadium,Atlanta,1,Group K,Group,COD,UZB,68239,68239
+2026-06-27,MetLife Stadium,New York/New Jersey,1,Group L,Group,PAN,ENG,80663,80663
+2026-06-28,SoFi Stadium,Los Angeles,1,Round of 32,Round of 32,RSA,CAN,69237,70492
+2026-06-29,Estadio BBVA,,0,Round of 32,Round of 32,NED,MAR,51243,
+2026-06-29,Gillette Stadium,Boston,1,Round of 32,Round of 32,GER,PAR,63945,64146
+2026-06-29,NRG Stadium,Houston,1,Round of 32,Round of 32,BRA,JPN,68777,68777
+2026-06-30,AT&T Stadium,Dallas,1,Round of 32,Round of 32,CIV,NOR,69665,70649
+2026-06-30,Estadio Azteca,,0,Round of 32,Round of 32,MEX,ECU,80824,
+2026-06-30,MetLife Stadium,New York/New Jersey,1,Round of 32,Round of 32,FRA,SWE,80663,80663
+2026-07-01,Levi's Stadium,San Francisco Bay Area,1,Round of 32,Round of 32,USA,BIH,68827,68827
+2026-07-01,Lumen Field,Seattle,1,Round of 32,Round of 32,BEL,SEN,66925,66925
+2026-07-01,Mercedes-Benz Stadium,Atlanta,1,Round of 32,Round of 32,ENG,COD,68239,68239
+2026-07-02,BC Place,,0,Round of 32,Round of 32,SUI,ALG,52497,
+2026-07-02,BMO Field,,0,Round of 32,Round of 32,POR,CRO,43036,
+2026-07-02,SoFi Stadium,Los Angeles,1,Round of 32,Round of 32,ESP,AUT,70492,70492
+2026-07-03,AT&T Stadium,Dallas,1,Round of 32,Round of 32,AUS,EGY,70244,70649
+2026-07-03,Arrowhead Stadium,Kansas City,1,Round of 32,Round of 32,COL,GHA,69045,69045
+2026-07-03,Hard Rock Stadium,Miami,1,Round of 32,Round of 32,ARG,CPV,64478,64478
+2026-07-04,Lincoln Financial Field,Philadelphia,1,Round of 16,Round of 16,PAR,FRA,68324,68324
+2026-07-04,NRG Stadium,Houston,1,Round of 16,Round of 16,CAN,MAR,68777,68777
+2026-07-05,Estadio Azteca,,0,Round of 16,Round of 16,MEX,ENG,80824,
+2026-07-05,MetLife Stadium,New York/New Jersey,1,Round of 16,Round of 16,BRA,NOR,80663,80663
+2026-07-06,AT&T Stadium,Dallas,1,Round of 16,Round of 16,POR,ESP,70649,70649
+2026-07-06,Lumen Field,Seattle,1,Round of 16,Round of 16,USA,BEL,66925,66925
+2026-07-07,BC Place,,0,Round of 16,Round of 16,SUI,COL,52497,
+2026-07-07,Mercedes-Benz Stadium,Atlanta,1,Round of 16,Round of 16,ARG,EGY,68239,68239
+2026-07-09,Gillette Stadium,Boston,1,Quarter-final,Quarter-final,FRA,MAR,63811,64146
+2026-07-10,SoFi Stadium,Los Angeles,1,Quarter-final,Quarter-final,ESP,BEL,70492,70492
+2026-07-11,Arrowhead Stadium,Kansas City,1,Quarter-final,Quarter-final,ARG,SUI,69045,69045
+2026-07-11,Hard Rock Stadium,Miami,1,Quarter-final,Quarter-final,NOR,ENG,64478,64478
+2026-07-14,AT&T Stadium,Dallas,1,Semi-final,Semi-final,FRA,ESP,70176,70649
+2026-07-15,Mercedes-Benz Stadium,Atlanta,1,Semi-final,Semi-final,ENG,ARG,68239,68239
+2026-07-18,Hard Rock Stadium,Miami,1,Third place,Third place,FRA,ENG,64478,64478
+2026-07-19,MetLife Stadium,New York/New Jersey,1,Final,Final,ESP,ARG,80663,80663

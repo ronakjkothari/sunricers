@@ -1,0 +1,33 @@
+date,stadium,market,in_our_cities,stage,stage_group,team1,team2,attendance
+2024-06-20,Mercedes-Benz Stadium,Atlanta,1,Group A,Group,ARG,CAN,70564
+2024-06-21,AT&T Stadium,Dallas,1,Group A,Group,PER,CHI,43030
+2024-06-22,Levi's Stadium,San Francisco Bay Area,1,Group B,Group,ECU,VEN,29864
+2024-06-22,NRG Stadium,Houston,1,Group B,Group,MEX,JAM,53763
+2024-06-23,AT&T Stadium,Dallas,1,Group C,Group,USA,BOL,47873
+2024-06-23,Hard Rock Stadium,Miami,1,Group C,Group,URU,PAN,33425
+2024-06-24,NRG Stadium,Houston,1,Group D,Group,COL,PAR,67059
+2024-06-24,SoFi Stadium,Los Angeles,1,Group D,Group,BRA,CRC,67158
+2024-06-25,Children's Mercy Park,,0,Group A,Group,PER,CAN,15625
+2024-06-25,MetLife Stadium,New York/New Jersey,1,Group A,Group,CHI,ARG,81106
+2024-06-26,Allegiant Stadium,,0,Group B,Group,ECU,JAM,24074
+2024-06-26,SoFi Stadium,Los Angeles,1,Group B,Group,VEN,MEX,72773
+2024-06-27,Mercedes-Benz Stadium,Atlanta,1,Group C,Group,PAN,USA,59145
+2024-06-27,MetLife Stadium,New York/New Jersey,1,Group C,Group,URU,BOL,48033
+2024-06-28,Allegiant Stadium,,0,Group D,Group,PAR,BRA,46939
+2024-06-28,State Farm Stadium,,0,Group D,Group,COL,CRC,27386
+2024-06-29,Hard Rock Stadium,Miami,1,Group A,Group,ARG,PER,64972
+2024-06-29,Inter&Co Stadium,,0,Group A,Group,CAN,CHI,24481
+2024-06-30,Q2 Stadium,,0,Group B,Group,JAM,VEN,20240
+2024-06-30,State Farm Stadium,,0,Group B,Group,MEX,ECU,62565
+2024-07-01,Arrowhead Stadium,Kansas City,1,Group C,Group,USA,URU,55460
+2024-07-01,Inter&Co Stadium,,0,Group C,Group,BOL,PAN,16129
+2024-07-02,Levi's Stadium,San Francisco Bay Area,1,Group D,Group,BRA,COL,70971
+2024-07-02,Q2 Stadium,,0,Group D,Group,CRC,PAR,12765
+2024-07-04,NRG Stadium,Houston,1,Quarter-final,Quarter-final,ARG,ECU,69456
+2024-07-05,AT&T Stadium,Dallas,1,Quarter-final,Quarter-final,VEN,CAN,51080
+2024-07-06,Allegiant Stadium,,0,Quarter-final,Quarter-final,URU,BRA,55770
+2024-07-06,State Farm Stadium,,0,Quarter-final,Quarter-final,COL,PAN,39740
+2024-07-09,MetLife Stadium,New York/New Jersey,1,Semi-final,Semi-final,ARG,CAN,80102
+2024-07-10,Bank of America Stadium,,0,Semi-final,Semi-final,URU,COL,70644
+2024-07-13,Bank of America Stadium,,0,Third place,Third place,CAN,URU,24386
+2024-07-14,Hard Rock Stadium,Miami,1,Final,Final,ARG,COL,65300
