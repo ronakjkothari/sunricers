@@ -2,15 +2,16 @@
 
 Usage (from repo root):
   python -m engines.playbook.cli
+  python -m engines.playbook.cli --source map
+  python -m engines.playbook.cli --source curated
   python -m engines.playbook.cli --validate
-  python -m engines.playbook.cli --city Miami
-  python -m engines.playbook.cli --pretty
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -24,9 +25,22 @@ def main(argv: list[str] | None = None) -> int:
         description="Plan D — Eleven Hosts Playbook back-engine"
     )
     parser.add_argument("--curated", type=Path, default=None)
+    parser.add_argument("--app-data", type=Path, default=None)
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--city", type=str, default=None)
     parser.add_argument("--pretty", action="store_true")
+    parser.add_argument(
+        "--source",
+        choices=["auto", "map", "curated"],
+        default="auto",
+        help="Demand indicators: map (spend-patterns rates, matches B) | "
+        "curated (store-visits totals) | auto (map if app/data exists)",
+    )
+    parser.add_argument(
+        "--sync-app",
+        action="store_true",
+        help="Also copy scorecards_for_app.json → app/data/scorecards.json",
+    )
     parser.add_argument(
         "--validate",
         action="store_true",
@@ -41,9 +55,14 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     root = repo_root()
-    cfg_kwargs: dict = {"uncertainty_pct": args.uncertainty}
+    cfg_kwargs: dict = {
+        "uncertainty_pct": args.uncertainty,
+        "indicator_source": args.source,
+    }
     if args.curated:
         cfg_kwargs["curated_dir"] = args.curated
+    if args.app_data:
+        cfg_kwargs["app_data_dir"] = args.app_data
     if args.out:
         cfg_kwargs["output_dir"] = args.out
     cfg = PlaybookConfig(**cfg_kwargs)
@@ -57,6 +76,18 @@ def main(argv: list[str] | None = None) -> int:
     print("Plan D playbook export complete:")
     for label, path in paths.items():
         print(f"  {label}: {path}")
+    src = (a_contract.get("meta") or {}).get("indicator_source") or {}
+    print(f"  indicator_source: {src.get('resolved')} — {src.get('label')}")
+
+    if args.sync_app and "app_scorecards" in paths:
+        dest = root / "app" / "data" / "scorecards.json"
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(paths["app_scorecards"], dest)
+        print(f"  synced -> {dest}")
+        if "ops_context_app" in paths:
+            ops_dest = root / "app" / "data" / "ops_context.json"
+            shutil.copyfile(paths["ops_context_app"], ops_dest)
+            print(f"  synced -> {ops_dest}")
 
     if errors:
         print("A-CONTRACT INVALID:", file=sys.stderr)
@@ -67,7 +98,6 @@ def main(argv: list[str] | None = None) -> int:
     print(f"A-contract OK (v{a_contract['contract_version']}, 11 cities)")
 
     if args.validate and not args.city and not args.pretty:
-        # summary of pressing plays
         print("\nPressing plays per city:")
         for c in cards:
             titles = [p["title"][:42] for p in (c.recommended_plays or [])]

@@ -8,22 +8,34 @@
 |----------|------|
 | **Frozen contract** | [`CONTRACT.md`](./CONTRACT.md) |
 | **JSON A mounts** | [`../../data/playbook/a_integration_v1.json`](../../data/playbook/a_integration_v1.json) |
+| **Indicator source policy** | [`../../docs/D_INDICATOR_SOURCES.md`](../../docs/D_INDICATOR_SOURCES.md) |
 | **Preview UI** | [`../../data/playbook/preview.html`](../../data/playbook/preview.html) |
-| **City one-pagers** | `../../data/playbook/city_cards/*.md` |
 
 ```bash
-# from repo root
-python -m engines.playbook.cli --validate
+# Canonical: same demand grain as B Spatial (spend-patterns rates)
+python -m engines.playbook.cli --source map --sync-app --validate
 python scripts/test_playbook_contract.py
 ```
 
-## Guarantees (v0.2 / contract 1.0.0)
+Do **not** blend store-visits totals with spend rates into one z-score. Use `--source curated` only when you explicitly want size-sensitive totals.
+
+## Guarantees (v0.4 / contract 1.1.0)
 
 - Exactly 11 scorecards
 - `recommended_plays` only include **pressing** plays (`match_score > 0`)
-- Each play carries `owner`, `effort`, `legacy_use`, `peer_overlap`, `steal_from_peers`, `expected_effects`
+- Each play carries `owner`, `effort`, `legacy_use`, `peer_overlap`, `steal_from_peers`, `expected_effects`, `illustrative_absolute_delta`
 - `drivers[]` (5) ready for radar / parallel coords / pressure filters
+- `ops_scale` companion (absolutes / mix / spend / brands / climate) labeled off the readiness path
 - Export **fails** if contract validation fails
+
+## Artifacts
+
+| File | Consumer |
+|------|----------|
+| `a_integration_v1.json` | A shell |
+| `ops_context_v1.json` | A Overview / C baselines |
+| `ops_context_for_app.json` → `app/data/ops_context.json` | B side panel |
+| `scorecards_for_app.json` → `app/data/scorecards.json` | B readiness strip |
 
 ## Run
 

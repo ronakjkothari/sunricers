@@ -82,7 +82,8 @@ async function boot() {
   if (!res.ok) throw new Error("Missing a_integration_v1.json — run: python -m engines.playbook.cli");
   DATA = await res.json();
   document.querySelector(".sub").textContent =
-    `Contract ${DATA.contract_version} · ${DATA.scorecards.length} hosts · generated ${DATA.meta.generated_at}`;
+    `Contract ${DATA.contract_version} · ${DATA.scorecards.length} hosts · generated ${DATA.meta.generated_at}` +
+    (DATA.meta.ops_context ? " · ops_scale attached" : "");
   drawFilters();
   drawStrip();
   select(DATA.scorecards[0].host_city);
@@ -130,17 +131,53 @@ function select(city) {
       <span style="color:var(--muted)">${d.z>0?'more':'less'}</span>`;
   }).join("");
   const peers = (c.peer_cities||[]).map(p => `<span class="peer" data-city="${p}">${p}</span>`).join("") || "—";
+  const ops = c.ops_scale;
+  const fmt = (n) => {
+    const a = Math.abs(n);
+    if (a >= 1e9) return (n/1e9).toFixed(2) + "B";
+    if (a >= 1e6) return (n/1e6).toFixed(2) + "M";
+    if (a >= 1e3) return (n/1e3).toFixed(1) + "k";
+    return String(Math.round(n));
+  };
+  let opsHtml = "";
+  if (ops && ops.absolute) {
+    const mix = Object.entries(ops.visit_mix||{}).slice(0,4)
+      .map(([k,v]) => `${k} ${Math.round(v*100)}%`).join(" · ");
+    const brands = (ops.top_brands_by_visits||[]).slice(0,3).map(b => b.brand).join(", ");
+    const rateE = (c.raw_indicators||{}).energy_kwh;
+    opsHtml = `
+      <div style="margin:12px 0;padding:10px;border:1px dashed var(--line);border-radius:8px;background:#fafaf7">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px">
+          Dual grain — intensity ranks readiness; absolutes size the load
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+          <div><b>Energy</b><br>${fmt(ops.absolute.energy_kwh)} kWh city<br>
+            <span style="color:var(--muted)">${rateE!=null?rateE.toFixed(0)+" kWh/shop-mo":"—"}</span></div>
+          <div><b>Water</b><br>${fmt(ops.absolute.water_liters)} L city<br>
+            <span style="color:var(--muted)">${((c.raw_indicators||{}).water_liters||0).toFixed(0)} L/shop-mo</span></div>
+          <div><b>CO₂e</b><br>${fmt(ops.absolute.kg_co2e)} kg city<br>
+            <span style="color:var(--muted)">${((c.raw_indicators||{}).kg_co2e||0).toFixed(0)} kg/shop-mo</span></div>
+          <div><b>Visit mix</b><br>${mix||"—"}</div>
+        </div>
+        ${brands?`<div style="margin-top:8px;font-size:12px;color:var(--muted)">Top traffic brands: ${brands}</div>`:""}
+      </div>`;
+  }
   document.getElementById("cityBody").innerHTML = `
     <div><b>Readiness</b> ${c.readiness_score.toFixed(1)}
       (band ${c.readiness_band[0]}–${c.readiness_band[1]}) · stress ${c.stress_index}</div>
+    ${opsHtml}
     <div style="margin:10px 0 6px;font-size:12px;color:var(--muted)">Peers (click to jump)</div>
     <div>${peers}</div>
-    <div style="margin:12px 0 6px;font-size:12px;color:var(--muted)">Drivers vs other hosts</div>
+    <div style="margin:12px 0 6px;font-size:12px;color:var(--muted)">Drivers vs other hosts (intensity)</div>
     <div class="zbars">${zb}</div>`;
   document.querySelectorAll(".peer").forEach(el => el.onclick = () => select(el.dataset.city));
 
   const plays = c.recommended_plays || [];
-  document.getElementById("playsBody").innerHTML = plays.length ? plays.map(p => `
+  document.getElementById("playsBody").innerHTML = plays.length ? plays.map(p => {
+    const d = p.illustrative_absolute_delta;
+    const delta = d ? `<div class="eff">Illustrative citywide Δ:
+      energy ${fmt(d.energy_kwh)} kWh · water ${fmt(d.water_liters)} L · CO₂e ${fmt(d.kg_co2e)} kg</div>` : "";
+    return `
     <div class="play">
       <h3>${p.title}</h3>
       <div class="meta">
@@ -153,8 +190,10 @@ function select(city) {
       <div class="eff">Δ energy ${p.expected_effects.energy_pct}% ·
         food CO₂e ${p.expected_effects.food_co2e_pct}% ·
         water ${p.expected_effects.water_pct}%</div>
+      ${delta}
       <p style="margin:8px 0 0;font-size:13px">${p.rationale}</p>
-    </div>`).join("") : `<div class="empty">No pressing plays — all drivers at/below host average. See general options in the JSON export.</div>`;
+    </div>`;
+  }).join("") : `<div class="empty">No pressing plays — all drivers at/below host average. See general options in the JSON export.</div>`;
 
   const slug = city.toLowerCase().replace(/\//g,"_").replace(/ /g,"_");
   document.getElementById("exportBody").innerHTML =
