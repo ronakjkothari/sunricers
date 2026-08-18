@@ -21,7 +21,7 @@ except ImportError:  # pragma: no cover
 else:
     app = FastAPI(
         title="Plan D — Eleven Hosts Playbook",
-        version="0.1.0",
+        version="0.2.0",
         description=(
             "Sustainability-readiness scorecards, peers, and transferable plays "
             "for FIFA 2026 U.S. host cities. Standalone back-engine for overlay on Plan A."
@@ -34,21 +34,24 @@ else:
 
     @app.get("/health")
     def health():
-        return {"ok": True, "engine": "plan_d_eleven_hosts_playbook"}
+        return {"ok": True, "engine": "plan_d_eleven_hosts_playbook", "version": "0.2.0"}
 
     @app.get("/playbook")
     def playbook():
-        svc = get_service()
-        return svc.build_payload()
+        return get_service().build_payload()
+
+    @app.get("/playbook/a-contract")
+    def a_contract():
+        """Frozen Plan A integration payload (contract 1.0.0)."""
+        return get_service().build_a_contract()
 
     @app.get("/playbook/scorecards")
     def scorecards():
-        payload = get_service().build_payload()
-        return payload["scorecards"]
+        return get_service().build_a_contract()["scorecards"]
 
     @app.get("/playbook/cities/{city}")
     def city_card(city: str):
-        cards = get_service().build_payload()["scorecards"]
+        cards = get_service().build_a_contract()["scorecards"]
         match = next(
             (c for c in cards if c["host_city"].lower() == city.lower()),
             None,
@@ -56,6 +59,24 @@ else:
         if not match:
             raise HTTPException(status_code=404, detail=f"Unknown city: {city}")
         return match
+
+    @app.get("/playbook/filter/{driver}")
+    def filter_driver(driver: str):
+        """Hosts with elevated z on a driver key (energy_kwh, kg_co2e, …)."""
+        contract = get_service().build_a_contract()
+        cities = contract["indexes"]["by_primary_driver"].get(driver)
+        if cities is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Unknown driver: {driver}. Use energy_kwh|kg_co2e|water_liters|cdd|uhi",
+            )
+        return {
+            "driver": driver,
+            "cities": cities,
+            "scorecards": [
+                c for c in contract["scorecards"] if c["host_city"] in cities
+            ],
+        }
 
     @app.post("/playbook/refresh")
     def refresh():

@@ -1,7 +1,9 @@
 {
+  "contract_id": "plan_d_a_integration",
+  "contract_version": "1.0.0",
   "meta": {
     "engine": "plan_d_eleven_hosts_playbook",
-    "version": "0.2.0",
+    "engine_version": "0.2.0",
     "generated_at": "2026-08-16T19:49:19.780822+00:00",
     "disclaimer": "Sample data are transformed (noise/jitter). Scores demonstrate comparative methodology for mega-event resource readiness \u2014 not ground-truth city rankings.",
     "formula": {
@@ -11,31 +13,14 @@
       "uncertainty_pct": 0.15,
       "play_rule": "recommended_plays require match_score>0 (elevated z on target drivers); general_options are non-pressing fallbacks"
     },
-    "config": {
-      "summer_months": [
-        6,
-        7
-      ],
-      "weight_energy": 0.35,
-      "weight_food_co2e": 0.25,
-      "weight_water": 0.2,
-      "weight_cdd": 0.1,
-      "weight_uhi": 0.1,
-      "uncertainty_pct": 0.15,
-      "peer_count": 3,
-      "plays_per_city": 3,
-      "curated_dir": "data\\curated",
-      "output_dir": "data\\playbook"
-    },
-    "allocation": {
-      "Dallas / Houston": {
-        "Dallas": 0.35481491416309013,
-        "Houston": 0.6451850858369099
-      },
-      "Los Angeles / SF Bay Area": {
-        "Los Angeles": 0.2895588900880827,
-        "San Francisco Bay Area": 0.7104411099119172
-      }
+    "ui_slots": {
+      "compare_strip": "scorecards[] \u2192 rank, readiness_score, readiness_band",
+      "driver_chart": "scorecards[].drivers[] \u2192 radar / parallel coords",
+      "peer_jump": "scorecards[].peer_cities[]",
+      "steal_this_play": "scorecards[].recommended_plays[] (pressing only)",
+      "general_options": "scorecards[].general_options[] (optional disclosure)",
+      "pressure_filter": "scorecards[].primary_pressure_drivers[] / drivers[].elevated",
+      "export_card": "one scorecard object = one printable city playbook page"
     }
   },
   "scorecards": [
@@ -48,13 +33,6 @@
         100.0
       ],
       "stress_index": -1.1318,
-      "z_components": {
-        "energy_kwh": -1.1333,
-        "kg_co2e": -1.1339,
-        "water_liters": -1.211,
-        "cdd": -1.7442,
-        "uhi": -0.3507
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -93,6 +71,13 @@
         }
       ],
       "primary_pressure_drivers": [],
+      "z_components": {
+        "energy_kwh": -1.1333,
+        "kg_co2e": -1.1339,
+        "water_liters": -1.211,
+        "cdd": -1.7442,
+        "uhi": -0.3507
+      },
       "raw_indicators": {
         "energy_kwh": 7515397555.2,
         "water_liters": 16129411213.0,
@@ -170,13 +155,6 @@
         100.0
       ],
       "stress_index": -1.0616,
-      "z_components": {
-        "energy_kwh": -1.3874,
-        "kg_co2e": -1.3302,
-        "water_liters": -1.2779,
-        "cdd": 0.2755,
-        "uhi": -0.1539
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -217,6 +195,13 @@
       "primary_pressure_drivers": [
         "cdd"
       ],
+      "z_components": {
+        "energy_kwh": -1.3874,
+        "kg_co2e": -1.3302,
+        "water_liters": -1.2779,
+        "cdd": 0.2755,
+        "uhi": -0.1539
+      },
       "raw_indicators": {
         "energy_kwh": 5284899021.2,
         "water_liters": 14689264629.0,
@@ -412,13 +397,6 @@
         100.0
       ],
       "stress_index": -0.9749,
-      "z_components": {
-        "energy_kwh": -1.0847,
-        "kg_co2e": -0.9969,
-        "water_liters": -0.8356,
-        "cdd": -0.0484,
-        "uhi": -1.741
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -457,6 +435,13 @@
         }
       ],
       "primary_pressure_drivers": [],
+      "z_components": {
+        "energy_kwh": -1.0847,
+        "kg_co2e": -0.9969,
+        "water_liters": -0.8356,
+        "cdd": -0.0484,
+        "uhi": -1.741
+      },
       "raw_indicators": {
         "energy_kwh": 7941240557.8,
         "water_liters": 24204774760.5,
@@ -534,13 +519,6 @@
         79.67
       ],
       "stress_index": -0.3014,
-      "z_components": {
-        "energy_kwh": -0.3705,
-        "kg_co2e": -0.4091,
-        "water_liters": -0.5968,
-        "cdd": 0.3475,
-        "uhi": 0.151
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -582,6 +560,13 @@
         "cdd",
         "uhi"
       ],
+      "z_components": {
+        "energy_kwh": -0.3705,
+        "kg_co2e": -0.4091,
+        "water_liters": -0.5968,
+        "cdd": 0.3475,
+        "uhi": 0.151
+      },
       "raw_indicators": {
         "energy_kwh": 14208951379.2,
         "water_liters": 29342372120.0,
@@ -822,13 +807,6 @@
         72.72
       ],
       "stress_index": -0.1381,
-      "z_components": {
-        "energy_kwh": -0.5699,
-        "kg_co2e": -0.5084,
-        "water_liters": -0.5569,
-        "cdd": 0.8915,
-        "uhi": 2.107
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -870,6 +848,13 @@
         "uhi",
         "cdd"
       ],
+      "z_components": {
+        "energy_kwh": -0.5699,
+        "kg_co2e": -0.5084,
+        "water_liters": -0.5569,
+        "cdd": 0.8915,
+        "uhi": 2.107
+      },
       "raw_indicators": {
         "energy_kwh": 12459022397.0689,
         "water_liters": 30199720174.3031,
@@ -1110,13 +1095,6 @@
         71.92
       ],
       "stress_index": -0.1195,
-      "z_components": {
-        "energy_kwh": -0.2357,
-        "kg_co2e": -0.3775,
-        "water_liters": -0.2907,
-        "cdd": 0.7997,
-        "uhi": 0.3555
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -1158,6 +1136,13 @@
         "cdd",
         "uhi"
       ],
+      "z_components": {
+        "energy_kwh": -0.2357,
+        "kg_co2e": -0.3775,
+        "water_liters": -0.2907,
+        "cdd": 0.7997,
+        "uhi": 0.3555
+      },
       "raw_indicators": {
         "energy_kwh": 15391937176.6261,
         "water_liters": 35927486046.5424,
@@ -1398,13 +1383,6 @@
         66.78
       ],
       "stress_index": 0.0015,
-      "z_components": {
-        "energy_kwh": 0.0957,
-        "kg_co2e": -0.0975,
-        "water_liters": -0.132,
-        "cdd": 1.6368,
-        "uhi": -1.4491
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -1446,6 +1424,13 @@
         "cdd",
         "energy_kwh"
       ],
+      "z_components": {
+        "energy_kwh": 0.0957,
+        "kg_co2e": -0.0975,
+        "water_liters": -0.132,
+        "cdd": 1.6368,
+        "uhi": -1.4491
+      },
       "raw_indicators": {
         "energy_kwh": 18300347338.4,
         "water_liters": 39342166073.5,
@@ -1657,13 +1642,6 @@
         50.87
       ],
       "stress_index": 0.3753,
-      "z_components": {
-        "energy_kwh": 0.5314,
-        "kg_co2e": 0.8063,
-        "water_liters": 0.7618,
-        "cdd": -1.2934,
-        "uhi": -0.353
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -1706,6 +1684,13 @@
         "water_liters",
         "energy_kwh"
       ],
+      "z_components": {
+        "energy_kwh": 0.5314,
+        "kg_co2e": 0.8063,
+        "water_liters": 0.7618,
+        "cdd": -1.2934,
+        "uhi": -0.353
+      },
       "raw_indicators": {
         "energy_kwh": 22123047211.4,
         "water_liters": 58571627477.5,
@@ -2047,13 +2032,6 @@
         25.37
       ],
       "stress_index": 0.9747,
-      "z_components": {
-        "energy_kwh": 1.1997,
-        "kg_co2e": 0.953,
-        "water_liters": 1.0759,
-        "cdd": 0.757,
-        "uhi": 0.256
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -2096,6 +2074,13 @@
         "water_liters",
         "kg_co2e"
       ],
+      "z_components": {
+        "energy_kwh": 1.1997,
+        "kg_co2e": 0.953,
+        "water_liters": 1.0759,
+        "cdd": 0.757,
+        "uhi": 0.256
+      },
       "raw_indicators": {
         "energy_kwh": 27988249400.1739,
         "water_liters": 65329492204.4576,
@@ -2437,13 +2422,6 @@
         17.58
       ],
       "stress_index": 1.1577,
-      "z_components": {
-        "energy_kwh": 1.4938,
-        "kg_co2e": 1.6647,
-        "water_liters": 1.4834,
-        "cdd": -1.016,
-        "uhi": 0.2359
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -2486,6 +2464,13 @@
         "energy_kwh",
         "water_liters"
       ],
+      "z_components": {
+        "energy_kwh": 1.4938,
+        "kg_co2e": 1.6647,
+        "water_liters": 1.4834,
+        "cdd": -1.016,
+        "uhi": 0.2359
+      },
       "raw_indicators": {
         "energy_kwh": 30568571724.7311,
         "water_liters": 74095886723.1969,
@@ -2827,13 +2812,6 @@
         15.0
       ],
       "stress_index": 1.2183,
-      "z_components": {
-        "energy_kwh": 1.4609,
-        "kg_co2e": 1.4296,
-        "water_liters": 1.5797,
-        "cdd": -0.6059,
-        "uhi": 0.9424
-      },
       "drivers": [
         {
           "key": "energy_kwh",
@@ -2876,6 +2854,13 @@
         "energy_kwh",
         "kg_co2e"
       ],
+      "z_components": {
+        "energy_kwh": 1.4609,
+        "kg_co2e": 1.4296,
+        "water_liters": 1.5797,
+        "cdd": -0.6059,
+        "uhi": 0.9424
+      },
       "raw_indicators": {
         "energy_kwh": 30279761203.6,
         "water_liters": 76167328327.5,
@@ -3208,5 +3193,57 @@
       ],
       "general_options": []
     }
-  ]
+  ],
+  "indexes": {
+    "by_city": {
+      "Seattle": 0,
+      "Boston": 1,
+      "Kansas City": 2,
+      "Philadelphia": 3,
+      "Los Angeles": 4,
+      "Dallas": 5,
+      "Atlanta": 6,
+      "New York/New Jersey": 7,
+      "Houston": 8,
+      "San Francisco Bay Area": 9,
+      "Miami": 10
+    },
+    "by_primary_driver": {
+      "energy_kwh": [
+        "Atlanta",
+        "New York/New Jersey",
+        "Houston",
+        "San Francisco Bay Area",
+        "Miami"
+      ],
+      "kg_co2e": [
+        "New York/New Jersey",
+        "Houston",
+        "San Francisco Bay Area",
+        "Miami"
+      ],
+      "water_liters": [
+        "New York/New Jersey",
+        "Houston",
+        "San Francisco Bay Area",
+        "Miami"
+      ],
+      "cdd": [
+        "Boston",
+        "Philadelphia",
+        "Los Angeles",
+        "Dallas",
+        "Atlanta",
+        "Houston"
+      ],
+      "uhi": [
+        "Philadelphia",
+        "Los Angeles",
+        "Dallas",
+        "Houston",
+        "San Francisco Bay Area",
+        "Miami"
+      ]
+    }
+  }
 }

@@ -7,6 +7,13 @@ host cities. Designed to be consumed later by Plan A (Nexus Pulse) UI.
 """
 
 from .config import PlaybookConfig
+from .contract import CONTRACT_VERSION, validate_a_contract
 from .service import PlaybookService, build_default_service
 
-__all__ = ["PlaybookConfig", "PlaybookService", "build_default_service"]
+__all__ = [
+    "PlaybookConfig",
+    "PlaybookService",
+    "build_default_service",
+    "validate_a_contract",
+    "CONTRACT_VERSION",
+]
