@@ -1,0 +1,567 @@
+stadium,market,date,weekday,kickoff_local,season,season_type,home,away,attendance,venue_name
+AT&T Stadium,Dallas,2020-09-20,Sun,12:00,2020,regular,DAL,ATL,21708,AT&T Stadium
+AT&T Stadium,Dallas,2020-10-04,Sun,12:00,2020,regular,DAL,CLE,25021,AT&T Stadium
+AT&T Stadium,Dallas,2020-10-11,Sun,15:25,2020,regular,DAL,NYG,25147,AT&T Stadium
+AT&T Stadium,Dallas,2020-10-19,Mon,19:15,2020,regular,DAL,ARI,25174,AT&T Stadium
+AT&T Stadium,Dallas,2020-11-08,Sun,15:25,2020,regular,DAL,PIT,31700,AT&T Stadium
+AT&T Stadium,Dallas,2020-11-26,Thu,15:30,2020,regular,DAL,WSH,30048,AT&T Stadium
+AT&T Stadium,Dallas,2020-12-20,Sun,12:00,2020,regular,DAL,SF,30092,AT&T Stadium
+AT&T Stadium,Dallas,2020-12-27,Sun,15:25,2020,regular,DAL,PHI,30131,AT&T Stadium
+AT&T Stadium,Dallas,2021-09-27,Mon,19:15,2021,regular,DAL,PHI,93267,AT&T Stadium
+AT&T Stadium,Dallas,2021-10-03,Sun,12:00,2021,regular,DAL,CAR,93262,AT&T Stadium
+AT&T Stadium,Dallas,2021-10-10,Sun,15:25,2021,regular,DAL,NYG,93476,AT&T Stadium
+AT&T Stadium,Dallas,2021-11-07,Sun,12:00,2021,regular,DAL,DEN,93503,AT&T Stadium
+AT&T Stadium,Dallas,2021-11-14,Sun,12:00,2021,regular,DAL,ATL,93436,AT&T Stadium
+AT&T Stadium,Dallas,2021-11-25,Thu,15:30,2021,regular,DAL,LV,93483,AT&T Stadium
+AT&T Stadium,Dallas,2021-12-26,Sun,19:20,2021,regular,DAL,WSH,93482,AT&T Stadium
+AT&T Stadium,Dallas,2022-01-02,Sun,15:25,2021,regular,DAL,ARI,93459,AT&T Stadium
+AT&T Stadium,Dallas,2022-01-16,Sun,15:30,2021,postseason,DAL,SF,93470,AT&T Stadium
+AT&T Stadium,Dallas,2022-09-11,Sun,19:20,2022,regular,DAL,TB,93797,AT&T Stadium
+AT&T Stadium,Dallas,2022-09-18,Sun,15:25,2022,regular,DAL,CIN,92944,AT&T Stadium
+AT&T Stadium,Dallas,2022-10-02,Sun,12:00,2022,regular,DAL,WSH,92946,AT&T Stadium
+AT&T Stadium,Dallas,2022-10-23,Sun,12:00,2022,regular,DAL,DET,93487,AT&T Stadium
+AT&T Stadium,Dallas,2022-10-30,Sun,12:00,2022,regular,DAL,CHI,93767,AT&T Stadium
+AT&T Stadium,Dallas,2022-11-24,Thu,15:30,2022,regular,DAL,NYG,93568,AT&T Stadium
+AT&T Stadium,Dallas,2022-12-04,Sun,19:20,2022,regular,DAL,IND,93086,AT&T Stadium
+AT&T Stadium,Dallas,2022-12-11,Sun,12:00,2022,regular,DAL,HOU,93843,AT&T Stadium
+AT&T Stadium,Dallas,2022-12-24,Sat,15:25,2022,regular,DAL,PHI,93754,AT&T Stadium
+AT&T Stadium,Dallas,2023-09-17,Sun,15:25,2023,regular,DAL,NYJ,93689,AT&T Stadium
+AT&T Stadium,Dallas,2023-10-01,Sun,15:25,2023,regular,DAL,NE,93719,AT&T Stadium
+AT&T Stadium,Dallas,2023-10-29,Sun,12:00,2023,regular,DAL,LAR,93448,AT&T Stadium
+AT&T Stadium,Dallas,2023-11-12,Sun,15:25,2023,regular,DAL,NYG,93338,AT&T Stadium
+AT&T Stadium,Dallas,2023-11-23,Thu,15:30,2023,regular,DAL,WSH,93711,AT&T Stadium
+AT&T Stadium,Dallas,2023-11-30,Thu,19:15,2023,regular,DAL,SEA,93367,AT&T Stadium
+AT&T Stadium,Dallas,2023-12-10,Sun,19:20,2023,regular,DAL,PHI,93752,AT&T Stadium
+AT&T Stadium,Dallas,2023-12-30,Sat,19:15,2023,regular,DAL,DET,93731,AT&T Stadium
+AT&T Stadium,Dallas,2024-01-14,Sun,15:30,2023,postseason,DAL,GB,93799,AT&T Stadium
+AT&T Stadium,Dallas,2024-09-15,Sun,12:00,2024,regular,DAL,NO,93691,AT&T Stadium
+AT&T Stadium,Dallas,2024-09-22,Sun,15:25,2024,regular,DAL,BAL,93566,AT&T Stadium
+AT&T Stadium,Dallas,2024-10-13,Sun,15:25,2024,regular,DAL,DET,93644,AT&T Stadium
+AT&T Stadium,Dallas,2024-11-10,Sun,15:25,2024,regular,DAL,PHI,93644,AT&T Stadium
+AT&T Stadium,Dallas,2024-11-18,Mon,19:15,2024,regular,DAL,HOU,92969,AT&T Stadium
+AT&T Stadium,Dallas,2024-11-28,Thu,15:30,2024,regular,DAL,NYG,92196,AT&T Stadium
+AT&T Stadium,Dallas,2024-12-09,Mon,19:15,2024,regular,DAL,CIN,92587,AT&T Stadium
+AT&T Stadium,Dallas,2024-12-22,Sun,19:20,2024,regular,DAL,TB,93103,AT&T Stadium
+AT&T Stadium,Dallas,2025-01-05,Sun,12:00,2024,regular,DAL,WSH,91349,AT&T Stadium
+Arrowhead Stadium,Kansas City,2020-09-10,Thu,19:20,2020,regular,KC,HOU,15895,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2020-10-05,Mon,18:05,2020,regular,KC,NE,12729,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2020-10-11,Sun,12:00,2020,regular,KC,LV,13311,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2020-11-01,Sun,12:00,2020,regular,KC,NYJ,11932,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2020-11-08,Sun,12:00,2020,regular,KC,CAR,12073,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2020-12-06,Sun,19:20,2020,regular,KC,DEN,12578,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2020-12-27,Sun,12:00,2020,regular,KC,ATL,13470,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-01-03,Sun,15:25,2020,regular,KC,LAC,13240,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-01-17,Sun,14:05,2020,postseason,KC,CLE,16730,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-01-24,Sun,17:40,2020,postseason,KC,BUF,16993,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-09-12,Sun,15:25,2021,regular,KC,CLE,72973,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-09-26,Sun,12:00,2021,regular,KC,LAC,72980,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-10-10,Sun,19:20,2021,regular,KC,BUF,73389,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-11-01,Mon,19:15,2021,regular,KC,NYG,72898,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-11-07,Sun,15:25,2021,regular,KC,GB,73476,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-11-21,Sun,15:25,2021,regular,KC,DAL,73494,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-12-05,Sun,19:20,2021,regular,KC,DEN,73185,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-12-12,Sun,12:00,2021,regular,KC,LV,73278,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2021-12-26,Sun,15:25,2021,regular,KC,PIT,73371,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-01-16,Sun,19:15,2021,postseason,KC,PIT,73253,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-01-23,Sun,17:30,2021,postseason,KC,BUF,73242,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-01-30,Sun,14:00,2021,postseason,KC,CIN,73377,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-09-15,Thu,19:15,2022,regular,KC,LAC,73461,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-10-10,Mon,19:15,2022,regular,KC,LV,73523,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-10-16,Sun,15:25,2022,regular,KC,BUF,73586,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-11-06,Sun,19:20,2022,regular,KC,TEN,73475,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-11-13,Sun,12:00,2022,regular,KC,JAX,73493,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-11-27,Sun,15:25,2022,regular,KC,LAR,73557,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2022-12-24,Sat,12:00,2022,regular,KC,SEA,73331,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-01-01,Sun,12:00,2022,regular,KC,DEN,73571,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-01-21,Sat,15:30,2022,postseason,KC,JAX,73220,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-01-29,Sun,17:30,2022,postseason,KC,CIN,73426,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-09-07,Thu,19:20,2023,regular,KC,DET,73522,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-09-24,Sun,15:25,2023,regular,KC,CHI,73562,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-10-12,Thu,19:15,2023,regular,KC,DEN,73528,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-10-22,Sun,15:25,2023,regular,KC,LAC,73642,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-11-20,Mon,19:15,2023,regular,KC,PHI,73754,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-12-10,Sun,15:25,2023,regular,KC,BUF,73639,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-12-25,Mon,12:00,2023,regular,KC,LV,73480,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2023-12-31,Sun,15:25,2023,regular,KC,CIN,73565,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-01-13,Sat,19:00,2023,postseason,KC,MIA,71492,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-09-05,Thu,19:40,2024,regular,KC,BAL,73611,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-09-15,Sun,15:25,2024,regular,KC,CIN,73558,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-10-07,Mon,19:15,2024,regular,KC,NO,73592,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-11-04,Mon,19:15,2024,regular,KC,TB,0,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-11-10,Sun,12:00,2024,regular,KC,DEN,0,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-11-29,Fri,14:00,2024,regular,KC,LV,73627,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-12-08,Sun,19:20,2024,regular,KC,LAC,73571,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2024-12-21,Sat,12:00,2024,regular,KC,HOU,73600,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2025-01-18,Sat,15:30,2024,postseason,KC,HOU,73458,GEHA Field at Arrowhead Stadium
+Arrowhead Stadium,Kansas City,2025-01-26,Sun,17:30,2024,postseason,KC,BUF,73487,GEHA Field at Arrowhead Stadium
+Gillette Stadium,Boston,2020-09-13,Sun,13:00,2020,regular,NE,MIA,0,Gillette Stadium
+Gillette Stadium,Boston,2020-09-27,Sun,13:00,2020,regular,NE,LV,0,Gillette Stadium
+Gillette Stadium,Boston,2020-10-18,Sun,13:00,2020,regular,NE,DEN,0,Gillette Stadium
+Gillette Stadium,Boston,2020-10-25,Sun,16:25,2020,regular,NE,SF,0,Gillette Stadium
+Gillette Stadium,Boston,2020-11-15,Sun,20:20,2020,regular,NE,BAL,0,Gillette Stadium
+Gillette Stadium,Boston,2020-11-29,Sun,13:00,2020,regular,NE,ARI,0,Gillette Stadium
+Gillette Stadium,Boston,2020-12-28,Mon,20:15,2020,regular,NE,BUF,0,Gillette Stadium
+Gillette Stadium,Boston,2021-01-03,Sun,13:00,2020,regular,NE,NYJ,0,Gillette Stadium
+Gillette Stadium,Boston,2021-09-12,Sun,16:25,2021,regular,NE,MIA,65878,Gillette Stadium
+Gillette Stadium,Boston,2021-09-26,Sun,13:00,2021,regular,NE,NO,65878,Gillette Stadium
+Gillette Stadium,Boston,2021-10-03,Sun,20:20,2021,regular,NE,TB,65878,Gillette Stadium
+Gillette Stadium,Boston,2021-10-17,Sun,16:25,2021,regular,NE,DAL,65878,Gillette Stadium
+Gillette Stadium,Boston,2021-10-24,Sun,13:00,2021,regular,NE,NYJ,65878,Gillette Stadium
+Gillette Stadium,Boston,2021-11-14,Sun,13:00,2021,regular,NE,CLE,65878,Gillette Stadium
+Gillette Stadium,Boston,2021-11-28,Sun,13:00,2021,regular,NE,TEN,65878,Gillette Stadium
+Gillette Stadium,Boston,2021-12-26,Sun,13:00,2021,regular,NE,BUF,65878,Gillette Stadium
+Gillette Stadium,Boston,2022-01-02,Sun,13:00,2021,regular,NE,JAX,65878,Gillette Stadium
+Gillette Stadium,Boston,2022-09-25,Sun,13:00,2022,regular,NE,BAL,65878,Gillette Stadium
+Gillette Stadium,Boston,2022-10-09,Sun,13:00,2022,regular,NE,DET,65878,Gillette Stadium
+Gillette Stadium,Boston,2022-10-24,Mon,20:15,2022,regular,NE,CHI,65878,Gillette Stadium
+Gillette Stadium,Boston,2022-11-06,Sun,13:00,2022,regular,NE,IND,65878,Gillette Stadium
+Gillette Stadium,Boston,2022-11-20,Sun,13:00,2022,regular,NE,NYJ,65878,Gillette Stadium
+Gillette Stadium,Boston,2022-12-01,Thu,20:15,2022,regular,NE,BUF,65878,Gillette Stadium
+Gillette Stadium,Boston,2022-12-24,Sat,13:00,2022,regular,NE,CIN,65878,Gillette Stadium
+Gillette Stadium,Boston,2023-01-01,Sun,13:00,2022,regular,NE,MIA,65878,Gillette Stadium
+Gillette Stadium,Boston,2023-09-10,Sun,16:25,2023,regular,NE,PHI,64628,Gillette Stadium
+Gillette Stadium,Boston,2023-09-17,Sun,20:20,2023,regular,NE,MIA,64628,Gillette Stadium
+Gillette Stadium,Boston,2023-10-08,Sun,13:00,2023,regular,NE,NO,64628,Gillette Stadium
+Gillette Stadium,Boston,2023-10-22,Sun,13:00,2023,regular,NE,BUF,64628,Gillette Stadium
+Gillette Stadium,Boston,2023-11-05,Sun,13:00,2023,regular,NE,WSH,64628,Gillette Stadium
+Gillette Stadium,Boston,2023-12-03,Sun,13:00,2023,regular,NE,LAC,64628,Gillette Stadium
+Gillette Stadium,Boston,2023-12-17,Sun,13:00,2023,regular,NE,KC,64628,Gillette Stadium
+Gillette Stadium,Boston,2024-01-07,Sun,13:00,2023,regular,NE,NYJ,64628,Gillette Stadium
+Gillette Stadium,Boston,2024-09-15,Sun,13:00,2024,regular,NE,SEA,64686,Gillette Stadium
+Gillette Stadium,Boston,2024-10-06,Sun,13:00,2024,regular,NE,MIA,64628,Gillette Stadium
+Gillette Stadium,Boston,2024-10-13,Sun,13:00,2024,regular,NE,HOU,64628,Gillette Stadium
+Gillette Stadium,Boston,2024-10-27,Sun,13:00,2024,regular,NE,NYJ,64628,Gillette Stadium
+Gillette Stadium,Boston,2024-11-17,Sun,13:00,2024,regular,NE,LAR,64628,Gillette Stadium
+Gillette Stadium,Boston,2024-12-01,Sun,13:00,2024,regular,NE,IND,64626,Gillette Stadium
+Gillette Stadium,Boston,2024-12-28,Sat,13:00,2024,regular,NE,LAC,64628,Gillette Stadium
+Gillette Stadium,Boston,2025-01-05,Sun,13:00,2024,regular,NE,BUF,64626,Gillette Stadium
+Hard Rock Stadium,Miami,2020-09-20,Sun,13:00,2020,regular,MIA,BUF,11075,Hard Rock Stadium
+Hard Rock Stadium,Miami,2020-10-04,Sun,13:00,2020,regular,MIA,SEA,12369,Hard Rock Stadium
+Hard Rock Stadium,Miami,2020-10-18,Sun,16:05,2020,regular,MIA,NYJ,10772,Hard Rock Stadium
+Hard Rock Stadium,Miami,2020-11-01,Sun,13:00,2020,regular,MIA,LAR,12397,Hard Rock Stadium
+Hard Rock Stadium,Miami,2020-11-15,Sun,16:05,2020,regular,MIA,LAC,12751,Hard Rock Stadium
+Hard Rock Stadium,Miami,2020-12-06,Sun,13:00,2020,regular,MIA,CIN,12577,Hard Rock Stadium
+Hard Rock Stadium,Miami,2020-12-13,Sun,13:00,2020,regular,MIA,KC,13057,Hard Rock Stadium
+Hard Rock Stadium,Miami,2020-12-20,Sun,13:00,2020,regular,MIA,NE,13354,Hard Rock Stadium
+Hard Rock Stadium,Miami,2021-09-19,Sun,13:00,2021,regular,MIA,BUF,65040,Hard Rock Stadium
+Hard Rock Stadium,Miami,2021-10-03,Sun,13:00,2021,regular,MIA,IND,64571,Hard Rock Stadium
+Hard Rock Stadium,Miami,2021-10-24,Sun,13:00,2021,regular,MIA,ATL,62739,Hard Rock Stadium
+Hard Rock Stadium,Miami,2021-11-07,Sun,13:00,2021,regular,MIA,HOU,60232,Hard Rock Stadium
+Hard Rock Stadium,Miami,2021-11-11,Thu,20:20,2021,regular,MIA,BAL,65948,Hard Rock Stadium
+Hard Rock Stadium,Miami,2021-11-28,Sun,13:00,2021,regular,MIA,CAR,62389,Hard Rock Stadium
+Hard Rock Stadium,Miami,2021-12-05,Sun,13:00,2021,regular,MIA,NYG,65898,Hard Rock Stadium
+Hard Rock Stadium,Miami,2021-12-19,Sun,13:00,2021,regular,MIA,NYJ,66035,Hard Rock Stadium
+Hard Rock Stadium,Miami,2022-01-09,Sun,16:25,2021,regular,MIA,NE,66514,Hard Rock Stadium
+Hard Rock Stadium,Miami,2022-09-11,Sun,13:00,2022,regular,MIA,NE,65786,Hard Rock Stadium
+Hard Rock Stadium,Miami,2022-09-25,Sun,13:00,2022,regular,MIA,BUF,66206,Hard Rock Stadium
+Hard Rock Stadium,Miami,2022-10-16,Sun,13:00,2022,regular,MIA,MIN,66100,Hard Rock Stadium
+Hard Rock Stadium,Miami,2022-10-23,Sun,20:20,2022,regular,MIA,PIT,66224,Hard Rock Stadium
+Hard Rock Stadium,Miami,2022-11-13,Sun,13:00,2022,regular,MIA,CLE,66563,Hard Rock Stadium
+Hard Rock Stadium,Miami,2022-11-27,Sun,13:00,2022,regular,MIA,HOU,66205,Hard Rock Stadium
+Hard Rock Stadium,Miami,2022-12-25,Sun,13:00,2022,regular,MIA,GB,66328,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-01-08,Sun,13:00,2022,regular,MIA,NYJ,66429,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-09-24,Sun,13:00,2023,regular,MIA,DEN,65522,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-10-08,Sun,13:00,2023,regular,MIA,NYG,65654,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-10-15,Sun,13:00,2023,regular,MIA,CAR,65529,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-10-29,Sun,13:00,2023,regular,MIA,NE,65836,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-11-19,Sun,13:00,2023,regular,MIA,LV,66026,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-12-11,Mon,20:15,2023,regular,MIA,TEN,66068,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-12-17,Sun,13:00,2023,regular,MIA,NYJ,65967,Hard Rock Stadium
+Hard Rock Stadium,Miami,2023-12-24,Sun,16:25,2023,regular,MIA,DAL,66410,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-01-07,Sun,20:20,2023,regular,MIA,BUF,66292,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-09-08,Sun,13:00,2024,regular,MIA,JAX,65582,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-09-12,Thu,20:15,2024,regular,MIA,BUF,65601,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-09-30,Mon,19:30,2024,regular,MIA,TEN,65291,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-10-27,Sun,13:00,2024,regular,MIA,ARI,65629,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-11-17,Sun,13:00,2024,regular,MIA,LV,65440,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-11-24,Sun,13:00,2024,regular,MIA,NE,65479,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-12-08,Sun,13:00,2024,regular,MIA,NYJ,65787,Hard Rock Stadium
+Hard Rock Stadium,Miami,2024-12-22,Sun,16:25,2024,regular,MIA,SF,66341,Hard Rock Stadium
+Levi's Stadium,San Francisco Bay Area,2020-09-13,Sun,13:25,2020,regular,SF,ARI,0,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2020-10-04,Sun,17:20,2020,regular,SF,PHI,0,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2020-10-11,Sun,13:05,2020,regular,SF,MIA,0,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2020-10-18,Sun,17:20,2020,regular,SF,LAR,0,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2020-11-05,Thu,17:20,2020,regular,SF,GB,0,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2021-09-26,Sun,17:20,2021,regular,SF,GB,69853,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2021-10-03,Sun,13:05,2021,regular,SF,SEA,68912,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2021-10-24,Sun,17:20,2021,regular,SF,IND,56576,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2021-11-07,Sun,13:25,2021,regular,SF,ARI,59012,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2021-11-15,Mon,17:15,2021,regular,SF,LAR,64256,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2021-11-28,Sun,13:25,2021,regular,SF,MIN,71493,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2021-12-19,Sun,13:05,2021,regular,SF,ATL,71650,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-01-02,Sun,13:05,2021,regular,SF,HOU,71612,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-09-18,Sun,13:05,2022,regular,SF,SEA,71597,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-10-03,Mon,17:15,2022,regular,SF,LAR,71597,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-10-23,Sun,13:25,2022,regular,SF,KC,71746,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-11-13,Sun,17:20,2022,regular,SF,LAC,71709,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-11-27,Sun,13:25,2022,regular,SF,NO,71275,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-12-04,Sun,13:05,2022,regular,SF,MIA,71732,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-12-11,Sun,13:25,2022,regular,SF,TB,71725,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2022-12-24,Sat,13:05,2022,regular,SF,WSH,71642,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-01-08,Sun,13:25,2022,regular,SF,ARI,71638,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-01-14,Sat,13:30,2022,postseason,SF,SEA,71299,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-01-22,Sun,15:30,2022,postseason,SF,DAL,71888,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-09-21,Thu,17:15,2023,regular,SF,NYG,71593,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-10-01,Sun,13:25,2023,regular,SF,ARI,71521,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-10-08,Sun,17:20,2023,regular,SF,DAL,71617,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-10-29,Sun,13:25,2023,regular,SF,CIN,71655,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-11-19,Sun,13:05,2023,regular,SF,TB,71607,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-12-10,Sun,13:05,2023,regular,SF,SEA,71816,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2023-12-25,Mon,17:15,2023,regular,SF,BAL,71812,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-01-07,Sun,13:25,2023,regular,SF,LAR,71624,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-01-20,Sat,17:15,2023,postseason,SF,GB,71824,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-01-28,Sun,15:30,2023,postseason,SF,DET,71824,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-09-09,Mon,17:15,2024,regular,SF,NYJ,71319,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-09-29,Sun,13:05,2024,regular,SF,NE,71042,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-10-06,Sun,13:05,2024,regular,SF,ARI,71310,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-10-20,Sun,13:25,2024,regular,SF,KC,71309,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-10-27,Sun,17:20,2024,regular,SF,DAL,71521,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-11-17,Sun,13:05,2024,regular,SF,SEA,71751,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-12-08,Sun,13:25,2024,regular,SF,CHI,71662,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-12-12,Thu,17:15,2024,regular,SF,LAR,71201,Levi's Stadium
+Levi's Stadium,San Francisco Bay Area,2024-12-30,Mon,17:15,2024,regular,SF,DET,71688,Levi's Stadium
+Lincoln Financial Field,Philadelphia,2020-09-20,Sun,13:00,2020,regular,PHI,LAR,0,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2020-09-27,Sun,13:00,2020,regular,PHI,CIN,0,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2020-10-18,Sun,13:00,2020,regular,PHI,BAL,0,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2020-10-22,Thu,20:20,2020,regular,PHI,NYG,0,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2020-11-01,Sun,20:20,2020,regular,PHI,DAL,0,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2020-11-30,Mon,20:15,2020,regular,PHI,SEA,0,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2020-12-13,Sun,16:25,2020,regular,PHI,NO,0,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2021-01-03,Sun,20:20,2020,regular,PHI,WSH,0,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2021-09-19,Sun,13:00,2021,regular,PHI,SF,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2021-10-03,Sun,13:00,2021,regular,PHI,KC,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2021-10-14,Thu,20:20,2021,regular,PHI,TB,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2021-11-07,Sun,16:05,2021,regular,PHI,LAC,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2021-11-21,Sun,13:00,2021,regular,PHI,NO,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2021-12-21,Tue,19:00,2021,regular,PHI,WSH,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2021-12-26,Sun,13:00,2021,regular,PHI,NYG,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2022-01-08,Sat,20:15,2021,regular,PHI,DAL,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2022-09-19,Mon,20:30,2022,regular,PHI,MIN,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2022-10-02,Sun,13:00,2022,regular,PHI,JAX,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2022-10-16,Sun,20:20,2022,regular,PHI,DAL,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2022-10-30,Sun,13:00,2022,regular,PHI,PIT,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2022-11-14,Mon,20:15,2022,regular,PHI,WSH,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2022-11-27,Sun,20:20,2022,regular,PHI,GB,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2022-12-04,Sun,13:00,2022,regular,PHI,TEN,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-01-01,Sun,13:00,2022,regular,PHI,NO,69796,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-01-08,Sun,16:25,2022,regular,PHI,NYG,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-01-21,Sat,20:15,2022,postseason,PHI,NYG,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-01-29,Sun,15:00,2022,postseason,PHI,SF,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-09-14,Thu,20:15,2023,regular,PHI,MIN,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-10-01,Sun,13:00,2023,regular,PHI,WSH,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-10-22,Sun,20:20,2023,regular,PHI,MIA,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-11-05,Sun,16:25,2023,regular,PHI,DAL,69876,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-11-26,Sun,16:25,2023,regular,PHI,BUF,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-12-03,Sun,16:25,2023,regular,PHI,SF,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-12-25,Mon,16:30,2023,regular,PHI,NYG,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2023-12-31,Sun,13:00,2023,regular,PHI,ARI,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2024-09-16,Mon,20:15,2024,regular,PHI,ATL,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2024-10-13,Sun,13:00,2024,regular,PHI,CLE,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2024-11-03,Sun,16:05,2024,regular,PHI,JAX,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2024-11-14,Thu,20:15,2024,regular,PHI,WSH,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2024-12-08,Sun,13:00,2024,regular,PHI,CAR,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2024-12-15,Sun,16:25,2024,regular,PHI,PIT,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2024-12-29,Sun,13:00,2024,regular,PHI,DAL,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2025-01-05,Sun,13:00,2024,regular,PHI,NYG,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2025-01-12,Sun,16:30,2024,postseason,PHI,GB,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2025-01-19,Sun,15:00,2024,postseason,PHI,LAR,69879,Lincoln Financial Field
+Lincoln Financial Field,Philadelphia,2025-01-26,Sun,15:00,2024,postseason,PHI,WSH,69879,Lincoln Financial Field
+Lumen Field,Seattle,2020-09-20,Sun,17:20,2020,regular,SEA,NE,0,Lumen Field
+Lumen Field,Seattle,2020-09-27,Sun,13:25,2020,regular,SEA,DAL,0,Lumen Field
+Lumen Field,Seattle,2020-10-11,Sun,17:20,2020,regular,SEA,MIN,0,Lumen Field
+Lumen Field,Seattle,2020-11-01,Sun,13:25,2020,regular,SEA,SF,0,Lumen Field
+Lumen Field,Seattle,2020-11-19,Thu,17:20,2020,regular,SEA,ARI,0,Lumen Field
+Lumen Field,Seattle,2020-12-06,Sun,13:05,2020,regular,SEA,NYG,0,Lumen Field
+Lumen Field,Seattle,2020-12-13,Sun,13:05,2020,regular,SEA,NYJ,0,Lumen Field
+Lumen Field,Seattle,2020-12-27,Sun,13:25,2020,regular,SEA,LAR,0,Lumen Field
+Lumen Field,Seattle,2021-01-09,Sat,13:40,2020,postseason,SEA,LAR,0,Lumen Field
+Lumen Field,Seattle,2021-09-19,Sun,13:25,2021,regular,SEA,TEN,68585,Lumen Field
+Lumen Field,Seattle,2021-10-07,Thu,17:20,2021,regular,SEA,LAR,68747,Lumen Field
+Lumen Field,Seattle,2021-10-25,Mon,17:15,2021,regular,SEA,NO,68563,Lumen Field
+Lumen Field,Seattle,2021-10-31,Sun,13:05,2021,regular,SEA,JAX,67243,Lumen Field
+Lumen Field,Seattle,2021-11-21,Sun,13:25,2021,regular,SEA,ARI,68833,Lumen Field
+Lumen Field,Seattle,2021-12-05,Sun,13:25,2021,regular,SEA,SF,68758,Lumen Field
+Lumen Field,Seattle,2021-12-26,Sun,13:05,2021,regular,SEA,CHI,68492,Lumen Field
+Lumen Field,Seattle,2022-01-02,Sun,13:25,2021,regular,SEA,DET,68043,Lumen Field
+Lumen Field,Seattle,2022-09-12,Mon,17:15,2022,regular,SEA,DEN,68965,Lumen Field
+Lumen Field,Seattle,2022-09-25,Sun,13:25,2022,regular,SEA,ATL,68773,Lumen Field
+Lumen Field,Seattle,2022-10-16,Sun,13:05,2022,regular,SEA,ARI,68867,Lumen Field
+Lumen Field,Seattle,2022-10-30,Sun,13:25,2022,regular,SEA,NYG,68921,Lumen Field
+Lumen Field,Seattle,2022-11-27,Sun,13:05,2022,regular,SEA,LV,68849,Lumen Field
+Lumen Field,Seattle,2022-12-11,Sun,13:25,2022,regular,SEA,CAR,68672,Lumen Field
+Lumen Field,Seattle,2022-12-15,Thu,17:15,2022,regular,SEA,SF,68957,Lumen Field
+Lumen Field,Seattle,2023-01-01,Sun,13:05,2022,regular,SEA,NYJ,68827,Lumen Field
+Lumen Field,Seattle,2023-01-08,Sun,13:25,2022,regular,SEA,LAR,68660,Lumen Field
+Lumen Field,Seattle,2023-09-10,Sun,13:25,2023,regular,SEA,LAR,68683,Lumen Field
+Lumen Field,Seattle,2023-09-24,Sun,13:05,2023,regular,SEA,CAR,68699,Lumen Field
+Lumen Field,Seattle,2023-10-22,Sun,13:05,2023,regular,SEA,ARI,68781,Lumen Field
+Lumen Field,Seattle,2023-10-29,Sun,13:05,2023,regular,SEA,CLE,68807,Lumen Field
+Lumen Field,Seattle,2023-11-12,Sun,13:25,2023,regular,SEA,WSH,68721,Lumen Field
+Lumen Field,Seattle,2023-11-23,Thu,17:20,2023,regular,SEA,SF,68702,Lumen Field
+Lumen Field,Seattle,2023-12-18,Mon,17:15,2023,regular,SEA,PHI,68758,Lumen Field
+Lumen Field,Seattle,2023-12-31,Sun,13:05,2023,regular,SEA,PIT,68735,Lumen Field
+Lumen Field,Seattle,2024-09-08,Sun,13:05,2024,regular,SEA,DEN,68714,Lumen Field
+Lumen Field,Seattle,2024-09-22,Sun,13:05,2024,regular,SEA,MIA,68658,Lumen Field
+Lumen Field,Seattle,2024-10-06,Sun,13:25,2024,regular,SEA,NYG,68306,Lumen Field
+Lumen Field,Seattle,2024-10-10,Thu,17:15,2024,regular,SEA,SF,68768,Lumen Field
+Lumen Field,Seattle,2024-10-27,Sun,13:05,2024,regular,SEA,BUF,68704,Lumen Field
+Lumen Field,Seattle,2024-11-03,Sun,13:25,2024,regular,SEA,LAR,68632,Lumen Field
+Lumen Field,Seattle,2024-11-24,Sun,13:25,2024,regular,SEA,ARI,68649,Lumen Field
+Lumen Field,Seattle,2024-12-15,Sun,17:20,2024,regular,SEA,GB,68766,Lumen Field
+Lumen Field,Seattle,2024-12-22,Sun,13:05,2024,regular,SEA,MIN,68748,Lumen Field
+Mercedes-Benz Stadium,Atlanta,2020-09-13,Sun,13:00,2020,regular,ATL,SEA,0,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2020-09-27,Sun,13:00,2020,regular,ATL,CHI,0,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2020-10-11,Sun,13:00,2020,regular,ATL,CAR,0,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2020-10-25,Sun,13:00,2020,regular,ATL,DET,7796,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2020-11-08,Sun,13:00,2020,regular,ATL,DEN,7665,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2020-11-29,Sun,13:00,2020,regular,ATL,LV,9124,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2020-12-06,Sun,13:00,2020,regular,ATL,NO,8713,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2020-12-20,Sun,13:00,2020,regular,ATL,TB,10703,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2021-09-12,Sun,13:00,2021,regular,ATL,PHI,68633,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2021-10-03,Sun,13:00,2021,regular,ATL,WSH,68259,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2021-10-31,Sun,13:00,2021,regular,ATL,CAR,68583,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2021-11-18,Thu,20:20,2021,regular,ATL,NE,68286,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2021-12-05,Sun,13:00,2021,regular,ATL,TB,69366,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2021-12-26,Sun,13:00,2021,regular,ATL,DET,68638,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2022-01-09,Sun,16:25,2021,regular,ATL,NO,68336,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2022-09-11,Sun,13:00,2022,regular,ATL,NO,70078,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2022-10-02,Sun,13:00,2022,regular,ATL,CLE,69435,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2022-10-16,Sun,13:00,2022,regular,ATL,SF,69813,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2022-10-30,Sun,13:00,2022,regular,ATL,CAR,68996,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2022-11-06,Sun,13:00,2022,regular,ATL,LAC,69299,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2022-11-20,Sun,13:00,2022,regular,ATL,CHI,69757,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2022-12-04,Sun,13:00,2022,regular,ATL,PIT,70325,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-01-01,Sun,13:00,2022,regular,ATL,ARI,69269,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-01-08,Sun,13:00,2022,regular,ATL,TB,69276,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-09-10,Sun,13:00,2023,regular,ATL,CAR,69597,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-09-17,Sun,13:00,2023,regular,ATL,GB,69251,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-10-08,Sun,13:00,2023,regular,ATL,HOU,69461,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-10-15,Sun,13:00,2023,regular,ATL,WSH,69921,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-11-05,Sun,13:00,2023,regular,ATL,MIN,69715,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-11-26,Sun,13:00,2023,regular,ATL,NO,70166,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-12-10,Sun,13:00,2023,regular,ATL,TB,69496,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2023-12-24,Sun,13:00,2023,regular,ATL,IND,69221,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2024-09-08,Sun,13:00,2024,regular,ATL,PIT,72291,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2024-09-22,Sun,20:20,2024,regular,ATL,KC,72441,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2024-09-29,Sun,13:00,2024,regular,ATL,NO,72204,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2024-10-03,Thu,20:15,2024,regular,ATL,TB,70016,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2024-10-20,Sun,13:00,2024,regular,ATL,SEA,70691,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2024-11-03,Sun,13:00,2024,regular,ATL,DAL,72665,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2024-12-01,Sun,13:00,2024,regular,ATL,LAC,72139,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2024-12-22,Sun,13:00,2024,regular,ATL,NYG,70404,Mercedes-Benz Stadium
+Mercedes-Benz Stadium,Atlanta,2025-01-05,Sun,13:00,2024,regular,ATL,CAR,69581,Mercedes-Benz Stadium
+MetLife Stadium,New York/New Jersey,2020-09-14,Mon,19:15,2020,regular,NYG,PIT,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-09-20,Sun,13:00,2020,regular,NYJ,SF,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-09-27,Sun,13:00,2020,regular,NYG,SF,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-10-01,Thu,20:20,2020,regular,NYJ,DEN,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-10-11,Sun,13:00,2020,regular,NYJ,ARI,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-10-18,Sun,13:00,2020,regular,NYG,WSH,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-10-25,Sun,13:00,2020,regular,NYJ,BUF,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-11-02,Mon,20:15,2020,regular,NYG,TB,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-11-09,Mon,20:15,2020,regular,NYJ,NE,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-11-15,Sun,13:00,2020,regular,NYG,PHI,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-11-29,Sun,13:00,2020,regular,NYJ,MIA,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-12-06,Sun,13:00,2020,regular,NYJ,LV,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-12-13,Sun,13:00,2020,regular,NYG,ARI,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-12-20,Sun,20:20,2020,regular,NYG,CLE,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2020-12-27,Sun,13:00,2020,regular,NYJ,CLE,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-01-03,Sun,13:00,2020,regular,NYG,DAL,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-09-12,Sun,16:25,2021,regular,NYG,DEN,74119,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-09-19,Sun,13:00,2021,regular,NYJ,NE,75626,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-09-26,Sun,13:00,2021,regular,NYG,ATL,75307,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-10-03,Sun,13:00,2021,regular,NYJ,TEN,70232,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-10-17,Sun,13:00,2021,regular,NYG,LAR,73920,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-10-24,Sun,13:00,2021,regular,NYG,CAR,71899,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-10-31,Sun,13:00,2021,regular,NYJ,CIN,67503,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-11-07,Sun,13:00,2021,regular,NYG,LV,74512,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-11-14,Sun,13:00,2021,regular,NYJ,BUF,77625,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-11-21,Sun,13:00,2021,regular,NYJ,MIA,72303,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-11-28,Sun,13:00,2021,regular,NYG,PHI,73969,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-12-05,Sun,13:00,2021,regular,NYJ,PHI,73311,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-12-12,Sun,13:00,2021,regular,NYJ,NO,69129,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-12-19,Sun,13:00,2021,regular,NYG,DAL,77413,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2021-12-26,Sun,13:00,2021,regular,NYJ,JAX,67120,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-01-02,Sun,13:00,2021,regular,NYJ,TB,72243,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-01-09,Sun,13:00,2021,regular,NYG,WSH,69923,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-09-11,Sun,13:00,2022,regular,NYJ,BAL,78827,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-09-18,Sun,13:00,2022,regular,NYG,CAR,73843,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-09-25,Sun,13:00,2022,regular,NYJ,CIN,73708,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-09-26,Mon,20:15,2022,regular,NYG,DAL,79445,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-10-02,Sun,13:00,2022,regular,NYG,CHI,74044,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-10-09,Sun,13:00,2022,regular,NYJ,MIA,82500,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-10-16,Sun,13:00,2022,regular,NYG,BAL,78019,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-10-30,Sun,13:00,2022,regular,NYJ,NE,82823,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-11-06,Sun,13:00,2022,regular,NYJ,BUF,83135,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-11-13,Sun,13:00,2022,regular,NYG,HOU,71615,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-11-20,Sun,13:00,2022,regular,NYG,DET,76267,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-11-27,Sun,13:00,2022,regular,NYJ,CHI,77963,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-12-04,Sun,13:00,2022,regular,NYG,WSH,76128,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-12-11,Sun,13:00,2022,regular,NYG,PHI,81506,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-12-18,Sun,13:00,2022,regular,NYJ,DET,75076,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2022-12-22,Thu,20:15,2022,regular,NYJ,JAX,70043,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-01-01,Sun,13:00,2022,regular,NYG,IND,77399,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-09-10,Sun,20:20,2023,regular,NYG,DAL,80809,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-09-11,Mon,20:15,2023,regular,NYJ,BUF,83345,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-09-24,Sun,13:00,2023,regular,NYJ,NE,80878,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-10-01,Sun,20:20,2023,regular,NYJ,KC,80461,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-10-02,Mon,20:15,2023,regular,NYG,SEA,78507,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-10-15,Sun,16:25,2023,regular,NYJ,PHI,83068,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-10-22,Sun,13:00,2023,regular,NYG,WSH,81671,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-10-29,Sun,13:00,2023,regular,NYG,NYJ,83367,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-11-06,Mon,20:15,2023,regular,NYJ,LAC,75407,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-11-24,Fri,15:00,2023,regular,NYJ,MIA,82973,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-11-26,Sun,13:00,2023,regular,NYG,NE,82211,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-12-03,Sun,13:00,2023,regular,NYJ,ATL,74455,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-12-10,Sun,13:00,2023,regular,NYJ,HOU,72956,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-12-11,Mon,20:15,2023,regular,NYG,GB,76637,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-12-24,Sun,13:00,2023,regular,NYJ,WSH,67470,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2023-12-31,Sun,13:00,2023,regular,NYG,LAR,75517,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-01-07,Sun,16:25,2023,regular,NYG,PHI,75740,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-09-08,Sun,13:00,2024,regular,NYG,MIN,81908,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-09-19,Thu,20:15,2024,regular,NYJ,NE,80812,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-09-26,Thu,20:15,2024,regular,NYG,DAL,80425,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-09-29,Sun,13:00,2024,regular,NYJ,DEN,82243,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-10-13,Sun,20:20,2024,regular,NYG,CIN,78809,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-10-14,Mon,20:15,2024,regular,NYJ,BUF,81118,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-10-20,Sun,13:00,2024,regular,NYG,PHI,82779,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-10-31,Thu,20:15,2024,regular,NYJ,HOU,0,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-11-03,Sun,13:00,2024,regular,NYG,WSH,77994,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-11-17,Sun,13:00,2024,regular,NYJ,IND,80582,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-11-24,Sun,13:00,2024,regular,NYG,TB,77554,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-12-01,Sun,13:00,2024,regular,NYJ,SEA,81084,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-12-08,Sun,13:00,2024,regular,NYG,NO,76143,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-12-15,Sun,13:00,2024,regular,NYG,BAL,77455,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-12-22,Sun,13:00,2024,regular,NYJ,LAR,76871,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2024-12-29,Sun,13:00,2024,regular,NYG,IND,73164,MetLife Stadium
+MetLife Stadium,New York/New Jersey,2025-01-05,Sun,16:25,2024,regular,NYJ,MIA,68818,MetLife Stadium
+NRG Stadium,Houston,2020-09-20,Sun,15:25,2020,regular,HOU,BAL,0,NRG Stadium
+NRG Stadium,Houston,2020-10-04,Sun,12:00,2020,regular,HOU,MIN,12102,NRG Stadium
+NRG Stadium,Houston,2020-10-11,Sun,12:00,2020,regular,HOU,JAX,12413,NRG Stadium
+NRG Stadium,Houston,2020-10-25,Sun,12:00,2020,regular,HOU,GB,12618,NRG Stadium
+NRG Stadium,Houston,2020-11-22,Sun,12:00,2020,regular,HOU,NE,12503,NRG Stadium
+NRG Stadium,Houston,2020-12-06,Sun,12:00,2020,regular,HOU,IND,12316,NRG Stadium
+NRG Stadium,Houston,2020-12-27,Sun,12:00,2020,regular,HOU,CIN,12344,NRG Stadium
+NRG Stadium,Houston,2021-01-03,Sun,15:25,2020,regular,HOU,TEN,12504,NRG Stadium
+NRG Stadium,Houston,2021-09-12,Sun,12:00,2021,regular,HOU,JAX,68105,NRG Stadium
+NRG Stadium,Houston,2021-09-23,Thu,19:20,2021,regular,HOU,CAR,68320,NRG Stadium
+NRG Stadium,Houston,2021-10-10,Sun,12:00,2021,regular,HOU,NE,68450,NRG Stadium
+NRG Stadium,Houston,2021-10-31,Sun,12:00,2021,regular,HOU,LAR,66013,NRG Stadium
+NRG Stadium,Houston,2021-11-28,Sun,12:00,2021,regular,HOU,NYJ,65120,NRG Stadium
+NRG Stadium,Houston,2021-12-05,Sun,12:00,2021,regular,HOU,IND,65291,NRG Stadium
+NRG Stadium,Houston,2021-12-12,Sun,12:00,2021,regular,HOU,SEA,67610,NRG Stadium
+NRG Stadium,Houston,2021-12-26,Sun,12:00,2021,regular,HOU,LAC,65674,NRG Stadium
+NRG Stadium,Houston,2022-01-09,Sun,12:00,2021,regular,HOU,TEN,66722,NRG Stadium
+NRG Stadium,Houston,2022-09-11,Sun,12:00,2022,regular,HOU,IND,69415,NRG Stadium
+NRG Stadium,Houston,2022-10-02,Sun,12:00,2022,regular,HOU,LAC,69071,NRG Stadium
+NRG Stadium,Houston,2022-10-30,Sun,15:05,2022,regular,HOU,TEN,68467,NRG Stadium
+NRG Stadium,Houston,2022-11-03,Thu,19:15,2022,regular,HOU,PHI,68831,NRG Stadium
+NRG Stadium,Houston,2022-11-20,Sun,12:00,2022,regular,HOU,WSH,65865,NRG Stadium
+NRG Stadium,Houston,2022-12-04,Sun,12:00,2022,regular,HOU,CLE,66523,NRG Stadium
+NRG Stadium,Houston,2022-12-18,Sun,12:00,2022,regular,HOU,KC,70541,NRG Stadium
+NRG Stadium,Houston,2023-01-01,Sun,12:00,2022,regular,HOU,JAX,64581,NRG Stadium
+NRG Stadium,Houston,2023-09-17,Sun,12:00,2023,regular,HOU,IND,71159,NRG Stadium
+NRG Stadium,Houston,2023-10-01,Sun,12:00,2023,regular,HOU,PIT,71399,NRG Stadium
+NRG Stadium,Houston,2023-10-15,Sun,12:00,2023,regular,HOU,NO,71810,NRG Stadium
+NRG Stadium,Houston,2023-11-05,Sun,12:00,2023,regular,HOU,TB,70785,NRG Stadium
+NRG Stadium,Houston,2023-11-19,Sun,12:00,2023,regular,HOU,ARI,70247,NRG Stadium
+NRG Stadium,Houston,2023-11-26,Sun,12:00,2023,regular,HOU,JAX,71324,NRG Stadium
+NRG Stadium,Houston,2023-12-03,Sun,12:00,2023,regular,HOU,DEN,71670,NRG Stadium
+NRG Stadium,Houston,2023-12-24,Sun,12:00,2023,regular,HOU,CLE,70831,NRG Stadium
+NRG Stadium,Houston,2023-12-31,Sun,12:00,2023,regular,HOU,TEN,71517,NRG Stadium
+NRG Stadium,Houston,2024-01-13,Sat,15:30,2023,postseason,HOU,CLE,71946,NRG Stadium
+NRG Stadium,Houston,2024-09-15,Sun,19:20,2024,regular,HOU,CHI,71412,NRG Stadium
+NRG Stadium,Houston,2024-09-29,Sun,12:00,2024,regular,HOU,JAX,71115,NRG Stadium
+NRG Stadium,Houston,2024-10-06,Sun,12:00,2024,regular,HOU,BUF,71427,NRG Stadium
+NRG Stadium,Houston,2024-10-27,Sun,12:00,2024,regular,HOU,IND,71380,NRG Stadium
+NRG Stadium,Houston,2024-11-10,Sun,19:20,2024,regular,HOU,DET,71512,NRG Stadium
+NRG Stadium,Houston,2024-11-24,Sun,12:00,2024,regular,HOU,TEN,71055,NRG Stadium
+NRG Stadium,Houston,2024-12-15,Sun,12:00,2024,regular,HOU,MIA,71221,NRG Stadium
+NRG Stadium,Houston,2024-12-25,Wed,15:30,2024,regular,HOU,BAL,71544,NRG Stadium
+NRG Stadium,Houston,2025-01-11,Sat,15:30,2024,postseason,HOU,LAC,71408,NRG Stadium
+SoFi Stadium,Los Angeles,2020-09-13,Sun,17:20,2020,regular,LAR,DAL,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-09-20,Sun,13:25,2020,regular,LAC,KC,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-09-27,Sun,13:05,2020,regular,LAC,CAR,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-10-04,Sun,13:05,2020,regular,LAR,NYG,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-10-25,Sun,13:25,2020,regular,LAC,JAX,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-10-26,Mon,17:15,2020,regular,LAR,CHI,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-11-08,Sun,13:05,2020,regular,LAC,LV,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-11-15,Sun,13:25,2020,regular,LAR,SEA,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-11-22,Sun,13:05,2020,regular,LAC,NYJ,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-11-29,Sun,13:05,2020,regular,LAR,SF,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-12-06,Sun,13:25,2020,regular,LAC,NE,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-12-10,Thu,17:20,2020,regular,LAR,NE,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-12-13,Sun,13:25,2020,regular,LAC,ATL,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-12-20,Sun,13:05,2020,regular,LAR,NYJ,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2020-12-27,Sun,13:05,2020,regular,LAC,DEN,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-01-03,Sun,13:25,2020,regular,LAR,ARI,0,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-09-12,Sun,17:20,2021,regular,LAR,CHI,70445,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-09-19,Sun,13:25,2021,regular,LAC,DAL,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-09-26,Sun,13:25,2021,regular,LAR,TB,73205,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-10-03,Sun,13:05,2021,regular,LAR,ARI,70003,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-10-04,Mon,17:50,2021,regular,LAC,LV,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-10-10,Sun,13:05,2021,regular,LAC,CLE,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-10-24,Sun,13:05,2021,regular,LAR,DET,70540,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-10-31,Sun,13:05,2021,regular,LAC,NE,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-11-07,Sun,17:20,2021,regular,LAR,TEN,71785,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-11-14,Sun,13:05,2021,regular,LAC,MIN,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-11-21,Sun,17:20,2021,regular,LAC,PIT,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-12-05,Sun,13:05,2021,regular,LAR,JAX,70801,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-12-12,Sun,13:05,2021,regular,LAC,NYG,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-12-16,Thu,17:20,2021,regular,LAC,KC,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2021-12-21,Tue,16:00,2021,regular,LAR,SEA,71565,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-01-02,Sun,13:05,2021,regular,LAC,DEN,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-01-09,Sun,13:25,2021,regular,LAR,SF,74447,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-01-17,Mon,17:15,2021,postseason,LAR,ARI,70625,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-01-30,Sun,15:30,2021,postseason,LAR,SF,73202,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-02-13,Sun,15:30,2021,postseason,CIN,LAR,70048,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-09-08,Thu,17:20,2022,regular,LAR,BUF,73846,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-09-11,Sun,13:25,2022,regular,LAC,LV,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-09-18,Sun,13:05,2022,regular,LAR,ATL,71802,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-09-25,Sun,13:05,2022,regular,LAC,JAX,67964,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-10-09,Sun,13:25,2022,regular,LAR,DAL,74154,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-10-16,Sun,13:05,2022,regular,LAR,CAR,71482,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-10-17,Mon,17:15,2022,regular,LAC,DEN,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-10-23,Sun,13:25,2022,regular,LAC,SEA,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-10-30,Sun,13:25,2022,regular,LAR,SF,73505,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-11-13,Sun,13:25,2022,regular,LAR,ARI,71752,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-11-20,Sun,17:20,2022,regular,LAC,KC,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-12-04,Sun,13:05,2022,regular,LAR,SEA,71802,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-12-08,Thu,17:15,2022,regular,LAR,LV,74738,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-12-11,Sun,17:20,2022,regular,LAC,MIA,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-12-18,Sun,13:25,2022,regular,LAC,TEN,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2022-12-25,Sun,13:30,2022,regular,LAR,DEN,71525,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-01-01,Sun,13:25,2022,regular,LAC,LAR,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-09-10,Sun,13:25,2023,regular,LAC,MIA,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-09-17,Sun,13:05,2023,regular,LAR,SF,74742,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-10-01,Sun,13:05,2023,regular,LAC,LV,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-10-08,Sun,13:05,2023,regular,LAR,PHI,74935,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-10-15,Sun,13:25,2023,regular,LAR,ARI,71202,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-10-16,Mon,17:15,2023,regular,LAC,DAL,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-10-22,Sun,13:05,2023,regular,LAR,PIT,73471,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-10-29,Sun,17:20,2023,regular,LAC,CHI,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-11-12,Sun,13:05,2023,regular,LAC,DET,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-11-19,Sun,13:25,2023,regular,LAR,SEA,72704,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-11-26,Sun,17:20,2023,regular,LAC,BAL,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-12-03,Sun,13:25,2023,regular,LAR,CLE,72887,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-12-10,Sun,13:25,2023,regular,LAC,DEN,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-12-17,Sun,13:05,2023,regular,LAR,WSH,72035,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-12-21,Thu,17:15,2023,regular,LAR,NO,73228,SoFi Stadium
+SoFi Stadium,Los Angeles,2023-12-23,Sat,17:00,2023,regular,LAC,BUF,67678,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-01-07,Sun,13:25,2023,regular,LAC,KC,68274,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-09-08,Sun,13:05,2024,regular,LAC,LV,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-09-22,Sun,13:25,2024,regular,LAR,SF,74484,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-09-29,Sun,13:25,2024,regular,LAC,KC,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-10-06,Sun,13:25,2024,regular,LAR,GB,72842,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-10-20,Sun,13:05,2024,regular,LAR,LV,73267,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-10-24,Thu,17:15,2024,regular,LAR,MIN,72127,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-10-27,Sun,13:05,2024,regular,LAC,NO,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-11-10,Sun,13:05,2024,regular,LAC,TEN,68796,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-11-11,Mon,17:15,2024,regular,LAR,MIA,72474,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-11-17,Sun,17:20,2024,regular,LAC,CIN,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-11-24,Sun,17:20,2024,regular,LAR,PHI,74400,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-11-25,Mon,17:15,2024,regular,LAC,BAL,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-12-08,Sun,13:25,2024,regular,LAR,BUF,73493,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-12-15,Sun,13:25,2024,regular,LAC,TB,69496,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-12-19,Thu,17:15,2024,regular,LAC,DEN,70240,SoFi Stadium
+SoFi Stadium,Los Angeles,2024-12-28,Sat,17:00,2024,regular,LAR,ARI,73051,SoFi Stadium
+SoFi Stadium,Los Angeles,2025-01-05,Sun,13:25,2024,regular,LAR,SEA,72610,SoFi Stadium
