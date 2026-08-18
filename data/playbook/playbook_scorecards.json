@@ -1,9 +1,24 @@
 {
   "meta": {
     "engine": "plan_d_eleven_hosts_playbook",
-    "version": "0.2.0",
-    "generated_at": "2026-08-16T19:49:19.780822+00:00",
+    "version": "0.4.0",
+    "generated_at": "2026-08-18T19:04:36.306793+00:00",
     "disclaimer": "Sample data are transformed (noise/jitter). Scores demonstrate comparative methodology for mega-event resource readiness \u2014 not ground-truth city rankings.",
+    "indicator_source": {
+      "resolved": "map",
+      "id": "map",
+      "label": "spend-patterns per-shop summer rates (map tables)",
+      "unit": "energy/water/co2e per trading shop-month; city size does not drive rank",
+      "joins_geometry": true,
+      "canonical_for_demo": true
+    },
+    "ops_context": {
+      "context_id": "plan_d_ops_context",
+      "context_version": "1.0.0",
+      "role": "ops_scale",
+      "not_used_in_readiness": true,
+      "grain_note": "absolute = provisioning scale (store-visits totals); readiness uses per-shop rates from spend-patterns map tables"
+    },
     "formula": {
       "stress": "0.35*z(energy)+0.25*z(co2e)+0.20*z(water)+0.10*z(cdd)+0.10*z(uhi)",
       "readiness": "min-max rescale of inverted stress to 0\u2013100 across 11 hosts; higher = lower relative summer nexus load",
@@ -24,217 +39,83 @@
       "uncertainty_pct": 0.15,
       "peer_count": 3,
       "plays_per_city": 3,
+      "indicator_source": "map",
       "curated_dir": "data\\curated",
+      "app_data_dir": "app\\data",
       "output_dir": "data\\playbook"
     },
-    "allocation": {
-      "Dallas / Houston": {
-        "Dallas": 0.35481491416309013,
-        "Houston": 0.6451850858369099
-      },
-      "Los Angeles / SF Bay Area": {
-        "Los Angeles": 0.2895588900880827,
-        "San Francisco Bay Area": 0.7104411099119172
-      }
-    }
+    "allocation": {}
   },
   "scorecards": [
     {
-      "host_city": "Seattle",
+      "host_city": "Boston",
       "rank": 1,
       "readiness_score": 100.0,
       "readiness_band": [
         85.0,
         100.0
       ],
-      "stress_index": -1.1318,
+      "stress_index": -0.7533,
       "z_components": {
-        "energy_kwh": -1.1333,
-        "kg_co2e": -1.1339,
-        "water_liters": -1.211,
-        "cdd": -1.7442,
-        "uhi": -0.3507
+        "energy_kwh": -1.1766,
+        "kg_co2e": -0.9553,
+        "water_liters": -0.5988,
+        "cdd": 0.1828,
+        "uhi": -0.0114
       },
       "drivers": [
         {
           "key": "energy_kwh",
           "label": "Energy",
-          "z": -1.1333,
+          "z": -1.1766,
           "elevated": false,
-          "raw": 7515397555.2
+          "raw": 172.2279
         },
         {
           "key": "kg_co2e",
           "label": "Food CO\u2082e",
-          "z": -1.1339,
+          "z": -0.9553,
           "elevated": false,
-          "raw": 3685551133.9
+          "raw": 159.0193
         },
         {
           "key": "water_liters",
           "label": "Water",
-          "z": -1.211,
+          "z": -0.5988,
           "elevated": false,
-          "raw": 16129411213.0
+          "raw": 1158.8624
         },
         {
           "key": "cdd",
           "label": "Cooling (CDD)",
-          "z": -1.7442,
-          "elevated": false,
-          "raw": 740.4833
-        },
-        {
-          "key": "uhi",
-          "label": "Urban heat",
-          "z": -0.3507,
-          "elevated": false,
-          "raw": 4.7077
-        }
-      ],
-      "primary_pressure_drivers": [],
-      "raw_indicators": {
-        "energy_kwh": 7515397555.2,
-        "water_liters": 16129411213.0,
-        "kg_co2e": 3685551133.9,
-        "visits": 664016786.0,
-        "cdd": 740.4833,
-        "uhi": 4.7077,
-        "spend_total": 1877754058.888,
-        "summer_month_rows": 10.0,
-        "poi_food_share": 0.487,
-        "poi_energy_share": 0.0246,
-        "poi_water_share": 0.0265,
-        "poi_venue_share": 0.1744
-      },
-      "peer_cities": [
-        "Boston",
-        "Kansas City",
-        "Philadelphia"
-      ],
-      "recommended_plays": [],
-      "general_options": [
-        {
-          "id": "peak_cooling_setpoints",
-          "title": "Event-week HVAC setpoint & pre-cooling protocols",
-          "owner": "Hotel engineering + venue facilities",
-          "effort": "low",
-          "legacy_use": "Heat-wave building ops for any summer peak",
-          "targets": [
-            "cdd",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -8,
-            "food_co2e_pct": 0,
-            "water_pct": -1
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Seattle is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        },
-        {
-          "id": "plant_forward_concessions",
-          "title": "Plant-forward concessions & catering defaults",
-          "owner": "Venue concessions + city food policy",
-          "effort": "medium",
-          "legacy_use": "Any stadium / convention F&B contract cycle",
-          "targets": [
-            "kg_co2e",
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -5,
-            "food_co2e_pct": -25,
-            "water_pct": -8
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Seattle is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        }
-      ]
-    },
-    {
-      "host_city": "Boston",
-      "rank": 2,
-      "readiness_score": 97.01,
-      "readiness_band": [
-        82.01,
-        100.0
-      ],
-      "stress_index": -1.0616,
-      "z_components": {
-        "energy_kwh": -1.3874,
-        "kg_co2e": -1.3302,
-        "water_liters": -1.2779,
-        "cdd": 0.2755,
-        "uhi": -0.1539
-      },
-      "drivers": [
-        {
-          "key": "energy_kwh",
-          "label": "Energy",
-          "z": -1.3874,
-          "elevated": false,
-          "raw": 5284899021.2
-        },
-        {
-          "key": "kg_co2e",
-          "label": "Food CO\u2082e",
-          "z": -1.3302,
-          "elevated": false,
-          "raw": 2853624340.9
-        },
-        {
-          "key": "water_liters",
-          "label": "Water",
-          "z": -1.2779,
-          "elevated": false,
-          "raw": 14689264629.0
-        },
-        {
-          "key": "cdd",
-          "label": "Cooling (CDD)",
-          "z": 0.2755,
+          "z": 0.1828,
           "elevated": true,
-          "raw": 10436.2073
+          "raw": 1025.1667
         },
         {
           "key": "uhi",
           "label": "Urban heat",
-          "z": -0.1539,
+          "z": -0.0114,
           "elevated": false,
-          "raw": 5.0144
+          "raw": 8.0
         }
       ],
       "primary_pressure_drivers": [
         "cdd"
       ],
       "raw_indicators": {
-        "energy_kwh": 5284899021.2,
-        "water_liters": 14689264629.0,
-        "kg_co2e": 2853624340.9,
-        "visits": 545562521.0,
-        "cdd": 10436.2073,
-        "uhi": 5.0144,
-        "spend_total": 360704347.1084,
-        "summer_month_rows": 10.0,
-        "poi_food_share": 0.5646,
-        "poi_energy_share": 0.0182,
-        "poi_water_share": 0.047,
-        "poi_venue_share": 0.2448
+        "energy_kwh": 172.2279,
+        "water_liters": 1158.8624,
+        "kg_co2e": 159.0193,
+        "uhi": 8.0,
+        "shop_months": 1297.0,
+        "shops": 499.0,
+        "cdd": 1025.1667
       },
       "peer_cities": [
-        "Philadelphia",
-        "Kansas City",
-        "Dallas"
+        "Houston",
+        "San Francisco Bay Area",
+        "New York/New Jersey"
       ],
       "recommended_plays": [
         {
@@ -252,7 +133,7 @@
             {
               "key": "cdd",
               "label": "Cooling (CDD)",
-              "z": 0.2755
+              "z": 0.1828
             }
           ],
           "expected_effects": {
@@ -260,41 +141,33 @@
             "food_co2e_pct": 0,
             "water_pct": -2
           },
-          "match_score": 0.276,
+          "match_score": 0.183,
           "pressing": true,
           "peer_overlap": [
             {
-              "city": "Philadelphia",
+              "city": "Houston",
               "shared_elevated_drivers": [
                 {
                   "key": "cdd",
                   "label": "Cooling (CDD)",
-                  "city_z": 0.2755,
-                  "peer_z": 0.3475
+                  "city_z": 0.1828,
+                  "peer_z": 0.7963
                 }
               ],
-              "readiness_score": 64.67,
-              "rank": 4
-            },
-            {
-              "city": "Dallas",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.2755,
-                  "peer_z": 0.7997
-                }
-              ],
-              "readiness_score": 56.92,
-              "rank": 6
+              "readiness_score": 62.16,
+              "rank": 7
             }
           ],
           "steal_from_peers": [
-            "Philadelphia",
-            "Dallas"
+            "Houston"
           ],
-          "rationale": "Boston couples heat and cooling load (UHI z=-0.15, CDD z=0.28). Peers with similar heat/cooling pressure: Philadelphia, Dallas."
+          "rationale": "Boston couples heat and cooling load (UHI z=-0.01, CDD z=0.18). Peers with similar heat/cooling pressure: Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -634187882.5,
+            "water_liters": -293785292.6,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         },
         {
           "id": "peak_cooling_setpoints",
@@ -310,7 +183,7 @@
             {
               "key": "cdd",
               "label": "Cooling (CDD)",
-              "z": 0.2755
+              "z": 0.1828
             }
           ],
           "expected_effects": {
@@ -318,41 +191,33 @@
             "food_co2e_pct": 0,
             "water_pct": -1
           },
-          "match_score": 0.276,
+          "match_score": 0.183,
           "pressing": true,
           "peer_overlap": [
             {
-              "city": "Philadelphia",
+              "city": "Houston",
               "shared_elevated_drivers": [
                 {
                   "key": "cdd",
                   "label": "Cooling (CDD)",
-                  "city_z": 0.2755,
-                  "peer_z": 0.3475
+                  "city_z": 0.1828,
+                  "peer_z": 0.7963
                 }
               ],
-              "readiness_score": 64.67,
-              "rank": 4
-            },
-            {
-              "city": "Dallas",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.2755,
-                  "peer_z": 0.7997
-                }
-              ],
-              "readiness_score": 56.92,
-              "rank": 6
+              "readiness_score": 62.16,
+              "rank": 7
             }
           ],
           "steal_from_peers": [
-            "Philadelphia",
-            "Dallas"
+            "Houston"
           ],
-          "rationale": "Boston summer CDD pressure is material (z=0.28). Peers with similar cooling pressure: Philadelphia, Dallas."
+          "rationale": "Boston summer CDD pressure is material (z=0.18). Peers with similar cooling pressure: Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -422791921.7,
+            "water_liters": -146892646.3,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         }
       ],
       "general_options": [
@@ -377,7 +242,13 @@
           "pressing": false,
           "peer_overlap": [],
           "steal_from_peers": [],
-          "rationale": "Boston is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
+          "rationale": "Boston is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -264244951.1,
+            "water_liters": -1175141170.3,
+            "kg_co2e": -713406085.2,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         },
         {
           "id": "hotel_water_reuse",
@@ -399,207 +270,152 @@
           "pressing": false,
           "peer_overlap": [],
           "steal_from_peers": [],
-          "rationale": "Boston is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
+          "rationale": "Boston is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -158546970.6,
+            "water_liters": -4406779388.7,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         }
-      ]
+      ],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 5284899021.2,
+          "water_liters": 14689264629.0,
+          "kg_co2e": 2853624340.9,
+          "visits": 545562521.0,
+          "summer_month_weight": 10.0,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.8128,
+          "Energy": 0.1368,
+          "Water": 0.0331,
+          "Venue": 0.0173,
+          "Other_EFW": 0.0
+        },
+        "spend": {
+          "total": 360704347.1,
+          "mix": {
+            "Energy": 0.9416,
+            "Food": 0.0356,
+            "Lodging": 0.0228
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.5646,
+          "Venue": 0.2448,
+          "Other_EFW": 0.1254,
+          "Water": 0.047,
+          "Energy": 0.0182
+        },
+        "climate": {
+          "mean_cdd_c": 1043.621,
+          "mean_hdd_c": 112.744,
+          "mean_temp_c": 21.687,
+          "mean_uhi": 5.014
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Dunkin'",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 88817229.0
+          },
+          {
+            "brand": "Stop & Shop",
+            "category": "Grocery Stores",
+            "summer_visits": 37957469.0
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 30002409.0
+          },
+          {
+            "brand": "Cumberland Farms",
+            "category": "Gasoline Stations",
+            "summer_visits": 28135208.0
+          },
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 20246571.0
+          }
+        ],
+        "not_used_in_readiness": true
+      }
     },
     {
-      "host_city": "Kansas City",
-      "rank": 3,
-      "readiness_score": 93.32,
+      "host_city": "New York/New Jersey",
+      "rank": 2,
+      "readiness_score": 99.79,
       "readiness_band": [
-        78.32,
+        84.79,
         100.0
       ],
-      "stress_index": -0.9749,
+      "stress_index": -0.7491,
       "z_components": {
-        "energy_kwh": -1.0847,
-        "kg_co2e": -0.9969,
-        "water_liters": -0.8356,
-        "cdd": -0.0484,
-        "uhi": -1.741
+        "energy_kwh": -1.1158,
+        "kg_co2e": -0.8374,
+        "water_liters": -0.4779,
+        "cdd": -1.2787,
+        "uhi": 0.7421
       },
       "drivers": [
         {
           "key": "energy_kwh",
           "label": "Energy",
-          "z": -1.0847,
+          "z": -1.1158,
           "elevated": false,
-          "raw": 7941240557.8
+          "raw": 183.984
         },
         {
           "key": "kg_co2e",
           "label": "Food CO\u2082e",
-          "z": -0.9969,
+          "z": -0.8374,
           "elevated": false,
-          "raw": 4266622640.7
+          "raw": 170.5401
         },
         {
           "key": "water_liters",
           "label": "Water",
-          "z": -0.8356,
+          "z": -0.4779,
           "elevated": false,
-          "raw": 24204774760.5
+          "raw": 1233.3325
         },
         {
           "key": "cdd",
           "label": "Cooling (CDD)",
-          "z": -0.0484,
+          "z": -1.2787,
           "elevated": false,
-          "raw": 8880.9852
+          "raw": 288.0237
         },
         {
           "key": "uhi",
           "label": "Urban heat",
-          "z": -1.741,
-          "elevated": false,
-          "raw": 2.54
-        }
-      ],
-      "primary_pressure_drivers": [],
-      "raw_indicators": {
-        "energy_kwh": 7941240557.8,
-        "water_liters": 24204774760.5,
-        "kg_co2e": 4266622640.7,
-        "visits": 864031044.0,
-        "cdd": 8880.9852,
-        "uhi": 2.54,
-        "spend_total": 827009228.7857,
-        "summer_month_rows": 10.0,
-        "poi_food_share": 0.3842,
-        "poi_energy_share": 0.0467,
-        "poi_water_share": 0.0421,
-        "poi_venue_share": 0.1548
-      },
-      "peer_cities": [
-        "Boston",
-        "Philadelphia",
-        "Seattle"
-      ],
-      "recommended_plays": [],
-      "general_options": [
-        {
-          "id": "peak_cooling_setpoints",
-          "title": "Event-week HVAC setpoint & pre-cooling protocols",
-          "owner": "Hotel engineering + venue facilities",
-          "effort": "low",
-          "legacy_use": "Heat-wave building ops for any summer peak",
-          "targets": [
-            "cdd",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -8,
-            "food_co2e_pct": 0,
-            "water_pct": -1
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Kansas City is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        },
-        {
-          "id": "plant_forward_concessions",
-          "title": "Plant-forward concessions & catering defaults",
-          "owner": "Venue concessions + city food policy",
-          "effort": "medium",
-          "legacy_use": "Any stadium / convention F&B contract cycle",
-          "targets": [
-            "kg_co2e",
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -5,
-            "food_co2e_pct": -25,
-            "water_pct": -8
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Kansas City is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        }
-      ]
-    },
-    {
-      "host_city": "Philadelphia",
-      "rank": 4,
-      "readiness_score": 64.67,
-      "readiness_band": [
-        49.67,
-        79.67
-      ],
-      "stress_index": -0.3014,
-      "z_components": {
-        "energy_kwh": -0.3705,
-        "kg_co2e": -0.4091,
-        "water_liters": -0.5968,
-        "cdd": 0.3475,
-        "uhi": 0.151
-      },
-      "drivers": [
-        {
-          "key": "energy_kwh",
-          "label": "Energy",
-          "z": -0.3705,
-          "elevated": false,
-          "raw": 14208951379.2
-        },
-        {
-          "key": "kg_co2e",
-          "label": "Food CO\u2082e",
-          "z": -0.4091,
-          "elevated": false,
-          "raw": 6758152694.2
-        },
-        {
-          "key": "water_liters",
-          "label": "Water",
-          "z": -0.5968,
-          "elevated": false,
-          "raw": 29342372120.0
-        },
-        {
-          "key": "cdd",
-          "label": "Cooling (CDD)",
-          "z": 0.3475,
+          "z": 0.7421,
           "elevated": true,
-          "raw": 10781.8859
-        },
-        {
-          "key": "uhi",
-          "label": "Urban heat",
-          "z": 0.151,
-          "elevated": true,
-          "raw": 5.4899
+          "raw": 9.2
         }
       ],
       "primary_pressure_drivers": [
-        "cdd",
         "uhi"
       ],
       "raw_indicators": {
-        "energy_kwh": 14208951379.2,
-        "water_liters": 29342372120.0,
-        "kg_co2e": 6758152694.2,
-        "visits": 1174617045.0,
-        "cdd": 10781.8859,
-        "uhi": 5.4899,
-        "spend_total": 1102230718.5697,
-        "summer_month_rows": 10.0,
-        "poi_food_share": 0.5086,
-        "poi_energy_share": 0.0205,
-        "poi_water_share": 0.0212,
-        "poi_venue_share": 0.1263
+        "energy_kwh": 183.984,
+        "water_liters": 1233.3325,
+        "kg_co2e": 170.5401,
+        "uhi": 9.2,
+        "shop_months": 15299.0,
+        "shops": 6324.0,
+        "cdd": 288.0237
       },
       "peer_cities": [
-        "Dallas",
-        "Boston",
-        "Los Angeles"
+        "San Francisco Bay Area",
+        "Seattle",
+        "Boston"
       ],
       "recommended_plays": [
         {
@@ -617,12 +433,7 @@
             {
               "key": "uhi",
               "label": "Urban heat",
-              "z": 0.151
-            },
-            {
-              "key": "cdd",
-              "label": "Cooling (CDD)",
-              "z": 0.3475
+              "z": 0.7421
             }
           ],
           "expected_effects": {
@@ -630,68 +441,36 @@
             "food_co2e_pct": 0,
             "water_pct": -2
           },
-          "match_score": 0.499,
+          "match_score": 0.742,
           "pressing": true,
           "peer_overlap": [
             {
-              "city": "Dallas",
+              "city": "San Francisco Bay Area",
               "shared_elevated_drivers": [
                 {
                   "key": "uhi",
                   "label": "Urban heat",
-                  "city_z": 0.151,
-                  "peer_z": 0.3555
-                },
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.3475,
-                  "peer_z": 0.7997
+                  "city_z": 0.7421,
+                  "peer_z": 1.0561
                 }
               ],
-              "readiness_score": 56.92,
-              "rank": 6
-            },
-            {
-              "city": "Boston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.3475,
-                  "peer_z": 0.2755
-                }
-              ],
-              "readiness_score": 97.01,
-              "rank": 2
-            },
-            {
-              "city": "Los Angeles",
-              "shared_elevated_drivers": [
-                {
-                  "key": "uhi",
-                  "label": "Urban heat",
-                  "city_z": 0.151,
-                  "peer_z": 2.107
-                },
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.3475,
-                  "peer_z": 0.8915
-                }
-              ],
-              "readiness_score": 57.72,
-              "rank": 5
+              "readiness_score": 98.3,
+              "rank": 3
             }
           ],
           "steal_from_peers": [
-            "Dallas",
-            "Boston",
-            "Los Angeles"
+            "San Francisco Bay Area"
           ],
-          "rationale": "Philadelphia couples heat and cooling load (UHI z=0.15, CDD z=0.35). Peers with similar heat/cooling pressure: Dallas, Boston, Los Angeles."
-        },
+          "rationale": "New York/New Jersey couples heat and cooling load (UHI z=0.74, CDD z=-1.28). Peers with similar heat/cooling pressure: San Francisco Bay Area.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -2654765665.4,
+            "water_liters": -1171432549.5,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "general_options": [
         {
           "id": "peak_cooling_setpoints",
           "title": "Event-week HVAC setpoint & pre-cooling protocols",
@@ -702,70 +481,24 @@
             "cdd",
             "energy_kwh"
           ],
-          "elevated_targets": [
-            {
-              "key": "cdd",
-              "label": "Cooling (CDD)",
-              "z": 0.3475
-            }
-          ],
+          "elevated_targets": [],
           "expected_effects": {
             "energy_pct": -8,
             "food_co2e_pct": 0,
             "water_pct": -1
           },
-          "match_score": 0.348,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Dallas",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.3475,
-                  "peer_z": 0.7997
-                }
-              ],
-              "readiness_score": 56.92,
-              "rank": 6
-            },
-            {
-              "city": "Boston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.3475,
-                  "peer_z": 0.2755
-                }
-              ],
-              "readiness_score": 97.01,
-              "rank": 2
-            },
-            {
-              "city": "Los Angeles",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.3475,
-                  "peer_z": 0.8915
-                }
-              ],
-              "readiness_score": 57.72,
-              "rank": 5
-            }
-          ],
-          "steal_from_peers": [
-            "Dallas",
-            "Boston",
-            "Los Angeles"
-          ],
-          "rationale": "Philadelphia summer CDD pressure is material (z=0.35). Peers with similar cooling pressure: Dallas, Boston, Los Angeles."
-        }
-      ],
-      "general_options": [
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "New York/New Jersey is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1769843776.9,
+            "water_liters": -585716274.8,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
         {
           "id": "plant_forward_concessions",
           "title": "Plant-forward concessions & catering defaults",
@@ -787,83 +520,384 @@
           "pressing": false,
           "peer_overlap": [],
           "steal_from_peers": [],
-          "rationale": "Philadelphia is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        },
-        {
-          "id": "hotel_water_reuse",
-          "title": "Hotel linen / laundry water-reuse program",
-          "owner": "Hotel association + utility",
-          "effort": "medium",
-          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
-          "targets": [
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -3,
-            "food_co2e_pct": 0,
-            "water_pct": -30
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Philadelphia is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
+          "rationale": "New York/New Jersey is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1106152360.6,
+            "water_liters": -4685730198.2,
+            "kg_co2e": -2977511557.1,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         }
-      ]
+      ],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 22123047211.4,
+          "water_liters": 58571627477.5,
+          "kg_co2e": 11910046228.2,
+          "visits": 2249681045.0,
+          "summer_month_weight": 10.0,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.8106,
+          "Energy": 0.1382,
+          "Water": 0.0319,
+          "Venue": 0.0193,
+          "Other_EFW": 0.0
+        },
+        "spend": {
+          "total": 1786010648.8,
+          "mix": {
+            "Energy": 0.6499,
+            "Food": 0.3277,
+            "Lodging": 0.0224
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.6099,
+          "Other_EFW": 0.1787,
+          "Venue": 0.1472,
+          "Water": 0.0353,
+          "Energy": 0.0289
+        },
+        "climate": {
+          "mean_cdd_c": 290.443,
+          "mean_hdd_c": 9.302,
+          "mean_temp_c": 22.905,
+          "mean_uhi": 4.704
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Dunkin'",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 267720747.0
+          },
+          {
+            "brand": "Sunoco",
+            "category": "Gasoline Stations",
+            "summer_visits": 106182575.0
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 100168392.0
+          },
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 74674105.0
+          },
+          {
+            "brand": "Burger King",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 67285093.0
+          }
+        ],
+        "not_used_in_readiness": true
+      }
     },
     {
-      "host_city": "Los Angeles",
-      "rank": 5,
-      "readiness_score": 57.72,
+      "host_city": "San Francisco Bay Area",
+      "rank": 3,
+      "readiness_score": 98.3,
       "readiness_band": [
-        42.72,
-        72.72
+        83.3,
+        100.0
       ],
-      "stress_index": -0.1381,
+      "stress_index": -0.7193,
       "z_components": {
-        "energy_kwh": -0.5699,
-        "kg_co2e": -0.5084,
-        "water_liters": -0.5569,
-        "cdd": 0.8915,
-        "uhi": 2.107
+        "energy_kwh": -0.8572,
+        "kg_co2e": -1.1376,
+        "water_liters": -0.6935,
+        "cdd": -1.0182,
+        "uhi": 1.0561
       },
       "drivers": [
         {
           "key": "energy_kwh",
           "label": "Energy",
-          "z": -0.5699,
+          "z": -0.8572,
           "elevated": false,
-          "raw": 12459022397.0689
+          "raw": 233.9661
         },
         {
           "key": "kg_co2e",
           "label": "Food CO\u2082e",
-          "z": -0.5084,
+          "z": -1.1376,
           "elevated": false,
-          "raw": 6337214628.96
+          "raw": 141.1954
         },
         {
           "key": "water_liters",
           "label": "Water",
-          "z": -0.5569,
+          "z": -0.6935,
           "elevated": false,
-          "raw": 30199720174.3031
+          "raw": 1100.5391
         },
         {
           "key": "cdd",
           "label": "Cooling (CDD)",
-          "z": 0.8915,
-          "elevated": true,
-          "raw": 13393.1556
+          "z": -1.0182,
+          "elevated": false,
+          "raw": 419.4527
         },
         {
           "key": "uhi",
           "label": "Urban heat",
-          "z": 2.107,
+          "z": 1.0561,
           "elevated": true,
-          "raw": 8.5397
+          "raw": 9.7
+        }
+      ],
+      "primary_pressure_drivers": [
+        "uhi"
+      ],
+      "raw_indicators": {
+        "energy_kwh": 233.9661,
+        "water_liters": 1100.5391,
+        "kg_co2e": 141.1954,
+        "uhi": 9.7,
+        "shop_months": 10870.0,
+        "shops": 3971.0,
+        "cdd": 419.4527
+      },
+      "peer_cities": [
+        "New York/New Jersey",
+        "Boston",
+        "Seattle"
+      ],
+      "recommended_plays": [
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "uhi",
+              "label": "Urban heat",
+              "z": 1.0561
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 1.056,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "New York/New Jersey",
+              "shared_elevated_drivers": [
+                {
+                  "key": "uhi",
+                  "label": "Urban heat",
+                  "city_z": 1.0561,
+                  "peer_z": 0.7421
+                }
+              ],
+              "readiness_score": 99.79,
+              "rank": 2
+            }
+          ],
+          "steal_from_peers": [
+            "New York/New Jersey"
+          ],
+          "rationale": "San Francisco Bay Area couples heat and cooling load (UHI z=1.06, CDD z=-1.02). Peers with similar heat/cooling pressure: New York/New Jersey.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -3668228607.0,
+            "water_liters": -1481917734.5,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "general_options": [
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "San Francisco Bay Area is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -2445485738.0,
+            "water_liters": -740958867.2,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "San Francisco Bay Area is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1528428586.2,
+            "water_liters": -5927670937.9,
+            "kg_co2e": -3887134835.8,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 30568571724.7,
+          "water_liters": 74095886723.2,
+          "kg_co2e": 15548539343.3,
+          "visits": 2923345764.9,
+          "summer_month_weight": 7.104,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.7919,
+          "Energy": 0.163,
+          "Water": 0.0283,
+          "Venue": 0.0167,
+          "Other_EFW": 0.0
+        },
+        "spend": {
+          "total": 2561119582.2,
+          "mix": {
+            "Energy": 0.8892,
+            "Food": 0.0818,
+            "Lodging": 0.029
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.5259,
+          "Other_EFW": 0.216,
+          "Venue": 0.173,
+          "Water": 0.0461,
+          "Energy": 0.039
+        },
+        "climate": {
+          "mean_cdd_c": 423.612,
+          "mean_hdd_c": 91.944,
+          "mean_temp_c": 20.508,
+          "mean_uhi": 5.622
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Chevron",
+            "category": "Gasoline Stations",
+            "summer_visits": 198614759.5
+          },
+          {
+            "brand": "Starbucks",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 174246432.6
+          },
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 142975333.5
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 131675536.7
+          },
+          {
+            "brand": "ARCO",
+            "category": "Gasoline Stations",
+            "summer_visits": 115477453.8
+          }
+        ],
+        "not_used_in_readiness": true
+      }
+    },
+    {
+      "host_city": "Los Angeles",
+      "rank": 4,
+      "readiness_score": 95.67,
+      "readiness_band": [
+        80.67,
+        100.0
+      ],
+      "stress_index": -0.6671,
+      "z_components": {
+        "energy_kwh": -0.9425,
+        "kg_co2e": -1.2144,
+        "water_liters": -1.2922,
+        "cdd": 0.9409,
+        "uhi": 1.3073
+      },
+      "drivers": [
+        {
+          "key": "energy_kwh",
+          "label": "Energy",
+          "z": -0.9425,
+          "elevated": false,
+          "raw": 217.481
+        },
+        {
+          "key": "kg_co2e",
+          "label": "Food CO\u2082e",
+          "z": -1.2144,
+          "elevated": false,
+          "raw": 133.685
+        },
+        {
+          "key": "water_liters",
+          "label": "Water",
+          "z": -1.2922,
+          "elevated": false,
+          "raw": 731.7861
+        },
+        {
+          "key": "cdd",
+          "label": "Cooling (CDD)",
+          "z": 0.9409,
+          "elevated": true,
+          "raw": 1407.5491
+        },
+        {
+          "key": "uhi",
+          "label": "Urban heat",
+          "z": 1.3073,
+          "elevated": true,
+          "raw": 10.1
         }
       ],
       "primary_pressure_drivers": [
@@ -871,1466 +905,21 @@
         "cdd"
       ],
       "raw_indicators": {
-        "energy_kwh": 12459022397.0689,
-        "water_liters": 30199720174.3031,
-        "kg_co2e": 6337214628.96,
-        "visits": 1191486167.1289,
-        "cdd": 13393.1556,
-        "uhi": 8.5397,
-        "spend_total": 1043851394.9561,
-        "summer_month_rows": 2.8956,
-        "poi_food_share": 0.5581,
-        "poi_energy_share": 0.0369,
-        "poi_water_share": 0.0322,
-        "poi_venue_share": 0.1367
+        "energy_kwh": 217.481,
+        "water_liters": 731.7861,
+        "kg_co2e": 133.685,
+        "uhi": 10.1,
+        "shop_months": 4401.0,
+        "shops": 1864.0,
+        "cdd": 1407.5491
       },
       "peer_cities": [
-        "Dallas",
-        "Philadelphia",
-        "Boston"
-      ],
-      "recommended_plays": [
-        {
-          "id": "cool_roofs_shade_uhi",
-          "title": "Cool roofs + shade in high-UHI hospitality corridors",
-          "owner": "City planning + downtown BID",
-          "effort": "high",
-          "legacy_use": "Heat-action planning for summer festivals / playoffs",
-          "targets": [
-            "uhi",
-            "cdd",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "uhi",
-              "label": "Urban heat",
-              "z": 2.107
-            },
-            {
-              "key": "cdd",
-              "label": "Cooling (CDD)",
-              "z": 0.8915
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -12,
-            "food_co2e_pct": 0,
-            "water_pct": -2
-          },
-          "match_score": 2.998,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Dallas",
-              "shared_elevated_drivers": [
-                {
-                  "key": "uhi",
-                  "label": "Urban heat",
-                  "city_z": 2.107,
-                  "peer_z": 0.3555
-                },
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.8915,
-                  "peer_z": 0.7997
-                }
-              ],
-              "readiness_score": 56.92,
-              "rank": 6
-            },
-            {
-              "city": "Philadelphia",
-              "shared_elevated_drivers": [
-                {
-                  "key": "uhi",
-                  "label": "Urban heat",
-                  "city_z": 2.107,
-                  "peer_z": 0.151
-                },
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.8915,
-                  "peer_z": 0.3475
-                }
-              ],
-              "readiness_score": 64.67,
-              "rank": 4
-            },
-            {
-              "city": "Boston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.8915,
-                  "peer_z": 0.2755
-                }
-              ],
-              "readiness_score": 97.01,
-              "rank": 2
-            }
-          ],
-          "steal_from_peers": [
-            "Dallas",
-            "Philadelphia",
-            "Boston"
-          ],
-          "rationale": "Los Angeles couples heat and cooling load (UHI z=2.11, CDD z=0.89). Peers with similar heat/cooling pressure: Dallas, Philadelphia, Boston."
-        },
-        {
-          "id": "peak_cooling_setpoints",
-          "title": "Event-week HVAC setpoint & pre-cooling protocols",
-          "owner": "Hotel engineering + venue facilities",
-          "effort": "low",
-          "legacy_use": "Heat-wave building ops for any summer peak",
-          "targets": [
-            "cdd",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "cdd",
-              "label": "Cooling (CDD)",
-              "z": 0.8915
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -8,
-            "food_co2e_pct": 0,
-            "water_pct": -1
-          },
-          "match_score": 0.891,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Dallas",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.8915,
-                  "peer_z": 0.7997
-                }
-              ],
-              "readiness_score": 56.92,
-              "rank": 6
-            },
-            {
-              "city": "Philadelphia",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.8915,
-                  "peer_z": 0.3475
-                }
-              ],
-              "readiness_score": 64.67,
-              "rank": 4
-            },
-            {
-              "city": "Boston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.8915,
-                  "peer_z": 0.2755
-                }
-              ],
-              "readiness_score": 97.01,
-              "rank": 2
-            }
-          ],
-          "steal_from_peers": [
-            "Dallas",
-            "Philadelphia",
-            "Boston"
-          ],
-          "rationale": "Los Angeles summer CDD pressure is material (z=0.89). Peers with similar cooling pressure: Dallas, Philadelphia, Boston."
-        }
-      ],
-      "general_options": [
-        {
-          "id": "plant_forward_concessions",
-          "title": "Plant-forward concessions & catering defaults",
-          "owner": "Venue concessions + city food policy",
-          "effort": "medium",
-          "legacy_use": "Any stadium / convention F&B contract cycle",
-          "targets": [
-            "kg_co2e",
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -5,
-            "food_co2e_pct": -25,
-            "water_pct": -8
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Los Angeles is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        },
-        {
-          "id": "hotel_water_reuse",
-          "title": "Hotel linen / laundry water-reuse program",
-          "owner": "Hotel association + utility",
-          "effort": "medium",
-          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
-          "targets": [
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -3,
-            "food_co2e_pct": 0,
-            "water_pct": -30
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Los Angeles is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        }
-      ]
-    },
-    {
-      "host_city": "Dallas",
-      "rank": 6,
-      "readiness_score": 56.92,
-      "readiness_band": [
-        41.92,
-        71.92
-      ],
-      "stress_index": -0.1195,
-      "z_components": {
-        "energy_kwh": -0.2357,
-        "kg_co2e": -0.3775,
-        "water_liters": -0.2907,
-        "cdd": 0.7997,
-        "uhi": 0.3555
-      },
-      "drivers": [
-        {
-          "key": "energy_kwh",
-          "label": "Energy",
-          "z": -0.2357,
-          "elevated": false,
-          "raw": 15391937176.6261
-        },
-        {
-          "key": "kg_co2e",
-          "label": "Food CO\u2082e",
-          "z": -0.3775,
-          "elevated": false,
-          "raw": 6891866409.3067
-        },
-        {
-          "key": "water_liters",
-          "label": "Water",
-          "z": -0.2907,
-          "elevated": false,
-          "raw": 35927486046.5424
-        },
-        {
-          "key": "cdd",
-          "label": "Cooling (CDD)",
-          "z": 0.7997,
-          "elevated": true,
-          "raw": 12952.5176
-        },
-        {
-          "key": "uhi",
-          "label": "Urban heat",
-          "z": 0.3555,
-          "elevated": true,
-          "raw": 5.8087
-        }
-      ],
-      "primary_pressure_drivers": [
-        "cdd",
-        "uhi"
-      ],
-      "raw_indicators": {
-        "energy_kwh": 15391937176.6261,
-        "water_liters": 35927486046.5424,
-        "kg_co2e": 6891866409.3067,
-        "visits": 1269427969.052,
-        "cdd": 12952.5176,
-        "uhi": 5.8087,
-        "spend_total": 1014160928.8833,
-        "summer_month_rows": 3.5481,
-        "poi_food_share": 0.4545,
-        "poi_energy_share": 0.0361,
-        "poi_water_share": 0.0352,
-        "poi_venue_share": 0.1276
-      },
-      "peer_cities": [
-        "Philadelphia",
-        "Los Angeles",
-        "Boston"
-      ],
-      "recommended_plays": [
-        {
-          "id": "cool_roofs_shade_uhi",
-          "title": "Cool roofs + shade in high-UHI hospitality corridors",
-          "owner": "City planning + downtown BID",
-          "effort": "high",
-          "legacy_use": "Heat-action planning for summer festivals / playoffs",
-          "targets": [
-            "uhi",
-            "cdd",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "uhi",
-              "label": "Urban heat",
-              "z": 0.3555
-            },
-            {
-              "key": "cdd",
-              "label": "Cooling (CDD)",
-              "z": 0.7997
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -12,
-            "food_co2e_pct": 0,
-            "water_pct": -2
-          },
-          "match_score": 1.155,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Philadelphia",
-              "shared_elevated_drivers": [
-                {
-                  "key": "uhi",
-                  "label": "Urban heat",
-                  "city_z": 0.3555,
-                  "peer_z": 0.151
-                },
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.7997,
-                  "peer_z": 0.3475
-                }
-              ],
-              "readiness_score": 64.67,
-              "rank": 4
-            },
-            {
-              "city": "Los Angeles",
-              "shared_elevated_drivers": [
-                {
-                  "key": "uhi",
-                  "label": "Urban heat",
-                  "city_z": 0.3555,
-                  "peer_z": 2.107
-                },
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.7997,
-                  "peer_z": 0.8915
-                }
-              ],
-              "readiness_score": 57.72,
-              "rank": 5
-            },
-            {
-              "city": "Boston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.7997,
-                  "peer_z": 0.2755
-                }
-              ],
-              "readiness_score": 97.01,
-              "rank": 2
-            }
-          ],
-          "steal_from_peers": [
-            "Philadelphia",
-            "Los Angeles",
-            "Boston"
-          ],
-          "rationale": "Dallas couples heat and cooling load (UHI z=0.36, CDD z=0.80). Peers with similar heat/cooling pressure: Philadelphia, Los Angeles, Boston."
-        },
-        {
-          "id": "peak_cooling_setpoints",
-          "title": "Event-week HVAC setpoint & pre-cooling protocols",
-          "owner": "Hotel engineering + venue facilities",
-          "effort": "low",
-          "legacy_use": "Heat-wave building ops for any summer peak",
-          "targets": [
-            "cdd",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "cdd",
-              "label": "Cooling (CDD)",
-              "z": 0.7997
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -8,
-            "food_co2e_pct": 0,
-            "water_pct": -1
-          },
-          "match_score": 0.8,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Philadelphia",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.7997,
-                  "peer_z": 0.3475
-                }
-              ],
-              "readiness_score": 64.67,
-              "rank": 4
-            },
-            {
-              "city": "Los Angeles",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.7997,
-                  "peer_z": 0.8915
-                }
-              ],
-              "readiness_score": 57.72,
-              "rank": 5
-            },
-            {
-              "city": "Boston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 0.7997,
-                  "peer_z": 0.2755
-                }
-              ],
-              "readiness_score": 97.01,
-              "rank": 2
-            }
-          ],
-          "steal_from_peers": [
-            "Philadelphia",
-            "Los Angeles",
-            "Boston"
-          ],
-          "rationale": "Dallas summer CDD pressure is material (z=0.80). Peers with similar cooling pressure: Philadelphia, Los Angeles, Boston."
-        }
-      ],
-      "general_options": [
-        {
-          "id": "plant_forward_concessions",
-          "title": "Plant-forward concessions & catering defaults",
-          "owner": "Venue concessions + city food policy",
-          "effort": "medium",
-          "legacy_use": "Any stadium / convention F&B contract cycle",
-          "targets": [
-            "kg_co2e",
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -5,
-            "food_co2e_pct": -25,
-            "water_pct": -8
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Dallas is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        },
-        {
-          "id": "hotel_water_reuse",
-          "title": "Hotel linen / laundry water-reuse program",
-          "owner": "Hotel association + utility",
-          "effort": "medium",
-          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
-          "targets": [
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -3,
-            "food_co2e_pct": 0,
-            "water_pct": -30
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Dallas is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        }
-      ]
-    },
-    {
-      "host_city": "Atlanta",
-      "rank": 7,
-      "readiness_score": 51.78,
-      "readiness_band": [
-        36.78,
-        66.78
-      ],
-      "stress_index": 0.0015,
-      "z_components": {
-        "energy_kwh": 0.0957,
-        "kg_co2e": -0.0975,
-        "water_liters": -0.132,
-        "cdd": 1.6368,
-        "uhi": -1.4491
-      },
-      "drivers": [
-        {
-          "key": "energy_kwh",
-          "label": "Energy",
-          "z": 0.0957,
-          "elevated": true,
-          "raw": 18300347338.4
-        },
-        {
-          "key": "kg_co2e",
-          "label": "Food CO\u2082e",
-          "z": -0.0975,
-          "elevated": false,
-          "raw": 8078729311.6
-        },
-        {
-          "key": "water_liters",
-          "label": "Water",
-          "z": -0.132,
-          "elevated": false,
-          "raw": 39342166073.5
-        },
-        {
-          "key": "cdd",
-          "label": "Cooling (CDD)",
-          "z": 1.6368,
-          "elevated": true,
-          "raw": 16970.7712
-        },
-        {
-          "key": "uhi",
-          "label": "Urban heat",
-          "z": -1.4491,
-          "elevated": false,
-          "raw": 2.995
-        }
-      ],
-      "primary_pressure_drivers": [
-        "cdd",
-        "energy_kwh"
-      ],
-      "raw_indicators": {
-        "energy_kwh": 18300347338.4,
-        "water_liters": 39342166073.5,
-        "kg_co2e": 8078729311.6,
-        "visits": 1449697602.0,
-        "cdd": 16970.7712,
-        "uhi": 2.995,
-        "spend_total": 921605704.0786,
-        "summer_month_rows": 10.0,
-        "poi_food_share": 0.3397,
-        "poi_energy_share": 0.0252,
-        "poi_water_share": 0.0334,
-        "poi_venue_share": 0.1164
-      },
-      "peer_cities": [
-        "Dallas",
-        "Philadelphia",
-        "Kansas City"
-      ],
-      "recommended_plays": [
-        {
-          "id": "cool_roofs_shade_uhi",
-          "title": "Cool roofs + shade in high-UHI hospitality corridors",
-          "owner": "City planning + downtown BID",
-          "effort": "high",
-          "legacy_use": "Heat-action planning for summer festivals / playoffs",
-          "targets": [
-            "uhi",
-            "cdd",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "cdd",
-              "label": "Cooling (CDD)",
-              "z": 1.6368
-            },
-            {
-              "key": "energy_kwh",
-              "label": "Energy",
-              "z": 0.0957
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -12,
-            "food_co2e_pct": 0,
-            "water_pct": -2
-          },
-          "match_score": 1.733,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Dallas",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 1.6368,
-                  "peer_z": 0.7997
-                }
-              ],
-              "readiness_score": 56.92,
-              "rank": 6
-            },
-            {
-              "city": "Philadelphia",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 1.6368,
-                  "peer_z": 0.3475
-                }
-              ],
-              "readiness_score": 64.67,
-              "rank": 4
-            }
-          ],
-          "steal_from_peers": [
-            "Dallas",
-            "Philadelphia"
-          ],
-          "rationale": "Atlanta couples heat and cooling load (UHI z=-1.45, CDD z=1.64). Peers with similar heat/cooling pressure: Dallas, Philadelphia."
-        },
-        {
-          "id": "peak_cooling_setpoints",
-          "title": "Event-week HVAC setpoint & pre-cooling protocols",
-          "owner": "Hotel engineering + venue facilities",
-          "effort": "low",
-          "legacy_use": "Heat-wave building ops for any summer peak",
-          "targets": [
-            "cdd",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "cdd",
-              "label": "Cooling (CDD)",
-              "z": 1.6368
-            },
-            {
-              "key": "energy_kwh",
-              "label": "Energy",
-              "z": 0.0957
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -8,
-            "food_co2e_pct": 0,
-            "water_pct": -1
-          },
-          "match_score": 1.733,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Dallas",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 1.6368,
-                  "peer_z": 0.7997
-                }
-              ],
-              "readiness_score": 56.92,
-              "rank": 6
-            },
-            {
-              "city": "Philadelphia",
-              "shared_elevated_drivers": [
-                {
-                  "key": "cdd",
-                  "label": "Cooling (CDD)",
-                  "city_z": 1.6368,
-                  "peer_z": 0.3475
-                }
-              ],
-              "readiness_score": 64.67,
-              "rank": 4
-            }
-          ],
-          "steal_from_peers": [
-            "Dallas",
-            "Philadelphia"
-          ],
-          "rationale": "Atlanta summer CDD pressure is material (z=1.64). Peers with similar cooling pressure: Dallas, Philadelphia."
-        },
-        {
-          "id": "plant_forward_concessions",
-          "title": "Plant-forward concessions & catering defaults",
-          "owner": "Venue concessions + city food policy",
-          "effort": "medium",
-          "legacy_use": "Any stadium / convention F&B contract cycle",
-          "targets": [
-            "kg_co2e",
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "energy_kwh",
-              "label": "Energy",
-              "z": 0.0957
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -5,
-            "food_co2e_pct": -25,
-            "water_pct": -8
-          },
-          "match_score": 0.096,
-          "pressing": true,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Atlanta shows elevated food/CO\u2082e pressure (z=-0.10). Peers with similar dining pressure: none among nearest peers."
-        }
-      ],
-      "general_options": [
-        {
-          "id": "kitchen_water_efficiency",
-          "title": "Commercial kitchen water-efficiency retrofit grants",
-          "owner": "Economic development + water utility",
-          "effort": "medium",
-          "legacy_use": "Restaurant resilience grants post-event",
-          "targets": [
-            "water_liters",
-            "kg_co2e"
-          ],
-          "elevated_targets": [],
-          "expected_effects": {
-            "energy_pct": -2,
-            "food_co2e_pct": -5,
-            "water_pct": -15
-          },
-          "match_score": 0.0,
-          "pressing": false,
-          "peer_overlap": [],
-          "steal_from_peers": [],
-          "rationale": "Atlanta is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority."
-        }
-      ]
-    },
-    {
-      "host_city": "New York/New Jersey",
-      "rank": 8,
-      "readiness_score": 35.87,
-      "readiness_band": [
-        20.87,
-        50.87
-      ],
-      "stress_index": 0.3753,
-      "z_components": {
-        "energy_kwh": 0.5314,
-        "kg_co2e": 0.8063,
-        "water_liters": 0.7618,
-        "cdd": -1.2934,
-        "uhi": -0.353
-      },
-      "drivers": [
-        {
-          "key": "energy_kwh",
-          "label": "Energy",
-          "z": 0.5314,
-          "elevated": true,
-          "raw": 22123047211.4
-        },
-        {
-          "key": "kg_co2e",
-          "label": "Food CO\u2082e",
-          "z": 0.8063,
-          "elevated": true,
-          "raw": 11910046228.2
-        },
-        {
-          "key": "water_liters",
-          "label": "Water",
-          "z": 0.7618,
-          "elevated": true,
-          "raw": 58571627477.5
-        },
-        {
-          "key": "cdd",
-          "label": "Cooling (CDD)",
-          "z": -1.2934,
-          "elevated": false,
-          "raw": 2904.4307
-        },
-        {
-          "key": "uhi",
-          "label": "Urban heat",
-          "z": -0.353,
-          "elevated": false,
-          "raw": 4.704
-        }
-      ],
-      "primary_pressure_drivers": [
-        "kg_co2e",
-        "water_liters",
-        "energy_kwh"
-      ],
-      "raw_indicators": {
-        "energy_kwh": 22123047211.4,
-        "water_liters": 58571627477.5,
-        "kg_co2e": 11910046228.2,
-        "visits": 2249681045.0,
-        "cdd": 2904.4307,
-        "uhi": 4.704,
-        "spend_total": 1786010648.8195,
-        "summer_month_rows": 10.0,
-        "poi_food_share": 0.6099,
-        "poi_energy_share": 0.0289,
-        "poi_water_share": 0.0353,
-        "poi_venue_share": 0.1472
-      },
-      "peer_cities": [
+        "Boston",
         "San Francisco Bay Area",
-        "Miami",
         "Houston"
       ],
       "recommended_plays": [
         {
-          "id": "plant_forward_concessions",
-          "title": "Plant-forward concessions & catering defaults",
-          "owner": "Venue concessions + city food policy",
-          "effort": "medium",
-          "legacy_use": "Any stadium / convention F&B contract cycle",
-          "targets": [
-            "kg_co2e",
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "kg_co2e",
-              "label": "Food CO\u2082e",
-              "z": 0.8063
-            },
-            {
-              "key": "water_liters",
-              "label": "Water",
-              "z": 0.7618
-            },
-            {
-              "key": "energy_kwh",
-              "label": "Energy",
-              "z": 0.5314
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -5,
-            "food_co2e_pct": -25,
-            "water_pct": -8
-          },
-          "match_score": 2.099,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "San Francisco Bay Area",
-              "shared_elevated_drivers": [
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.8063,
-                  "peer_z": 1.6647
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.4834
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 0.5314,
-                  "peer_z": 1.4938
-                }
-              ],
-              "readiness_score": 2.58,
-              "rank": 10
-            },
-            {
-              "city": "Miami",
-              "shared_elevated_drivers": [
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.8063,
-                  "peer_z": 1.4296
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.5797
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 0.5314,
-                  "peer_z": 1.4609
-                }
-              ],
-              "readiness_score": 0.0,
-              "rank": 11
-            },
-            {
-              "city": "Houston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.8063,
-                  "peer_z": 0.953
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.0759
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 0.5314,
-                  "peer_z": 1.1997
-                }
-              ],
-              "readiness_score": 10.37,
-              "rank": 9
-            }
-          ],
-          "steal_from_peers": [
-            "San Francisco Bay Area",
-            "Miami",
-            "Houston"
-          ],
-          "rationale": "New York/New Jersey shows elevated food/CO\u2082e pressure (z=0.81). Peers with similar dining pressure: San Francisco Bay Area, Miami, Houston."
-        },
-        {
-          "id": "kitchen_water_efficiency",
-          "title": "Commercial kitchen water-efficiency retrofit grants",
-          "owner": "Economic development + water utility",
-          "effort": "medium",
-          "legacy_use": "Restaurant resilience grants post-event",
-          "targets": [
-            "water_liters",
-            "kg_co2e"
-          ],
-          "elevated_targets": [
-            {
-              "key": "water_liters",
-              "label": "Water",
-              "z": 0.7618
-            },
-            {
-              "key": "kg_co2e",
-              "label": "Food CO\u2082e",
-              "z": 0.8063
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -2,
-            "food_co2e_pct": -5,
-            "water_pct": -15
-          },
-          "match_score": 1.568,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "San Francisco Bay Area",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.4834
-                },
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.8063,
-                  "peer_z": 1.6647
-                }
-              ],
-              "readiness_score": 2.58,
-              "rank": 10
-            },
-            {
-              "city": "Miami",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.5797
-                },
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.8063,
-                  "peer_z": 1.4296
-                }
-              ],
-              "readiness_score": 0.0,
-              "rank": 11
-            },
-            {
-              "city": "Houston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.0759
-                },
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.8063,
-                  "peer_z": 0.953
-                }
-              ],
-              "readiness_score": 10.37,
-              "rank": 9
-            }
-          ],
-          "steal_from_peers": [
-            "San Francisco Bay Area",
-            "Miami",
-            "Houston"
-          ],
-          "rationale": "New York/New Jersey food-service density drives water use (water z=0.76). Peers with similar water/food pressure: San Francisco Bay Area, Miami, Houston."
-        },
-        {
-          "id": "hotel_water_reuse",
-          "title": "Hotel linen / laundry water-reuse program",
-          "owner": "Hotel association + utility",
-          "effort": "medium",
-          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
-          "targets": [
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "water_liters",
-              "label": "Water",
-              "z": 0.7618
-            },
-            {
-              "key": "energy_kwh",
-              "label": "Energy",
-              "z": 0.5314
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -3,
-            "food_co2e_pct": 0,
-            "water_pct": -30
-          },
-          "match_score": 1.293,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "San Francisco Bay Area",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.4834
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 0.5314,
-                  "peer_z": 1.4938
-                }
-              ],
-              "readiness_score": 2.58,
-              "rank": 10
-            },
-            {
-              "city": "Miami",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.5797
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 0.5314,
-                  "peer_z": 1.4609
-                }
-              ],
-              "readiness_score": 0.0,
-              "rank": 11
-            },
-            {
-              "city": "Houston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 0.7618,
-                  "peer_z": 1.0759
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 0.5314,
-                  "peer_z": 1.1997
-                }
-              ],
-              "readiness_score": 10.37,
-              "rank": 9
-            }
-          ],
-          "steal_from_peers": [
-            "San Francisco Bay Area",
-            "Miami",
-            "Houston"
-          ],
-          "rationale": "New York/New Jersey water intensity is high relative to hosts (z=0.76). Peers with similar water pressure: San Francisco Bay Area, Miami, Houston."
-        }
-      ],
-      "general_options": []
-    },
-    {
-      "host_city": "Houston",
-      "rank": 9,
-      "readiness_score": 10.37,
-      "readiness_band": [
-        0.0,
-        25.37
-      ],
-      "stress_index": 0.9747,
-      "z_components": {
-        "energy_kwh": 1.1997,
-        "kg_co2e": 0.953,
-        "water_liters": 1.0759,
-        "cdd": 0.757,
-        "uhi": 0.256
-      },
-      "drivers": [
-        {
-          "key": "energy_kwh",
-          "label": "Energy",
-          "z": 1.1997,
-          "elevated": true,
-          "raw": 27988249400.1739
-        },
-        {
-          "key": "kg_co2e",
-          "label": "Food CO\u2082e",
-          "z": 0.953,
-          "elevated": true,
-          "raw": 12531968762.7933
-        },
-        {
-          "key": "water_liters",
-          "label": "Water",
-          "z": 1.0759,
-          "elevated": true,
-          "raw": 65329492204.4576
-        },
-        {
-          "key": "cdd",
-          "label": "Cooling (CDD)",
-          "z": 0.757,
-          "elevated": true,
-          "raw": 12747.5288
-        },
-        {
-          "key": "uhi",
-          "label": "Urban heat",
-          "z": 0.256,
-          "elevated": true,
-          "raw": 5.6535
-        }
-      ],
-      "primary_pressure_drivers": [
-        "energy_kwh",
-        "water_liters",
-        "kg_co2e"
-      ],
-      "raw_indicators": {
-        "energy_kwh": 27988249400.1739,
-        "water_liters": 65329492204.4576,
-        "kg_co2e": 12531968762.7933,
-        "visits": 2308290774.948,
-        "cdd": 12747.5288,
-        "uhi": 5.6535,
-        "spend_total": 1844120638.2131,
-        "summer_month_rows": 6.4519,
-        "poi_food_share": 0.5412,
-        "poi_energy_share": 0.0605,
-        "poi_water_share": 0.0453,
-        "poi_venue_share": 0.1233
-      },
-      "peer_cities": [
-        "Miami",
-        "San Francisco Bay Area",
-        "New York/New Jersey"
-      ],
-      "recommended_plays": [
-        {
-          "id": "plant_forward_concessions",
-          "title": "Plant-forward concessions & catering defaults",
-          "owner": "Venue concessions + city food policy",
-          "effort": "medium",
-          "legacy_use": "Any stadium / convention F&B contract cycle",
-          "targets": [
-            "kg_co2e",
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "kg_co2e",
-              "label": "Food CO\u2082e",
-              "z": 0.953
-            },
-            {
-              "key": "water_liters",
-              "label": "Water",
-              "z": 1.0759
-            },
-            {
-              "key": "energy_kwh",
-              "label": "Energy",
-              "z": 1.1997
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -5,
-            "food_co2e_pct": -25,
-            "water_pct": -8
-          },
-          "match_score": 3.229,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Miami",
-              "shared_elevated_drivers": [
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.953,
-                  "peer_z": 1.4296
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.0759,
-                  "peer_z": 1.5797
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 1.4609
-                }
-              ],
-              "readiness_score": 0.0,
-              "rank": 11
-            },
-            {
-              "city": "San Francisco Bay Area",
-              "shared_elevated_drivers": [
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.953,
-                  "peer_z": 1.6647
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.0759,
-                  "peer_z": 1.4834
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 1.4938
-                }
-              ],
-              "readiness_score": 2.58,
-              "rank": 10
-            },
-            {
-              "city": "New York/New Jersey",
-              "shared_elevated_drivers": [
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 0.953,
-                  "peer_z": 0.8063
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.0759,
-                  "peer_z": 0.7618
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 0.5314
-                }
-              ],
-              "readiness_score": 35.87,
-              "rank": 8
-            }
-          ],
-          "steal_from_peers": [
-            "Miami",
-            "San Francisco Bay Area",
-            "New York/New Jersey"
-          ],
-          "rationale": "Houston shows elevated food/CO\u2082e pressure (z=0.95). Peers with similar dining pressure: Miami, San Francisco Bay Area, New York/New Jersey."
-        },
-        {
-          "id": "hotel_water_reuse",
-          "title": "Hotel linen / laundry water-reuse program",
-          "owner": "Hotel association + utility",
-          "effort": "medium",
-          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
-          "targets": [
-            "water_liters",
-            "energy_kwh"
-          ],
-          "elevated_targets": [
-            {
-              "key": "water_liters",
-              "label": "Water",
-              "z": 1.0759
-            },
-            {
-              "key": "energy_kwh",
-              "label": "Energy",
-              "z": 1.1997
-            }
-          ],
-          "expected_effects": {
-            "energy_pct": -3,
-            "food_co2e_pct": 0,
-            "water_pct": -30
-          },
-          "match_score": 2.276,
-          "pressing": true,
-          "peer_overlap": [
-            {
-              "city": "Miami",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.0759,
-                  "peer_z": 1.5797
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 1.4609
-                }
-              ],
-              "readiness_score": 0.0,
-              "rank": 11
-            },
-            {
-              "city": "San Francisco Bay Area",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.0759,
-                  "peer_z": 1.4834
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 1.4938
-                }
-              ],
-              "readiness_score": 2.58,
-              "rank": 10
-            },
-            {
-              "city": "New York/New Jersey",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.0759,
-                  "peer_z": 0.7618
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 0.5314
-                }
-              ],
-              "readiness_score": 35.87,
-              "rank": 8
-            }
-          ],
-          "steal_from_peers": [
-            "Miami",
-            "San Francisco Bay Area",
-            "New York/New Jersey"
-          ],
-          "rationale": "Houston water intensity is high relative to hosts (z=1.08). Peers with similar water pressure: Miami, San Francisco Bay Area, New York/New Jersey."
-        },
-        {
           "id": "cool_roofs_shade_uhi",
           "title": "Cool roofs + shade in high-UHI hospitality corridors",
           "owner": "City planning + downtown BID",
@@ -2345,17 +934,12 @@
             {
               "key": "uhi",
               "label": "Urban heat",
-              "z": 0.256
+              "z": 1.3073
             },
             {
               "key": "cdd",
               "label": "Cooling (CDD)",
-              "z": 0.757
-            },
-            {
-              "key": "energy_kwh",
-              "label": "Energy",
-              "z": 1.1997
+              "z": 0.9409
             }
           ],
           "expected_effects": {
@@ -2363,27 +947,21 @@
             "food_co2e_pct": 0,
             "water_pct": -2
           },
-          "match_score": 2.213,
+          "match_score": 2.248,
           "pressing": true,
           "peer_overlap": [
             {
-              "city": "Miami",
+              "city": "Boston",
               "shared_elevated_drivers": [
                 {
-                  "key": "uhi",
-                  "label": "Urban heat",
-                  "city_z": 0.256,
-                  "peer_z": 0.9424
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 1.4609
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.9409,
+                  "peer_z": 0.1828
                 }
               ],
-              "readiness_score": 0.0,
-              "rank": 11
+              "readiness_score": 100.0,
+              "rank": 1
             },
             {
               "city": "San Francisco Bay Area",
@@ -2391,118 +969,2161 @@
                 {
                   "key": "uhi",
                   "label": "Urban heat",
-                  "city_z": 0.256,
-                  "peer_z": 0.2359
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 1.4938
+                  "city_z": 1.3073,
+                  "peer_z": 1.0561
                 }
               ],
-              "readiness_score": 2.58,
-              "rank": 10
+              "readiness_score": 98.3,
+              "rank": 3
             },
             {
-              "city": "New York/New Jersey",
+              "city": "Houston",
               "shared_elevated_drivers": [
                 {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.1997,
-                  "peer_z": 0.5314
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.9409,
+                  "peer_z": 0.7963
                 }
               ],
-              "readiness_score": 35.87,
-              "rank": 8
+              "readiness_score": 62.16,
+              "rank": 7
             }
           ],
           "steal_from_peers": [
-            "Miami",
+            "Boston",
             "San Francisco Bay Area",
-            "New York/New Jersey"
+            "Houston"
           ],
-          "rationale": "Houston couples heat and cooling load (UHI z=0.26, CDD z=0.76). Peers with similar heat/cooling pressure: Miami, San Francisco Bay Area, New York/New Jersey."
+          "rationale": "Los Angeles couples heat and cooling load (UHI z=1.31, CDD z=0.94). Peers with similar heat/cooling pressure: Boston, San Francisco Bay Area, Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1495082687.7,
+            "water_liters": -603994403.5,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "cdd",
+              "label": "Cooling (CDD)",
+              "z": 0.9409
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 0.941,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Boston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.9409,
+                  "peer_z": 0.1828
+                }
+              ],
+              "readiness_score": 100.0,
+              "rank": 1
+            },
+            {
+              "city": "Houston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.9409,
+                  "peer_z": 0.7963
+                }
+              ],
+              "readiness_score": 62.16,
+              "rank": 7
+            }
+          ],
+          "steal_from_peers": [
+            "Boston",
+            "Houston"
+          ],
+          "rationale": "Los Angeles summer CDD pressure is material (z=0.94). Peers with similar cooling pressure: Boston, Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -996721791.8,
+            "water_liters": -301997201.7,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         }
       ],
-      "general_options": []
+      "general_options": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Los Angeles is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -622951119.9,
+            "water_liters": -2415977613.9,
+            "kg_co2e": -1584303657.2,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Los Angeles is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -373770671.9,
+            "water_liters": -9059916052.3,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 12459022397.1,
+          "water_liters": 30199720174.3,
+          "kg_co2e": 6337214629.0,
+          "visits": 1191486167.1,
+          "summer_month_weight": 2.896,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.7919,
+          "Energy": 0.163,
+          "Water": 0.0283,
+          "Venue": 0.0167,
+          "Other_EFW": 0.0
+        },
+        "spend": {
+          "total": 1043851395.0,
+          "mix": {
+            "Energy": 0.8892,
+            "Food": 0.0818,
+            "Lodging": 0.029
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.5581,
+          "Other_EFW": 0.236,
+          "Venue": 0.1367,
+          "Energy": 0.0369,
+          "Water": 0.0322
+        },
+        "climate": {
+          "mean_cdd_c": 1339.316,
+          "mean_hdd_c": 69.295,
+          "mean_temp_c": 22.938,
+          "mean_uhi": 8.54
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Chevron",
+            "category": "Gasoline Stations",
+            "summer_visits": 80950649.5
+          },
+          {
+            "brand": "Starbucks",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 71018699.4
+          },
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 58273343.5
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 53667815.3
+          },
+          {
+            "brand": "ARCO",
+            "category": "Gasoline Stations",
+            "summer_visits": 47065862.2
+          }
+        ],
+        "not_used_in_readiness": true
+      }
     },
     {
-      "host_city": "San Francisco Bay Area",
-      "rank": 10,
-      "readiness_score": 2.58,
+      "host_city": "Seattle",
+      "rank": 5,
+      "readiness_score": 82.91,
       "readiness_band": [
-        0.0,
-        17.58
+        67.91,
+        97.91
       ],
-      "stress_index": 1.1577,
+      "stress_index": -0.4131,
       "z_components": {
-        "energy_kwh": 1.4938,
-        "kg_co2e": 1.6647,
-        "water_liters": 1.4834,
-        "cdd": -1.016,
-        "uhi": 0.2359
+        "energy_kwh": -0.4179,
+        "kg_co2e": -0.3646,
+        "water_liters": 0.138,
+        "cdd": -1.708,
+        "uhi": -0.3254
       },
       "drivers": [
         {
           "key": "energy_kwh",
           "label": "Energy",
-          "z": 1.4938,
-          "elevated": true,
-          "raw": 30568571724.7311
+          "z": -0.4179,
+          "elevated": false,
+          "raw": 318.89
         },
         {
           "key": "kg_co2e",
           "label": "Food CO\u2082e",
-          "z": 1.6647,
-          "elevated": true,
-          "raw": 15548539343.34
+          "z": -0.3646,
+          "elevated": false,
+          "raw": 216.7639
         },
         {
           "key": "water_liters",
           "label": "Water",
-          "z": 1.4834,
+          "z": 0.138,
           "elevated": true,
-          "raw": 74095886723.1969
+          "raw": 1612.7314
         },
         {
           "key": "cdd",
           "label": "Cooling (CDD)",
-          "z": -1.016,
+          "z": -1.708,
           "elevated": false,
-          "raw": 4236.1232
+          "raw": 71.5339
         },
         {
           "key": "uhi",
           "label": "Urban heat",
-          "z": 0.2359,
-          "elevated": true,
-          "raw": 5.6223
+          "z": -0.3254,
+          "elevated": false,
+          "raw": 7.5
         }
       ],
       "primary_pressure_drivers": [
-        "kg_co2e",
-        "energy_kwh",
         "water_liters"
       ],
       "raw_indicators": {
-        "energy_kwh": 30568571724.7311,
-        "water_liters": 74095886723.1969,
-        "kg_co2e": 15548539343.34,
-        "visits": 2923345764.8711,
-        "cdd": 4236.1232,
-        "uhi": 5.6223,
-        "spend_total": 2561119582.2381,
-        "summer_month_rows": 7.1044,
-        "poi_food_share": 0.5259,
-        "poi_energy_share": 0.039,
-        "poi_water_share": 0.0461,
-        "poi_venue_share": 0.173
+        "energy_kwh": 318.89,
+        "water_liters": 1612.7314,
+        "kg_co2e": 216.7639,
+        "uhi": 7.5,
+        "shop_months": 2619.0,
+        "shops": 926.0,
+        "cdd": 71.5339
+      },
+      "peer_cities": [
+        "New York/New Jersey",
+        "San Francisco Bay Area",
+        "Miami"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "water_liters",
+              "label": "Water",
+              "z": 0.138
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.138,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.138,
+                  "peer_z": 0.6336
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            }
+          ],
+          "steal_from_peers": [
+            "Miami"
+          ],
+          "rationale": "Seattle shows elevated food/CO\u2082e pressure (z=-0.36). Peers with similar dining pressure: Miami.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -375769877.8,
+            "water_liters": -1290352897.0,
+            "kg_co2e": -921387783.5,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "water_liters",
+              "label": "Water",
+              "z": 0.138
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 0.138,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.138,
+                  "peer_z": 0.6336
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            }
+          ],
+          "steal_from_peers": [
+            "Miami"
+          ],
+          "rationale": "Seattle water intensity is high relative to hosts (z=0.14). Peers with similar water pressure: Miami.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -225461926.7,
+            "water_liters": -4838823363.9,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "kitchen_water_efficiency",
+          "title": "Commercial kitchen water-efficiency retrofit grants",
+          "owner": "Economic development + water utility",
+          "effort": "medium",
+          "legacy_use": "Restaurant resilience grants post-event",
+          "targets": [
+            "water_liters",
+            "kg_co2e"
+          ],
+          "elevated_targets": [
+            {
+              "key": "water_liters",
+              "label": "Water",
+              "z": 0.138
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -2,
+            "food_co2e_pct": -5,
+            "water_pct": -15
+          },
+          "match_score": 0.138,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.138,
+                  "peer_z": 0.6336
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            }
+          ],
+          "steal_from_peers": [
+            "Miami"
+          ],
+          "rationale": "Seattle food-service density drives water use (water z=0.14). Peers with similar water/food pressure: Miami.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -150307951.1,
+            "water_liters": -2419411681.9,
+            "kg_co2e": -184277556.7,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "general_options": [
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Seattle is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -601231804.4,
+            "water_liters": -161294112.1,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Seattle is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -901847706.6,
+            "water_liters": -322588224.3,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 7515397555.2,
+          "water_liters": 16129411213.0,
+          "kg_co2e": 3685551133.9,
+          "visits": 664016786.0,
+          "summer_month_weight": 10.0,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.7825,
+          "Energy": 0.1745,
+          "Water": 0.0272,
+          "Venue": 0.0158,
+          "Other_EFW": 0.0001
+        },
+        "spend": {
+          "total": 1877754058.9,
+          "mix": {
+            "Energy": 0.918,
+            "Food": 0.0682,
+            "Lodging": 0.0138
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.487,
+          "Other_EFW": 0.2875,
+          "Venue": 0.1744,
+          "Water": 0.0265,
+          "Energy": 0.0246
+        },
+        "climate": {
+          "mean_cdd_c": 74.048,
+          "mean_hdd_c": 200.877,
+          "mean_temp_c": 16.929,
+          "mean_uhi": 4.708
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Chevron",
+            "category": "Gasoline Stations",
+            "summer_visits": 52741818.0
+          },
+          {
+            "brand": "Safeway",
+            "category": "Grocery Stores",
+            "summer_visits": 47800221.0
+          },
+          {
+            "brand": "Starbucks",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 42703841.0
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 36603285.0
+          },
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 34095041.0
+          }
+        ],
+        "not_used_in_readiness": true
+      }
+    },
+    {
+      "host_city": "Kansas City",
+      "rank": 6,
+      "readiness_score": 81.31,
+      "readiness_band": [
+        66.31,
+        96.31
+      ],
+      "stress_index": -0.3811,
+      "z_components": {
+        "energy_kwh": 0.4827,
+        "kg_co2e": -0.3942,
+        "water_liters": -1.0487,
+        "cdd": -0.0826,
+        "uhi": -2.3348
+      },
+      "drivers": [
+        {
+          "key": "energy_kwh",
+          "label": "Energy",
+          "z": 0.4827,
+          "elevated": true,
+          "raw": 492.954
+        },
+        {
+          "key": "kg_co2e",
+          "label": "Food CO\u2082e",
+          "z": -0.3942,
+          "elevated": false,
+          "raw": 213.8742
+        },
+        {
+          "key": "water_liters",
+          "label": "Water",
+          "z": -1.0487,
+          "elevated": false,
+          "raw": 881.7662
+        },
+        {
+          "key": "cdd",
+          "label": "Cooling (CDD)",
+          "z": -0.0826,
+          "elevated": false,
+          "raw": 891.2953
+        },
+        {
+          "key": "uhi",
+          "label": "Urban heat",
+          "z": -2.3348,
+          "elevated": false,
+          "raw": 4.3
+        }
+      ],
+      "primary_pressure_drivers": [
+        "energy_kwh"
+      ],
+      "raw_indicators": {
+        "energy_kwh": 492.954,
+        "water_liters": 881.7662,
+        "kg_co2e": 213.8742,
+        "uhi": 4.3,
+        "shop_months": 1031.0,
+        "shops": 405.0,
+        "cdd": 891.2953
+      },
+      "peer_cities": [
+        "Houston",
+        "Boston",
+        "Seattle"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 0.4827
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.483,
+          "pressing": true,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Kansas City shows elevated food/CO\u2082e pressure (z=-0.39). Peers with similar dining pressure: none among nearest peers.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -397062027.9,
+            "water_liters": -1936381980.8,
+            "kg_co2e": -1066655660.2,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 0.4827
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 0.483,
+          "pressing": true,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Kansas City water intensity is high relative to hosts (z=-1.05). Peers with similar water pressure: none among nearest peers.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -238237216.7,
+            "water_liters": -7261432428.1,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 0.4827
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 0.483,
+          "pressing": true,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Kansas City couples heat and cooling load (UHI z=-2.33, CDD z=-0.08). Peers with similar heat/cooling pressure: none among nearest peers.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -952948866.9,
+            "water_liters": -484095495.2,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "general_options": [
+        {
+          "id": "kitchen_water_efficiency",
+          "title": "Commercial kitchen water-efficiency retrofit grants",
+          "owner": "Economic development + water utility",
+          "effort": "medium",
+          "legacy_use": "Restaurant resilience grants post-event",
+          "targets": [
+            "water_liters",
+            "kg_co2e"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -2,
+            "food_co2e_pct": -5,
+            "water_pct": -15
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Kansas City is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -158824811.2,
+            "water_liters": -3630716214.1,
+            "kg_co2e": -213331132.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 7941240557.8,
+          "water_liters": 24204774760.5,
+          "kg_co2e": 4266622640.7,
+          "visits": 864031044.0,
+          "summer_month_weight": 10.0,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.836,
+          "Energy": 0.1241,
+          "Water": 0.0306,
+          "Venue": 0.0092,
+          "Other_EFW": 0.0
+        },
+        "spend": {
+          "total": 827009228.8,
+          "mix": {
+            "Energy": 0.7885,
+            "Food": 0.2011,
+            "Lodging": 0.0104
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.3842,
+          "Other_EFW": 0.3721,
+          "Venue": 0.1548,
+          "Energy": 0.0467,
+          "Water": 0.0421
+        },
+        "climate": {
+          "mean_cdd_c": 888.099,
+          "mean_hdd_c": 0.676,
+          "mean_temp_c": 25.599,
+          "mean_uhi": 2.54
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 58423231.0
+          },
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 38058230.0
+          },
+          {
+            "brand": "QuikTrip",
+            "category": "Gasoline Stations",
+            "summer_visits": 31170694.0
+          },
+          {
+            "brand": "Taco Bell",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 29591290.0
+          },
+          {
+            "brand": "Sonic",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 29035180.0
+          }
+        ],
+        "not_used_in_readiness": true
+      }
+    },
+    {
+      "host_city": "Houston",
+      "rank": 7,
+      "readiness_score": 62.16,
+      "readiness_band": [
+        47.16,
+        77.16
+      ],
+      "stress_index": 0.0001,
+      "z_components": {
+        "energy_kwh": -0.1286,
+        "kg_co2e": 0.0143,
+        "water_liters": -0.0905,
+        "cdd": 0.7963,
+        "uhi": -0.1998
+      },
+      "drivers": [
+        {
+          "key": "energy_kwh",
+          "label": "Energy",
+          "z": -0.1286,
+          "elevated": false,
+          "raw": 374.8045
+        },
+        {
+          "key": "kg_co2e",
+          "label": "Food CO\u2082e",
+          "z": 0.0143,
+          "elevated": true,
+          "raw": 253.8061
+        },
+        {
+          "key": "water_liters",
+          "label": "Water",
+          "z": -0.0905,
+          "elevated": false,
+          "raw": 1471.9562
+        },
+        {
+          "key": "cdd",
+          "label": "Cooling (CDD)",
+          "z": 0.7963,
+          "elevated": true,
+          "raw": 1334.5792
+        },
+        {
+          "key": "uhi",
+          "label": "Urban heat",
+          "z": -0.1998,
+          "elevated": false,
+          "raw": 7.7
+        }
+      ],
+      "primary_pressure_drivers": [
+        "cdd",
+        "kg_co2e"
+      ],
+      "raw_indicators": {
+        "energy_kwh": 374.8045,
+        "water_liters": 1471.9562,
+        "kg_co2e": 253.8061,
+        "uhi": 7.7,
+        "shop_months": 6307.0,
+        "shops": 2327.0,
+        "cdd": 1334.5792
+      },
+      "peer_cities": [
+        "Boston",
+        "Miami",
+        "Atlanta"
+      ],
+      "recommended_plays": [
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "cdd",
+              "label": "Cooling (CDD)",
+              "z": 0.7963
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 0.796,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Boston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.7963,
+                  "peer_z": 0.1828
+                }
+              ],
+              "readiness_score": 100.0,
+              "rank": 1
+            },
+            {
+              "city": "Atlanta",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.7963,
+                  "peer_z": 1.6119
+                }
+              ],
+              "readiness_score": 19.51,
+              "rank": 9
+            }
+          ],
+          "steal_from_peers": [
+            "Boston",
+            "Atlanta"
+          ],
+          "rationale": "Houston couples heat and cooling load (UHI z=-0.20, CDD z=0.80). Peers with similar heat/cooling pressure: Boston, Atlanta.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -3358589928.0,
+            "water_liters": -1306589844.1,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "cdd",
+              "label": "Cooling (CDD)",
+              "z": 0.7963
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 0.796,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Boston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.7963,
+                  "peer_z": 0.1828
+                }
+              ],
+              "readiness_score": 100.0,
+              "rank": 1
+            },
+            {
+              "city": "Atlanta",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.7963,
+                  "peer_z": 1.6119
+                }
+              ],
+              "readiness_score": 19.51,
+              "rank": 9
+            }
+          ],
+          "steal_from_peers": [
+            "Boston",
+            "Atlanta"
+          ],
+          "rationale": "Houston summer CDD pressure is material (z=0.80). Peers with similar cooling pressure: Boston, Atlanta.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -2239059952.0,
+            "water_liters": -653294922.0,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "kg_co2e",
+              "label": "Food CO\u2082e",
+              "z": 0.0143
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.014,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 0.0143,
+                  "peer_z": 0.8056
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            },
+            {
+              "city": "Atlanta",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 0.0143,
+                  "peer_z": 1.0898
+                }
+              ],
+              "readiness_score": 19.51,
+              "rank": 9
+            }
+          ],
+          "steal_from_peers": [
+            "Miami",
+            "Atlanta"
+          ],
+          "rationale": "Houston shows elevated food/CO\u2082e pressure (z=0.01). Peers with similar dining pressure: Miami, Atlanta.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1399412470.0,
+            "water_liters": -5226359376.4,
+            "kg_co2e": -3132992190.7,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "general_options": [
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Houston is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -839647482.0,
+            "water_liters": -19598847661.3,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "gasoline_visit_shift",
+          "title": "Shift match-day access from gasoline to transit / EV hubs",
+          "owner": "DOT + venue ops",
+          "effort": "high",
+          "legacy_use": "Event traffic management playbooks citywide",
+          "targets": [
+            "energy_kwh"
+          ],
+          "elevated_targets": [],
+          "expected_effects": {
+            "energy_pct": -10,
+            "food_co2e_pct": -2,
+            "water_pct": 0
+          },
+          "match_score": 0.0,
+          "pressing": false,
+          "peer_overlap": [],
+          "steal_from_peers": [],
+          "rationale": "Houston is at or below host-average on this play's target drivers; kept as a general option, not a pressing priority.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -2798824940.0,
+            "water_liters": 0.0,
+            "kg_co2e": -250639375.3,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 27988249400.2,
+          "water_liters": 65329492204.5,
+          "kg_co2e": 12531968762.8,
+          "visits": 2308290774.9,
+          "summer_month_weight": 6.452,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.7664,
+          "Energy": 0.1843,
+          "Water": 0.0361,
+          "Venue": 0.0131,
+          "Other_EFW": 0.0001
+        },
+        "spend": {
+          "total": 1844120638.2,
+          "mix": {
+            "Energy": 0.8378,
+            "Food": 0.1346,
+            "Lodging": 0.0277
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.5412,
+          "Other_EFW": 0.2297,
+          "Venue": 0.1233,
+          "Energy": 0.0605,
+          "Water": 0.0453
+        },
+        "climate": {
+          "mean_cdd_c": 1274.753,
+          "mean_hdd_c": 0.0,
+          "mean_temp_c": 28.758,
+          "mean_uhi": 5.654
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 94984394.8
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 94239268.0
+          },
+          {
+            "brand": "Chevron",
+            "category": "Gasoline Stations",
+            "summer_visits": 78023629.3
+          },
+          {
+            "brand": "Sonic",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 77296733.4
+          },
+          {
+            "brand": "Whataburger",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 64169743.5
+          }
+        ],
+        "not_used_in_readiness": true
+      }
+    },
+    {
+      "host_city": "Miami",
+      "rank": 8,
+      "readiness_score": 31.7,
+      "readiness_band": [
+        16.7,
+        46.7
+      ],
+      "stress_index": 0.6064,
+      "z_components": {
+        "energy_kwh": 0.8997,
+        "kg_co2e": 0.8056,
+        "water_liters": 0.6336,
+        "cdd": -0.6058,
+        "uhi": 0.2398
+      },
+      "drivers": [
+        {
+          "key": "energy_kwh",
+          "label": "Energy",
+          "z": 0.8997,
+          "elevated": true,
+          "raw": 573.5667
+        },
+        {
+          "key": "kg_co2e",
+          "label": "Food CO\u2082e",
+          "z": 0.8056,
+          "elevated": true,
+          "raw": 331.1662
+        },
+        {
+          "key": "water_liters",
+          "label": "Water",
+          "z": 0.6336,
+          "elevated": true,
+          "raw": 1917.9661
+        },
+        {
+          "key": "cdd",
+          "label": "Cooling (CDD)",
+          "z": -0.6058,
+          "elevated": false,
+          "raw": 627.4223
+        },
+        {
+          "key": "uhi",
+          "label": "Urban heat",
+          "z": 0.2398,
+          "elevated": true,
+          "raw": 8.4
+        }
+      ],
+      "primary_pressure_drivers": [
+        "energy_kwh",
+        "kg_co2e",
+        "water_liters"
+      ],
+      "raw_indicators": {
+        "energy_kwh": 573.5667,
+        "water_liters": 1917.9661,
+        "kg_co2e": 331.1662,
+        "uhi": 8.4,
+        "shop_months": 2717.0,
+        "shops": 1079.0,
+        "cdd": 627.4223
+      },
+      "peer_cities": [
+        "Dallas",
+        "Houston",
+        "Seattle"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "kg_co2e",
+              "label": "Food CO\u2082e",
+              "z": 0.8056
+            },
+            {
+              "key": "water_liters",
+              "label": "Water",
+              "z": 0.6336
+            },
+            {
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 0.8997
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 2.339,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Dallas",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 0.8056,
+                  "peer_z": 1.4226
+                },
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.6336,
+                  "peer_z": 0.2776
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 0.8997,
+                  "peer_z": 2.0336
+                }
+              ],
+              "readiness_score": 0.0,
+              "rank": 11
+            },
+            {
+              "city": "Houston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 0.8056,
+                  "peer_z": 0.0143
+                }
+              ],
+              "readiness_score": 62.16,
+              "rank": 7
+            },
+            {
+              "city": "Seattle",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.6336,
+                  "peer_z": 0.138
+                }
+              ],
+              "readiness_score": 82.91,
+              "rank": 5
+            }
+          ],
+          "steal_from_peers": [
+            "Dallas",
+            "Houston",
+            "Seattle"
+          ],
+          "rationale": "Miami shows elevated food/CO\u2082e pressure (z=0.81). Peers with similar dining pressure: Dallas, Houston, Seattle.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1513988060.2,
+            "water_liters": -6093386266.2,
+            "kg_co2e": -3638004913.6,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "water_liters",
+              "label": "Water",
+              "z": 0.6336
+            },
+            {
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 0.8997
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 1.533,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Dallas",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.6336,
+                  "peer_z": 0.2776
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 0.8997,
+                  "peer_z": 2.0336
+                }
+              ],
+              "readiness_score": 0.0,
+              "rank": 11
+            },
+            {
+              "city": "Seattle",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.6336,
+                  "peer_z": 0.138
+                }
+              ],
+              "readiness_score": 82.91,
+              "rank": 5
+            }
+          ],
+          "steal_from_peers": [
+            "Dallas",
+            "Seattle"
+          ],
+          "rationale": "Miami water intensity is high relative to hosts (z=0.63). Peers with similar water pressure: Dallas, Seattle.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -908392836.1,
+            "water_liters": -22850198498.2,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "kitchen_water_efficiency",
+          "title": "Commercial kitchen water-efficiency retrofit grants",
+          "owner": "Economic development + water utility",
+          "effort": "medium",
+          "legacy_use": "Restaurant resilience grants post-event",
+          "targets": [
+            "water_liters",
+            "kg_co2e"
+          ],
+          "elevated_targets": [
+            {
+              "key": "water_liters",
+              "label": "Water",
+              "z": 0.6336
+            },
+            {
+              "key": "kg_co2e",
+              "label": "Food CO\u2082e",
+              "z": 0.8056
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -2,
+            "food_co2e_pct": -5,
+            "water_pct": -15
+          },
+          "match_score": 1.439,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Dallas",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.6336,
+                  "peer_z": 0.2776
+                },
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 0.8056,
+                  "peer_z": 1.4226
+                }
+              ],
+              "readiness_score": 0.0,
+              "rank": 11
+            },
+            {
+              "city": "Houston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 0.8056,
+                  "peer_z": 0.0143
+                }
+              ],
+              "readiness_score": 62.16,
+              "rank": 7
+            },
+            {
+              "city": "Seattle",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.6336,
+                  "peer_z": 0.138
+                }
+              ],
+              "readiness_score": 82.91,
+              "rank": 5
+            }
+          ],
+          "steal_from_peers": [
+            "Dallas",
+            "Houston",
+            "Seattle"
+          ],
+          "rationale": "Miami food-service density drives water use (water z=0.63). Peers with similar water/food pressure: Dallas, Houston, Seattle.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -605595224.1,
+            "water_liters": -11425099249.1,
+            "kg_co2e": -727600982.7,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "general_options": [],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 30279761203.6,
+          "water_liters": 76167328327.5,
+          "kg_co2e": 14552019654.4,
+          "visits": 2721508317.0,
+          "summer_month_weight": 10.0,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.7895,
+          "Energy": 0.1619,
+          "Water": 0.0354,
+          "Venue": 0.0131,
+          "Other_EFW": 0.0
+        },
+        "spend": {
+          "total": 869737062.0,
+          "mix": {
+            "Energy": 0.8403,
+            "Food": 0.0862,
+            "Lodging": 0.0736
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.485,
+          "Other_EFW": 0.31,
+          "Venue": 0.1315,
+          "Water": 0.0422,
+          "Energy": 0.0313
+        },
+        "climate": {
+          "mean_cdd_c": 620.491,
+          "mean_hdd_c": 0.0,
+          "mean_temp_c": 28.484,
+          "mean_uhi": 6.724
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 142072106.0
+          },
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 116638559.0
+          },
+          {
+            "brand": "Publix Super Markets",
+            "category": "Grocery Stores",
+            "summer_visits": 115442291.0
+          },
+          {
+            "brand": "Dunkin'",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 106225788.0
+          },
+          {
+            "brand": "Winn Dixie",
+            "category": "Grocery Stores",
+            "summer_visits": 85846801.0
+          }
+        ],
+        "not_used_in_readiness": true
+      }
+    },
+    {
+      "host_city": "Atlanta",
+      "rank": 9,
+      "readiness_score": 19.51,
+      "readiness_band": [
+        4.51,
+        34.51
+      ],
+      "stress_index": 0.8491,
+      "z_components": {
+        "energy_kwh": 1.1731,
+        "kg_co2e": 1.0898,
+        "water_liters": 0.6578,
+        "cdd": 1.6119,
+        "uhi": -1.2673
+      },
+      "drivers": [
+        {
+          "key": "energy_kwh",
+          "label": "Energy",
+          "z": 1.1731,
+          "elevated": true,
+          "raw": 626.4225
+        },
+        {
+          "key": "kg_co2e",
+          "label": "Food CO\u2082e",
+          "z": 1.0898,
+          "elevated": true,
+          "raw": 358.9545
+        },
+        {
+          "key": "water_liters",
+          "label": "Water",
+          "z": 0.6578,
+          "elevated": true,
+          "raw": 1932.8714
+        },
+        {
+          "key": "cdd",
+          "label": "Cooling (CDD)",
+          "z": 1.6119,
+          "elevated": true,
+          "raw": 1745.9635
+        },
+        {
+          "key": "uhi",
+          "label": "Urban heat",
+          "z": -1.2673,
+          "elevated": false,
+          "raw": 6.0
+        }
+      ],
+      "primary_pressure_drivers": [
+        "cdd",
+        "energy_kwh",
+        "kg_co2e"
+      ],
+      "raw_indicators": {
+        "energy_kwh": 626.4225,
+        "water_liters": 1932.8714,
+        "kg_co2e": 358.9545,
+        "uhi": 6.0,
+        "shop_months": 2220.0,
+        "shops": 938.0,
+        "cdd": 1745.9635
+      },
+      "peer_cities": [
+        "Dallas",
+        "Houston",
+        "Miami"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "kg_co2e",
+              "label": "Food CO\u2082e",
+              "z": 1.0898
+            },
+            {
+              "key": "water_liters",
+              "label": "Water",
+              "z": 0.6578
+            },
+            {
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 1.1731
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 2.921,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Dallas",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 1.0898,
+                  "peer_z": 1.4226
+                },
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.6578,
+                  "peer_z": 0.2776
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 1.1731,
+                  "peer_z": 2.0336
+                }
+              ],
+              "readiness_score": 0.0,
+              "rank": 11
+            },
+            {
+              "city": "Houston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 1.0898,
+                  "peer_z": 0.0143
+                }
+              ],
+              "readiness_score": 62.16,
+              "rank": 7
+            },
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 1.0898,
+                  "peer_z": 0.8056
+                },
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.6578,
+                  "peer_z": 0.6336
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 1.1731,
+                  "peer_z": 0.8997
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            }
+          ],
+          "steal_from_peers": [
+            "Dallas",
+            "Houston",
+            "Miami"
+          ],
+          "rationale": "Atlanta shows elevated food/CO\u2082e pressure (z=1.09). Peers with similar dining pressure: Dallas, Houston, Miami.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -915017366.9,
+            "water_liters": -3147373285.9,
+            "kg_co2e": -2019682327.9,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "cdd",
+              "label": "Cooling (CDD)",
+              "z": 1.6119
+            },
+            {
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 1.1731
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 2.785,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Dallas",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 1.6119,
+                  "peer_z": 0.9061
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 1.1731,
+                  "peer_z": 2.0336
+                }
+              ],
+              "readiness_score": 0.0,
+              "rank": 11
+            },
+            {
+              "city": "Houston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 1.6119,
+                  "peer_z": 0.7963
+                }
+              ],
+              "readiness_score": 62.16,
+              "rank": 7
+            },
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 1.1731,
+                  "peer_z": 0.8997
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            }
+          ],
+          "steal_from_peers": [
+            "Dallas",
+            "Houston",
+            "Miami"
+          ],
+          "rationale": "Atlanta couples heat and cooling load (UHI z=-1.27, CDD z=1.61). Peers with similar heat/cooling pressure: Dallas, Houston, Miami.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -2196041680.6,
+            "water_liters": -786843321.5,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        },
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "elevated_targets": [
+            {
+              "key": "cdd",
+              "label": "Cooling (CDD)",
+              "z": 1.6119
+            },
+            {
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 1.1731
+            }
+          ],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 2.785,
+          "pressing": true,
+          "peer_overlap": [
+            {
+              "city": "Dallas",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 1.6119,
+                  "peer_z": 0.9061
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 1.1731,
+                  "peer_z": 2.0336
+                }
+              ],
+              "readiness_score": 0.0,
+              "rank": 11
+            },
+            {
+              "city": "Houston",
+              "shared_elevated_drivers": [
+                {
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 1.6119,
+                  "peer_z": 0.7963
+                }
+              ],
+              "readiness_score": 62.16,
+              "rank": 7
+            },
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 1.1731,
+                  "peer_z": 0.8997
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            }
+          ],
+          "steal_from_peers": [
+            "Dallas",
+            "Houston",
+            "Miami"
+          ],
+          "rationale": "Atlanta summer CDD pressure is material (z=1.61). Peers with similar cooling pressure: Dallas, Houston, Miami.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1464027787.1,
+            "water_liters": -393421660.7,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
+        }
+      ],
+      "general_options": [],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 18300347338.4,
+          "water_liters": 39342166073.5,
+          "kg_co2e": 8078729311.6,
+          "visits": 1449697602.0,
+          "summer_month_weight": 10.0,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.7567,
+          "Energy": 0.1981,
+          "Water": 0.0339,
+          "Venue": 0.0112,
+          "Other_EFW": 0.0
+        },
+        "spend": {
+          "total": 921605704.1,
+          "mix": {
+            "Food": 0.5491,
+            "Energy": 0.4223,
+            "Lodging": 0.0286
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Other_EFW": 0.4852,
+          "Food": 0.3397,
+          "Venue": 0.1164,
+          "Water": 0.0334,
+          "Energy": 0.0252
+        },
+        "climate": {
+          "mean_cdd_c": 1697.077,
+          "mean_hdd_c": 0.147,
+          "mean_temp_c": 26.254,
+          "mean_uhi": 2.995
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Chevron",
+            "category": "Gasoline Stations",
+            "summer_visits": 70010571.0
+          },
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 63983629.0
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 61837037.0
+          },
+          {
+            "brand": "Kroger",
+            "category": "Grocery Stores",
+            "summer_visits": 45007693.0
+          },
+          {
+            "brand": "Wendy's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 43993250.0
+          }
+        ],
+        "not_used_in_readiness": true
+      }
+    },
+    {
+      "host_city": "Philadelphia",
+      "rank": 10,
+      "readiness_score": 12.43,
+      "readiness_band": [
+        0.0,
+        27.43
+      ],
+      "stress_index": 0.99,
+      "z_components": {
+        "energy_kwh": 0.0495,
+        "kg_co2e": 1.5712,
+        "water_liters": 2.4948,
+        "cdd": 0.2553,
+        "uhi": 0.5537
+      },
+      "drivers": [
+        {
+          "key": "energy_kwh",
+          "label": "Energy",
+          "z": 0.0495,
+          "elevated": true,
+          "raw": 409.2237
+        },
+        {
+          "key": "kg_co2e",
+          "label": "Food CO\u2082e",
+          "z": 1.5712,
+          "elevated": true,
+          "raw": 406.0195
+        },
+        {
+          "key": "water_liters",
+          "label": "Water",
+          "z": 2.4948,
+          "elevated": true,
+          "raw": 3064.3262
+        },
+        {
+          "key": "cdd",
+          "label": "Cooling (CDD)",
+          "z": 0.2553,
+          "elevated": true,
+          "raw": 1061.7477
+        },
+        {
+          "key": "uhi",
+          "label": "Urban heat",
+          "z": 0.5537,
+          "elevated": true,
+          "raw": 8.9
+        }
+      ],
+      "primary_pressure_drivers": [
+        "water_liters",
+        "kg_co2e",
+        "uhi"
+      ],
+      "raw_indicators": {
+        "energy_kwh": 409.2237,
+        "water_liters": 3064.3262,
+        "kg_co2e": 406.0195,
+        "uhi": 8.9,
+        "shop_months": 2817.0,
+        "shops": 1088.0,
+        "cdd": 1061.7477
       },
       "peer_cities": [
         "Miami",
-        "New York/New Jersey",
+        "Dallas",
         "Houston"
       ],
       "recommended_plays": [
@@ -2521,17 +3142,17 @@
             {
               "key": "kg_co2e",
               "label": "Food CO\u2082e",
-              "z": 1.6647
+              "z": 1.5712
             },
             {
               "key": "water_liters",
               "label": "Water",
-              "z": 1.4834
+              "z": 2.4948
             },
             {
               "key": "energy_kwh",
               "label": "Energy",
-              "z": 1.4938
+              "z": 0.0495
             }
           ],
           "expected_effects": {
@@ -2539,7 +3160,7 @@
             "food_co2e_pct": -25,
             "water_pct": -8
           },
-          "match_score": 4.642,
+          "match_score": 4.115,
           "pressing": true,
           "peer_overlap": [
             {
@@ -2548,49 +3169,49 @@
                 {
                   "key": "kg_co2e",
                   "label": "Food CO\u2082e",
-                  "city_z": 1.6647,
-                  "peer_z": 1.4296
+                  "city_z": 1.5712,
+                  "peer_z": 0.8056
                 },
                 {
                   "key": "water_liters",
                   "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 1.5797
+                  "city_z": 2.4948,
+                  "peer_z": 0.6336
                 },
                 {
                   "key": "energy_kwh",
                   "label": "Energy",
-                  "city_z": 1.4938,
-                  "peer_z": 1.4609
+                  "city_z": 0.0495,
+                  "peer_z": 0.8997
                 }
               ],
-              "readiness_score": 0.0,
-              "rank": 11
+              "readiness_score": 31.7,
+              "rank": 8
             },
             {
-              "city": "New York/New Jersey",
+              "city": "Dallas",
               "shared_elevated_drivers": [
                 {
                   "key": "kg_co2e",
                   "label": "Food CO\u2082e",
-                  "city_z": 1.6647,
-                  "peer_z": 0.8063
+                  "city_z": 1.5712,
+                  "peer_z": 1.4226
                 },
                 {
                   "key": "water_liters",
                   "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 0.7618
+                  "city_z": 2.4948,
+                  "peer_z": 0.2776
                 },
                 {
                   "key": "energy_kwh",
                   "label": "Energy",
-                  "city_z": 1.4938,
-                  "peer_z": 0.5314
+                  "city_z": 0.0495,
+                  "peer_z": 2.0336
                 }
               ],
-              "readiness_score": 35.87,
-              "rank": 8
+              "readiness_score": 0.0,
+              "rank": 11
             },
             {
               "city": "Houston",
@@ -2598,32 +3219,26 @@
                 {
                   "key": "kg_co2e",
                   "label": "Food CO\u2082e",
-                  "city_z": 1.6647,
-                  "peer_z": 0.953
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 1.0759
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.4938,
-                  "peer_z": 1.1997
+                  "city_z": 1.5712,
+                  "peer_z": 0.0143
                 }
               ],
-              "readiness_score": 10.37,
-              "rank": 9
+              "readiness_score": 62.16,
+              "rank": 7
             }
           ],
           "steal_from_peers": [
             "Miami",
-            "New York/New Jersey",
+            "Dallas",
             "Houston"
           ],
-          "rationale": "San Francisco Bay Area shows elevated food/CO\u2082e pressure (z=1.66). Peers with similar dining pressure: Miami, New York/New Jersey, Houston."
+          "rationale": "Philadelphia shows elevated food/CO\u2082e pressure (z=1.57). Peers with similar dining pressure: Miami, Dallas, Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -710447569.0,
+            "water_liters": -2347389769.6,
+            "kg_co2e": -1689538173.5,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         },
         {
           "id": "kitchen_water_efficiency",
@@ -2639,12 +3254,12 @@
             {
               "key": "water_liters",
               "label": "Water",
-              "z": 1.4834
+              "z": 2.4948
             },
             {
               "key": "kg_co2e",
               "label": "Food CO\u2082e",
-              "z": 1.6647
+              "z": 1.5712
             }
           ],
           "expected_effects": {
@@ -2652,7 +3267,7 @@
             "food_co2e_pct": -5,
             "water_pct": -15
           },
-          "match_score": 3.148,
+          "match_score": 4.066,
           "pressing": true,
           "peer_overlap": [
             {
@@ -2661,64 +3276,64 @@
                 {
                   "key": "water_liters",
                   "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 1.5797
+                  "city_z": 2.4948,
+                  "peer_z": 0.6336
                 },
                 {
                   "key": "kg_co2e",
                   "label": "Food CO\u2082e",
-                  "city_z": 1.6647,
-                  "peer_z": 1.4296
+                  "city_z": 1.5712,
+                  "peer_z": 0.8056
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            },
+            {
+              "city": "Dallas",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 2.4948,
+                  "peer_z": 0.2776
+                },
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 1.5712,
+                  "peer_z": 1.4226
                 }
               ],
               "readiness_score": 0.0,
               "rank": 11
             },
             {
-              "city": "New York/New Jersey",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 0.7618
-                },
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 1.6647,
-                  "peer_z": 0.8063
-                }
-              ],
-              "readiness_score": 35.87,
-              "rank": 8
-            },
-            {
               "city": "Houston",
               "shared_elevated_drivers": [
                 {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 1.0759
-                },
-                {
                   "key": "kg_co2e",
                   "label": "Food CO\u2082e",
-                  "city_z": 1.6647,
-                  "peer_z": 0.953
+                  "city_z": 1.5712,
+                  "peer_z": 0.0143
                 }
               ],
-              "readiness_score": 10.37,
-              "rank": 9
+              "readiness_score": 62.16,
+              "rank": 7
             }
           ],
           "steal_from_peers": [
             "Miami",
-            "New York/New Jersey",
+            "Dallas",
             "Houston"
           ],
-          "rationale": "San Francisco Bay Area food-service density drives water use (water z=1.48). Peers with similar water/food pressure: Miami, New York/New Jersey, Houston."
+          "rationale": "Philadelphia food-service density drives water use (water z=2.49). Peers with similar water/food pressure: Miami, Dallas, Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -284179027.6,
+            "water_liters": -4401355818.0,
+            "kg_co2e": -337907634.7,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         },
         {
           "id": "hotel_water_reuse",
@@ -2734,12 +3349,12 @@
             {
               "key": "water_liters",
               "label": "Water",
-              "z": 1.4834
+              "z": 2.4948
             },
             {
               "key": "energy_kwh",
               "label": "Energy",
-              "z": 1.4938
+              "z": 0.0495
             }
           ],
           "expected_effects": {
@@ -2747,7 +3362,7 @@
             "food_co2e_pct": 0,
             "water_pct": -30
           },
-          "match_score": 2.977,
+          "match_score": 2.544,
           "pressing": true,
           "peer_overlap": [
             {
@@ -2756,144 +3371,192 @@
                 {
                   "key": "water_liters",
                   "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 1.5797
+                  "city_z": 2.4948,
+                  "peer_z": 0.6336
                 },
                 {
                   "key": "energy_kwh",
                   "label": "Energy",
-                  "city_z": 1.4938,
-                  "peer_z": 1.4609
+                  "city_z": 0.0495,
+                  "peer_z": 0.8997
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
+            },
+            {
+              "city": "Dallas",
+              "shared_elevated_drivers": [
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 2.4948,
+                  "peer_z": 0.2776
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 0.0495,
+                  "peer_z": 2.0336
                 }
               ],
               "readiness_score": 0.0,
               "rank": 11
-            },
-            {
-              "city": "New York/New Jersey",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 0.7618
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.4938,
-                  "peer_z": 0.5314
-                }
-              ],
-              "readiness_score": 35.87,
-              "rank": 8
-            },
-            {
-              "city": "Houston",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.4834,
-                  "peer_z": 1.0759
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.4938,
-                  "peer_z": 1.1997
-                }
-              ],
-              "readiness_score": 10.37,
-              "rank": 9
             }
           ],
           "steal_from_peers": [
             "Miami",
-            "New York/New Jersey",
-            "Houston"
+            "Dallas"
           ],
-          "rationale": "San Francisco Bay Area water intensity is high relative to hosts (z=1.48). Peers with similar water pressure: Miami, New York/New Jersey, Houston."
+          "rationale": "Philadelphia water intensity is high relative to hosts (z=2.49). Peers with similar water pressure: Miami, Dallas.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -426268541.4,
+            "water_liters": -8802711636.0,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         }
       ],
-      "general_options": []
+      "general_options": [],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 14208951379.2,
+          "water_liters": 29342372120.0,
+          "kg_co2e": 6758152694.2,
+          "visits": 1174617045.0,
+          "summer_month_weight": 10.0,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.771,
+          "Energy": 0.1873,
+          "Water": 0.0311,
+          "Venue": 0.0106,
+          "Other_EFW": 0.0
+        },
+        "spend": {
+          "total": 1102230718.6,
+          "mix": {
+            "Food": 0.5096,
+            "Energy": 0.4652,
+            "Lodging": 0.0252
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.5086,
+          "Other_EFW": 0.3233,
+          "Venue": 0.1263,
+          "Water": 0.0212,
+          "Energy": 0.0205
+        },
+        "climate": {
+          "mean_cdd_c": 1078.189,
+          "mean_hdd_c": 13.631,
+          "mean_temp_c": 24.133,
+          "mean_uhi": 5.49
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Sunoco",
+            "category": "Gasoline Stations",
+            "summer_visits": 94353246.0
+          },
+          {
+            "brand": "Dunkin'",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 71194942.0
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 52192142.0
+          },
+          {
+            "brand": "Wendy's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 38254057.0
+          },
+          {
+            "brand": "Sheetz",
+            "category": "Gasoline Stations",
+            "summer_visits": 37708593.0
+          }
+        ],
+        "not_used_in_readiness": true
+      }
     },
     {
-      "host_city": "Miami",
+      "host_city": "Dallas",
       "rank": 11,
       "readiness_score": 0.0,
       "readiness_band": [
         0.0,
         15.0
       ],
-      "stress_index": 1.2183,
+      "stress_index": 1.2375,
       "z_components": {
-        "energy_kwh": 1.4609,
-        "kg_co2e": 1.4296,
-        "water_liters": 1.5797,
-        "cdd": -0.6059,
-        "uhi": 0.9424
+        "energy_kwh": 2.0336,
+        "kg_co2e": 1.4226,
+        "water_liters": 0.2776,
+        "cdd": 0.9061,
+        "uhi": 0.2398
       },
       "drivers": [
         {
           "key": "energy_kwh",
           "label": "Energy",
-          "z": 1.4609,
+          "z": 2.0336,
           "elevated": true,
-          "raw": 30279761203.6
+          "raw": 792.7366
         },
         {
           "key": "kg_co2e",
           "label": "Food CO\u2082e",
-          "z": 1.4296,
+          "z": 1.4226,
           "elevated": true,
-          "raw": 14552019654.4
+          "raw": 391.4914
         },
         {
           "key": "water_liters",
           "label": "Water",
-          "z": 1.5797,
+          "z": 0.2776,
           "elevated": true,
-          "raw": 76167328327.5
+          "raw": 1698.6835
         },
         {
           "key": "cdd",
           "label": "Cooling (CDD)",
-          "z": -0.6059,
-          "elevated": false,
-          "raw": 6204.9139
+          "z": 0.9061,
+          "elevated": true,
+          "raw": 1389.9726
         },
         {
           "key": "uhi",
           "label": "Urban heat",
-          "z": 0.9424,
+          "z": 0.2398,
           "elevated": true,
-          "raw": 6.7238
+          "raw": 8.4
         }
       ],
       "primary_pressure_drivers": [
-        "water_liters",
         "energy_kwh",
-        "kg_co2e"
+        "kg_co2e",
+        "cdd"
       ],
       "raw_indicators": {
-        "energy_kwh": 30279761203.6,
-        "water_liters": 76167328327.5,
-        "kg_co2e": 14552019654.4,
-        "visits": 2721508317.0,
-        "cdd": 6204.9139,
-        "uhi": 6.7238,
-        "spend_total": 869737062.0272,
-        "summer_month_rows": 10.0,
-        "poi_food_share": 0.485,
-        "poi_energy_share": 0.0313,
-        "poi_water_share": 0.0422,
-        "poi_venue_share": 0.1315
+        "energy_kwh": 792.7366,
+        "water_liters": 1698.6835,
+        "kg_co2e": 391.4914,
+        "uhi": 8.4,
+        "shop_months": 3479.0,
+        "shops": 1148.0,
+        "cdd": 1389.9726
       },
       "peer_cities": [
-        "San Francisco Bay Area",
-        "Houston",
-        "New York/New Jersey"
+        "Atlanta",
+        "Miami",
+        "Houston"
       ],
       "recommended_plays": [
         {
@@ -2911,17 +3574,17 @@
             {
               "key": "kg_co2e",
               "label": "Food CO\u2082e",
-              "z": 1.4296
+              "z": 1.4226
             },
             {
               "key": "water_liters",
               "label": "Water",
-              "z": 1.5797
+              "z": 0.2776
             },
             {
               "key": "energy_kwh",
               "label": "Energy",
-              "z": 1.4609
+              "z": 2.0336
             }
           ],
           "expected_effects": {
@@ -2929,33 +3592,58 @@
             "food_co2e_pct": -25,
             "water_pct": -8
           },
-          "match_score": 4.47,
+          "match_score": 3.734,
           "pressing": true,
           "peer_overlap": [
             {
-              "city": "San Francisco Bay Area",
+              "city": "Atlanta",
               "shared_elevated_drivers": [
                 {
                   "key": "kg_co2e",
                   "label": "Food CO\u2082e",
-                  "city_z": 1.4296,
-                  "peer_z": 1.6647
+                  "city_z": 1.4226,
+                  "peer_z": 1.0898
                 },
                 {
                   "key": "water_liters",
                   "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 1.4834
+                  "city_z": 0.2776,
+                  "peer_z": 0.6578
                 },
                 {
                   "key": "energy_kwh",
                   "label": "Energy",
-                  "city_z": 1.4609,
-                  "peer_z": 1.4938
+                  "city_z": 2.0336,
+                  "peer_z": 1.1731
                 }
               ],
-              "readiness_score": 2.58,
-              "rank": 10
+              "readiness_score": 19.51,
+              "rank": 9
+            },
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "kg_co2e",
+                  "label": "Food CO\u2082e",
+                  "city_z": 1.4226,
+                  "peer_z": 0.8056
+                },
+                {
+                  "key": "water_liters",
+                  "label": "Water",
+                  "city_z": 0.2776,
+                  "peer_z": 0.6336
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 2.0336,
+                  "peer_z": 0.8997
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
             },
             {
               "city": "Houston",
@@ -2963,250 +3651,286 @@
                 {
                   "key": "kg_co2e",
                   "label": "Food CO\u2082e",
-                  "city_z": 1.4296,
-                  "peer_z": 0.953
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 1.0759
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.4609,
-                  "peer_z": 1.1997
+                  "city_z": 1.4226,
+                  "peer_z": 0.0143
                 }
               ],
-              "readiness_score": 10.37,
-              "rank": 9
-            },
-            {
-              "city": "New York/New Jersey",
-              "shared_elevated_drivers": [
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 1.4296,
-                  "peer_z": 0.8063
-                },
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 0.7618
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.4609,
-                  "peer_z": 0.5314
-                }
-              ],
-              "readiness_score": 35.87,
-              "rank": 8
+              "readiness_score": 62.16,
+              "rank": 7
             }
           ],
           "steal_from_peers": [
-            "San Francisco Bay Area",
-            "Houston",
-            "New York/New Jersey"
+            "Atlanta",
+            "Miami",
+            "Houston"
           ],
-          "rationale": "Miami shows elevated food/CO\u2082e pressure (z=1.43). Peers with similar dining pressure: San Francisco Bay Area, Houston, New York/New Jersey."
+          "rationale": "Dallas shows elevated food/CO\u2082e pressure (z=1.42). Peers with similar dining pressure: Atlanta, Miami, Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -769596858.8,
+            "water_liters": -2874198883.7,
+            "kg_co2e": -1722966602.3,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         },
         {
-          "id": "hotel_water_reuse",
-          "title": "Hotel linen / laundry water-reuse program",
-          "owner": "Hotel association + utility",
-          "effort": "medium",
-          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
           "targets": [
-            "water_liters",
+            "uhi",
+            "cdd",
             "energy_kwh"
           ],
           "elevated_targets": [
             {
-              "key": "water_liters",
-              "label": "Water",
-              "z": 1.5797
+              "key": "uhi",
+              "label": "Urban heat",
+              "z": 0.2398
+            },
+            {
+              "key": "cdd",
+              "label": "Cooling (CDD)",
+              "z": 0.9061
             },
             {
               "key": "energy_kwh",
               "label": "Energy",
-              "z": 1.4609
+              "z": 2.0336
             }
           ],
           "expected_effects": {
-            "energy_pct": -3,
+            "energy_pct": -12,
             "food_co2e_pct": 0,
-            "water_pct": -30
+            "water_pct": -2
           },
-          "match_score": 3.041,
+          "match_score": 3.179,
           "pressing": true,
           "peer_overlap": [
             {
-              "city": "San Francisco Bay Area",
+              "city": "Atlanta",
               "shared_elevated_drivers": [
                 {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 1.4834
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.9061,
+                  "peer_z": 1.6119
                 },
                 {
                   "key": "energy_kwh",
                   "label": "Energy",
-                  "city_z": 1.4609,
-                  "peer_z": 1.4938
+                  "city_z": 2.0336,
+                  "peer_z": 1.1731
                 }
               ],
-              "readiness_score": 2.58,
-              "rank": 10
+              "readiness_score": 19.51,
+              "rank": 9
+            },
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "uhi",
+                  "label": "Urban heat",
+                  "city_z": 0.2398,
+                  "peer_z": 0.2398
+                },
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 2.0336,
+                  "peer_z": 0.8997
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
             },
             {
               "city": "Houston",
               "shared_elevated_drivers": [
                 {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 1.0759
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.4609,
-                  "peer_z": 1.1997
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.9061,
+                  "peer_z": 0.7963
                 }
               ],
-              "readiness_score": 10.37,
-              "rank": 9
-            },
-            {
-              "city": "New York/New Jersey",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 0.7618
-                },
-                {
-                  "key": "energy_kwh",
-                  "label": "Energy",
-                  "city_z": 1.4609,
-                  "peer_z": 0.5314
-                }
-              ],
-              "readiness_score": 35.87,
-              "rank": 8
+              "readiness_score": 62.16,
+              "rank": 7
             }
           ],
           "steal_from_peers": [
-            "San Francisco Bay Area",
-            "Houston",
-            "New York/New Jersey"
+            "Atlanta",
+            "Miami",
+            "Houston"
           ],
-          "rationale": "Miami water intensity is high relative to hosts (z=1.58). Peers with similar water pressure: San Francisco Bay Area, Houston, New York/New Jersey."
+          "rationale": "Dallas couples heat and cooling load (UHI z=0.24, CDD z=0.91). Peers with similar heat/cooling pressure: Atlanta, Miami, Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1847032461.2,
+            "water_liters": -718549720.9,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         },
         {
-          "id": "kitchen_water_efficiency",
-          "title": "Commercial kitchen water-efficiency retrofit grants",
-          "owner": "Economic development + water utility",
-          "effort": "medium",
-          "legacy_use": "Restaurant resilience grants post-event",
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
           "targets": [
-            "water_liters",
-            "kg_co2e"
+            "cdd",
+            "energy_kwh"
           ],
           "elevated_targets": [
             {
-              "key": "water_liters",
-              "label": "Water",
-              "z": 1.5797
+              "key": "cdd",
+              "label": "Cooling (CDD)",
+              "z": 0.9061
             },
             {
-              "key": "kg_co2e",
-              "label": "Food CO\u2082e",
-              "z": 1.4296
+              "key": "energy_kwh",
+              "label": "Energy",
+              "z": 2.0336
             }
           ],
           "expected_effects": {
-            "energy_pct": -2,
-            "food_co2e_pct": -5,
-            "water_pct": -15
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
           },
-          "match_score": 3.009,
+          "match_score": 2.94,
           "pressing": true,
           "peer_overlap": [
             {
-              "city": "San Francisco Bay Area",
+              "city": "Atlanta",
               "shared_elevated_drivers": [
                 {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 1.4834
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.9061,
+                  "peer_z": 1.6119
                 },
                 {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 1.4296,
-                  "peer_z": 1.6647
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 2.0336,
+                  "peer_z": 1.1731
                 }
               ],
-              "readiness_score": 2.58,
-              "rank": 10
+              "readiness_score": 19.51,
+              "rank": 9
+            },
+            {
+              "city": "Miami",
+              "shared_elevated_drivers": [
+                {
+                  "key": "energy_kwh",
+                  "label": "Energy",
+                  "city_z": 2.0336,
+                  "peer_z": 0.8997
+                }
+              ],
+              "readiness_score": 31.7,
+              "rank": 8
             },
             {
               "city": "Houston",
               "shared_elevated_drivers": [
                 {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 1.0759
-                },
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 1.4296,
-                  "peer_z": 0.953
+                  "key": "cdd",
+                  "label": "Cooling (CDD)",
+                  "city_z": 0.9061,
+                  "peer_z": 0.7963
                 }
               ],
-              "readiness_score": 10.37,
-              "rank": 9
-            },
-            {
-              "city": "New York/New Jersey",
-              "shared_elevated_drivers": [
-                {
-                  "key": "water_liters",
-                  "label": "Water",
-                  "city_z": 1.5797,
-                  "peer_z": 0.7618
-                },
-                {
-                  "key": "kg_co2e",
-                  "label": "Food CO\u2082e",
-                  "city_z": 1.4296,
-                  "peer_z": 0.8063
-                }
-              ],
-              "readiness_score": 35.87,
-              "rank": 8
+              "readiness_score": 62.16,
+              "rank": 7
             }
           ],
           "steal_from_peers": [
-            "San Francisco Bay Area",
-            "Houston",
-            "New York/New Jersey"
+            "Atlanta",
+            "Miami",
+            "Houston"
           ],
-          "rationale": "Miami food-service density drives water use (water z=1.58). Peers with similar water/food pressure: San Francisco Bay Area, Houston, New York/New Jersey."
+          "rationale": "Dallas summer CDD pressure is material (z=0.91). Peers with similar cooling pressure: Atlanta, Miami, Houston.",
+          "illustrative_absolute_delta": {
+            "energy_kwh": -1231354974.1,
+            "water_liters": -359274860.5,
+            "kg_co2e": 0.0,
+            "basis": "summer city absolute totals \u00d7 expected_effects %"
+          }
         }
       ],
-      "general_options": []
+      "general_options": [],
+      "ops_scale": {
+        "absolute": {
+          "energy_kwh": 15391937176.6,
+          "water_liters": 35927486046.5,
+          "kg_co2e": 6891866409.3,
+          "visits": 1269427969.1,
+          "summer_month_weight": 3.548,
+          "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+        },
+        "visit_mix": {
+          "Food": 0.7664,
+          "Energy": 0.1843,
+          "Water": 0.0361,
+          "Venue": 0.0131,
+          "Other_EFW": 0.0001
+        },
+        "spend": {
+          "total": 1014160928.9,
+          "mix": {
+            "Energy": 0.8378,
+            "Food": 0.1346,
+            "Lodging": 0.0277
+          },
+          "unit": "summer brand spend (money intensity corroboration)"
+        },
+        "poi_structure": {
+          "Food": 0.4545,
+          "Other_EFW": 0.3466,
+          "Venue": 0.1276,
+          "Energy": 0.0361,
+          "Water": 0.0352
+        },
+        "climate": {
+          "mean_cdd_c": 1295.252,
+          "mean_hdd_c": 0.0,
+          "mean_temp_c": 28.905,
+          "mean_uhi": 5.809
+        },
+        "top_brands_by_visits": [
+          {
+            "brand": "Subway",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 52235987.2
+          },
+          {
+            "brand": "McDonald's",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 51826210.0
+          },
+          {
+            "brand": "Chevron",
+            "category": "Gasoline Stations",
+            "summer_visits": 42908535.7
+          },
+          {
+            "brand": "Sonic",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 42508784.6
+          },
+          {
+            "brand": "Whataburger",
+            "category": "Restaurants and Other Eating Places",
+            "summer_visits": 35289690.5
+          }
+        ],
+        "not_used_in_readiness": true
+      }
     }
   ]
 }

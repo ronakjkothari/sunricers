@@ -1,18 +1,21 @@
 """
 Stable A-integration contract for Plan D.
 
-Contract version: 1.0.0
+Contract version: 1.1.0
 
 A should mount `data/playbook/a_integration_v1.json` (or the identical
 payload from `PlaybookService.build_a_contract()`). Do not parse unstable
 internal fields from older exports.
+
+v1.1 adds labeled `ops_scale` companion fields (store-visits absolutes + mix).
+Those fields must NEVER drive readiness rankings — rates stay canonical.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-CONTRACT_VERSION = "1.0.0"
+CONTRACT_VERSION = "1.1.0"
 CONTRACT_ID = "plan_d_a_integration"
 
 REQUIRED_SCORECARD_KEYS = {
@@ -68,6 +71,7 @@ def build_a_contract_payload(engine_payload: dict[str, Any]) -> dict[str, Any]:
                 "primary_pressure_drivers": c.get("primary_pressure_drivers") or [],
                 "z_components": c["z_components"],
                 "raw_indicators": c.get("raw_indicators") or {},
+                "ops_scale": c.get("ops_scale"),
                 "peer_cities": c.get("peer_cities") or [],
                 "recommended_plays": c.get("recommended_plays") or [],
                 "general_options": c.get("general_options") or [],
@@ -84,6 +88,8 @@ def build_a_contract_payload(engine_payload: dict[str, Any]) -> dict[str, Any]:
             "generated_at": meta_in.get("generated_at"),
             "disclaimer": meta_in.get("disclaimer"),
             "formula": meta_in.get("formula"),
+            "indicator_source": meta_in.get("indicator_source"),
+            "ops_context": meta_in.get("ops_context"),
             "ui_slots": {
                 "compare_strip": "scorecards[] → rank, readiness_score, readiness_band",
                 "driver_chart": "scorecards[].drivers[] → radar / parallel coords",
@@ -92,6 +98,11 @@ def build_a_contract_payload(engine_payload: dict[str, Any]) -> dict[str, Any]:
                 "general_options": "scorecards[].general_options[] (optional disclosure)",
                 "pressure_filter": "scorecards[].primary_pressure_drivers[] / drivers[].elevated",
                 "export_card": "one scorecard object = one printable city playbook page",
+                "overview_kpis": "scorecards[].ops_scale.absolute (city totals; not readiness)",
+                "category_mix": "scorecards[].ops_scale.visit_mix",
+                "spend_strip": "scorecards[].ops_scale.spend",
+                "brand_callouts": "scorecards[].ops_scale.top_brands_by_visits",
+                "play_absolute_delta": "recommended_plays[].illustrative_absolute_delta",
             },
         },
         "scorecards": cards_out,
