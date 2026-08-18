@@ -11,13 +11,14 @@ Rice Urban Sustainability Hackathon — **Track 2: Energy–Food–Water Nexus**
 
 ### Plan D engine (standalone)
 
-Comparative readiness playbook for 11 hosts — ready to overlay on Plan A later:
+Comparative readiness playbook for 11 hosts — **A mounts** [`data/playbook/a_integration_v1.json`](data/playbook/a_integration_v1.json):
 
 ```bash
-python -m engines.playbook.cli
+python -m engines.playbook.cli --validate
+python scripts/test_playbook_contract.py
 ```
 
-See [`engines/playbook/README.md`](engines/playbook/README.md). Artifacts → [`data/playbook/`](data/playbook/).
+Contract: [`engines/playbook/CONTRACT.md`](engines/playbook/CONTRACT.md) · Preview: `data/playbook/preview.html`
 
 ## Rebuild curated package
 

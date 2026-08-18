@@ -1,0 +1,794 @@
+{
+  "context_id": "plan_d_ops_context",
+  "context_version": "1.0.0",
+  "meta": {
+    "role": "ops_scale",
+    "not_used_in_readiness": true,
+    "window": "summer months=[6, 7] (all years in curated)",
+    "grain_note": "absolute = provisioning scale (store-visits totals); readiness uses per-shop rates from spend-patterns map tables",
+    "sources": [
+      "footprint_estimates_market_monthly.csv",
+      "visits_efw_market_category_totals.csv",
+      "visits_efw_brand_monthly_top25.csv",
+      "spend_efw_domain_monthly.csv",
+      "poi_efw_market_summary.csv",
+      "weather_host_monthly.csv",
+      "uhi_market_summary.csv",
+      "market_crosswalk / POI split weights"
+    ],
+    "ui_slots": {
+      "overview_kpis": "cities[].absolute \u2192 Energy/Water/CO\u2082e totals",
+      "category_mix": "cities[].visit_mix",
+      "spend_strip": "cities[].spend",
+      "structure_card": "cities[].poi_structure",
+      "climate_overlay": "cities[].climate",
+      "brand_callouts": "cities[].top_brands_by_visits",
+      "spatial_side_panel": "compact app/data/ops_context.json",
+      "scenario_baseline": "cities[].absolute (+ category files for C)"
+    },
+    "allocation": {
+      "Dallas / Houston": {
+        "Dallas": 0.35481491416309013,
+        "Houston": 0.6451850858369099
+      },
+      "Los Angeles / SF Bay Area": {
+        "Los Angeles": 0.2895588900880827,
+        "San Francisco Bay Area": 0.7104411099119172
+      }
+    }
+  },
+  "cities": [
+    {
+      "host_city": "Atlanta",
+      "absolute": {
+        "energy_kwh": 18300347338.4,
+        "water_liters": 39342166073.5,
+        "kg_co2e": 8078729311.6,
+        "visits": 1449697602.0,
+        "summer_month_weight": 10.0,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.7567,
+        "Energy": 0.1981,
+        "Water": 0.0339,
+        "Venue": 0.0112,
+        "Other_EFW": 0.0
+      },
+      "spend": {
+        "total": 921605704.1,
+        "mix": {
+          "Food": 0.5491,
+          "Energy": 0.4223,
+          "Lodging": 0.0286
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Other_EFW": 0.4852,
+        "Food": 0.3397,
+        "Venue": 0.1164,
+        "Water": 0.0334,
+        "Energy": 0.0252
+      },
+      "climate": {
+        "mean_cdd_c": 1697.077,
+        "mean_hdd_c": 0.147,
+        "mean_temp_c": 26.254,
+        "mean_uhi": 2.995
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Chevron",
+          "category": "Gasoline Stations",
+          "summer_visits": 70010571.0
+        },
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 63983629.0
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 61837037.0
+        },
+        {
+          "brand": "Kroger",
+          "category": "Grocery Stores",
+          "summer_visits": 45007693.0
+        },
+        {
+          "brand": "Wendy's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 43993250.0
+        }
+      ]
+    },
+    {
+      "host_city": "Boston",
+      "absolute": {
+        "energy_kwh": 5284899021.2,
+        "water_liters": 14689264629.0,
+        "kg_co2e": 2853624340.9,
+        "visits": 545562521.0,
+        "summer_month_weight": 10.0,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.8128,
+        "Energy": 0.1368,
+        "Water": 0.0331,
+        "Venue": 0.0173,
+        "Other_EFW": 0.0
+      },
+      "spend": {
+        "total": 360704347.1,
+        "mix": {
+          "Energy": 0.9416,
+          "Food": 0.0356,
+          "Lodging": 0.0228
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.5646,
+        "Venue": 0.2448,
+        "Other_EFW": 0.1254,
+        "Water": 0.047,
+        "Energy": 0.0182
+      },
+      "climate": {
+        "mean_cdd_c": 1043.621,
+        "mean_hdd_c": 112.744,
+        "mean_temp_c": 21.687,
+        "mean_uhi": 5.014
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Dunkin'",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 88817229.0
+        },
+        {
+          "brand": "Stop & Shop",
+          "category": "Grocery Stores",
+          "summer_visits": 37957469.0
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 30002409.0
+        },
+        {
+          "brand": "Cumberland Farms",
+          "category": "Gasoline Stations",
+          "summer_visits": 28135208.0
+        },
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 20246571.0
+        }
+      ]
+    },
+    {
+      "host_city": "Dallas",
+      "absolute": {
+        "energy_kwh": 15391937176.6,
+        "water_liters": 35927486046.5,
+        "kg_co2e": 6891866409.3,
+        "visits": 1269427969.1,
+        "summer_month_weight": 3.548,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.7664,
+        "Energy": 0.1843,
+        "Water": 0.0361,
+        "Venue": 0.0131,
+        "Other_EFW": 0.0001
+      },
+      "spend": {
+        "total": 1014160928.9,
+        "mix": {
+          "Energy": 0.8378,
+          "Food": 0.1346,
+          "Lodging": 0.0277
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.4545,
+        "Other_EFW": 0.3466,
+        "Venue": 0.1276,
+        "Energy": 0.0361,
+        "Water": 0.0352
+      },
+      "climate": {
+        "mean_cdd_c": 1295.252,
+        "mean_hdd_c": 0.0,
+        "mean_temp_c": 28.905,
+        "mean_uhi": 5.809
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 52235987.2
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 51826210.0
+        },
+        {
+          "brand": "Chevron",
+          "category": "Gasoline Stations",
+          "summer_visits": 42908535.7
+        },
+        {
+          "brand": "Sonic",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 42508784.6
+        },
+        {
+          "brand": "Whataburger",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 35289690.5
+        }
+      ]
+    },
+    {
+      "host_city": "Houston",
+      "absolute": {
+        "energy_kwh": 27988249400.2,
+        "water_liters": 65329492204.5,
+        "kg_co2e": 12531968762.8,
+        "visits": 2308290774.9,
+        "summer_month_weight": 6.452,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.7664,
+        "Energy": 0.1843,
+        "Water": 0.0361,
+        "Venue": 0.0131,
+        "Other_EFW": 0.0001
+      },
+      "spend": {
+        "total": 1844120638.2,
+        "mix": {
+          "Energy": 0.8378,
+          "Food": 0.1346,
+          "Lodging": 0.0277
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.5412,
+        "Other_EFW": 0.2297,
+        "Venue": 0.1233,
+        "Energy": 0.0605,
+        "Water": 0.0453
+      },
+      "climate": {
+        "mean_cdd_c": 1274.753,
+        "mean_hdd_c": 0.0,
+        "mean_temp_c": 28.758,
+        "mean_uhi": 5.654
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 94984394.8
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 94239268.0
+        },
+        {
+          "brand": "Chevron",
+          "category": "Gasoline Stations",
+          "summer_visits": 78023629.3
+        },
+        {
+          "brand": "Sonic",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 77296733.4
+        },
+        {
+          "brand": "Whataburger",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 64169743.5
+        }
+      ]
+    },
+    {
+      "host_city": "Kansas City",
+      "absolute": {
+        "energy_kwh": 7941240557.8,
+        "water_liters": 24204774760.5,
+        "kg_co2e": 4266622640.7,
+        "visits": 864031044.0,
+        "summer_month_weight": 10.0,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.836,
+        "Energy": 0.1241,
+        "Water": 0.0306,
+        "Venue": 0.0092,
+        "Other_EFW": 0.0
+      },
+      "spend": {
+        "total": 827009228.8,
+        "mix": {
+          "Energy": 0.7885,
+          "Food": 0.2011,
+          "Lodging": 0.0104
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.3842,
+        "Other_EFW": 0.3721,
+        "Venue": 0.1548,
+        "Energy": 0.0467,
+        "Water": 0.0421
+      },
+      "climate": {
+        "mean_cdd_c": 888.099,
+        "mean_hdd_c": 0.676,
+        "mean_temp_c": 25.599,
+        "mean_uhi": 2.54
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 58423231.0
+        },
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 38058230.0
+        },
+        {
+          "brand": "QuikTrip",
+          "category": "Gasoline Stations",
+          "summer_visits": 31170694.0
+        },
+        {
+          "brand": "Taco Bell",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 29591290.0
+        },
+        {
+          "brand": "Sonic",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 29035180.0
+        }
+      ]
+    },
+    {
+      "host_city": "Los Angeles",
+      "absolute": {
+        "energy_kwh": 12459022397.1,
+        "water_liters": 30199720174.3,
+        "kg_co2e": 6337214629.0,
+        "visits": 1191486167.1,
+        "summer_month_weight": 2.896,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.7919,
+        "Energy": 0.163,
+        "Water": 0.0283,
+        "Venue": 0.0167,
+        "Other_EFW": 0.0
+      },
+      "spend": {
+        "total": 1043851395.0,
+        "mix": {
+          "Energy": 0.8892,
+          "Food": 0.0818,
+          "Lodging": 0.029
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.5581,
+        "Other_EFW": 0.236,
+        "Venue": 0.1367,
+        "Energy": 0.0369,
+        "Water": 0.0322
+      },
+      "climate": {
+        "mean_cdd_c": 1339.316,
+        "mean_hdd_c": 69.295,
+        "mean_temp_c": 22.938,
+        "mean_uhi": 8.54
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Chevron",
+          "category": "Gasoline Stations",
+          "summer_visits": 80950649.5
+        },
+        {
+          "brand": "Starbucks",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 71018699.4
+        },
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 58273343.5
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 53667815.3
+        },
+        {
+          "brand": "ARCO",
+          "category": "Gasoline Stations",
+          "summer_visits": 47065862.2
+        }
+      ]
+    },
+    {
+      "host_city": "Miami",
+      "absolute": {
+        "energy_kwh": 30279761203.6,
+        "water_liters": 76167328327.5,
+        "kg_co2e": 14552019654.4,
+        "visits": 2721508317.0,
+        "summer_month_weight": 10.0,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.7895,
+        "Energy": 0.1619,
+        "Water": 0.0354,
+        "Venue": 0.0131,
+        "Other_EFW": 0.0
+      },
+      "spend": {
+        "total": 869737062.0,
+        "mix": {
+          "Energy": 0.8403,
+          "Food": 0.0862,
+          "Lodging": 0.0736
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.485,
+        "Other_EFW": 0.31,
+        "Venue": 0.1315,
+        "Water": 0.0422,
+        "Energy": 0.0313
+      },
+      "climate": {
+        "mean_cdd_c": 620.491,
+        "mean_hdd_c": 0.0,
+        "mean_temp_c": 28.484,
+        "mean_uhi": 6.724
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 142072106.0
+        },
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 116638559.0
+        },
+        {
+          "brand": "Publix Super Markets",
+          "category": "Grocery Stores",
+          "summer_visits": 115442291.0
+        },
+        {
+          "brand": "Dunkin'",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 106225788.0
+        },
+        {
+          "brand": "Winn Dixie",
+          "category": "Grocery Stores",
+          "summer_visits": 85846801.0
+        }
+      ]
+    },
+    {
+      "host_city": "New York/New Jersey",
+      "absolute": {
+        "energy_kwh": 22123047211.4,
+        "water_liters": 58571627477.5,
+        "kg_co2e": 11910046228.2,
+        "visits": 2249681045.0,
+        "summer_month_weight": 10.0,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.8106,
+        "Energy": 0.1382,
+        "Water": 0.0319,
+        "Venue": 0.0193,
+        "Other_EFW": 0.0
+      },
+      "spend": {
+        "total": 1786010648.8,
+        "mix": {
+          "Energy": 0.6499,
+          "Food": 0.3277,
+          "Lodging": 0.0224
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.6099,
+        "Other_EFW": 0.1787,
+        "Venue": 0.1472,
+        "Water": 0.0353,
+        "Energy": 0.0289
+      },
+      "climate": {
+        "mean_cdd_c": 290.443,
+        "mean_hdd_c": 9.302,
+        "mean_temp_c": 22.905,
+        "mean_uhi": 4.704
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Dunkin'",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 267720747.0
+        },
+        {
+          "brand": "Sunoco",
+          "category": "Gasoline Stations",
+          "summer_visits": 106182575.0
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 100168392.0
+        },
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 74674105.0
+        },
+        {
+          "brand": "Burger King",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 67285093.0
+        }
+      ]
+    },
+    {
+      "host_city": "Philadelphia",
+      "absolute": {
+        "energy_kwh": 14208951379.2,
+        "water_liters": 29342372120.0,
+        "kg_co2e": 6758152694.2,
+        "visits": 1174617045.0,
+        "summer_month_weight": 10.0,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.771,
+        "Energy": 0.1873,
+        "Water": 0.0311,
+        "Venue": 0.0106,
+        "Other_EFW": 0.0
+      },
+      "spend": {
+        "total": 1102230718.6,
+        "mix": {
+          "Food": 0.5096,
+          "Energy": 0.4652,
+          "Lodging": 0.0252
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.5086,
+        "Other_EFW": 0.3233,
+        "Venue": 0.1263,
+        "Water": 0.0212,
+        "Energy": 0.0205
+      },
+      "climate": {
+        "mean_cdd_c": 1078.189,
+        "mean_hdd_c": 13.631,
+        "mean_temp_c": 24.133,
+        "mean_uhi": 5.49
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Sunoco",
+          "category": "Gasoline Stations",
+          "summer_visits": 94353246.0
+        },
+        {
+          "brand": "Dunkin'",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 71194942.0
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 52192142.0
+        },
+        {
+          "brand": "Wendy's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 38254057.0
+        },
+        {
+          "brand": "Sheetz",
+          "category": "Gasoline Stations",
+          "summer_visits": 37708593.0
+        }
+      ]
+    },
+    {
+      "host_city": "San Francisco Bay Area",
+      "absolute": {
+        "energy_kwh": 30568571724.7,
+        "water_liters": 74095886723.2,
+        "kg_co2e": 15548539343.3,
+        "visits": 2923345764.9,
+        "summer_month_weight": 7.104,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.7919,
+        "Energy": 0.163,
+        "Water": 0.0283,
+        "Venue": 0.0167,
+        "Other_EFW": 0.0
+      },
+      "spend": {
+        "total": 2561119582.2,
+        "mix": {
+          "Energy": 0.8892,
+          "Food": 0.0818,
+          "Lodging": 0.029
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.5259,
+        "Other_EFW": 0.216,
+        "Venue": 0.173,
+        "Water": 0.0461,
+        "Energy": 0.039
+      },
+      "climate": {
+        "mean_cdd_c": 423.612,
+        "mean_hdd_c": 91.944,
+        "mean_temp_c": 20.508,
+        "mean_uhi": 5.622
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Chevron",
+          "category": "Gasoline Stations",
+          "summer_visits": 198614759.5
+        },
+        {
+          "brand": "Starbucks",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 174246432.6
+        },
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 142975333.5
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 131675536.7
+        },
+        {
+          "brand": "ARCO",
+          "category": "Gasoline Stations",
+          "summer_visits": 115477453.8
+        }
+      ]
+    },
+    {
+      "host_city": "Seattle",
+      "absolute": {
+        "energy_kwh": 7515397555.2,
+        "water_liters": 16129411213.0,
+        "kg_co2e": 3685551133.9,
+        "visits": 664016786.0,
+        "summer_month_weight": 10.0,
+        "unit": "city summer totals from store-visits \u00d7 intensity_factors (merged markets POI-split)"
+      },
+      "visit_mix": {
+        "Food": 0.7825,
+        "Energy": 0.1745,
+        "Water": 0.0272,
+        "Venue": 0.0158,
+        "Other_EFW": 0.0001
+      },
+      "spend": {
+        "total": 1877754058.9,
+        "mix": {
+          "Energy": 0.918,
+          "Food": 0.0682,
+          "Lodging": 0.0138
+        },
+        "unit": "summer brand spend (money intensity corroboration)"
+      },
+      "poi_structure": {
+        "Food": 0.487,
+        "Other_EFW": 0.2875,
+        "Venue": 0.1744,
+        "Water": 0.0265,
+        "Energy": 0.0246
+      },
+      "climate": {
+        "mean_cdd_c": 74.048,
+        "mean_hdd_c": 200.877,
+        "mean_temp_c": 16.929,
+        "mean_uhi": 4.708
+      },
+      "top_brands_by_visits": [
+        {
+          "brand": "Chevron",
+          "category": "Gasoline Stations",
+          "summer_visits": 52741818.0
+        },
+        {
+          "brand": "Safeway",
+          "category": "Grocery Stores",
+          "summer_visits": 47800221.0
+        },
+        {
+          "brand": "Starbucks",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 42703841.0
+        },
+        {
+          "brand": "McDonald's",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 36603285.0
+        },
+        {
+          "brand": "Subway",
+          "category": "Restaurants and Other Eating Places",
+          "summer_visits": 34095041.0
+        }
+      ]
+    }
+  ],
+  "indexes": {
+    "by_city": {
+      "Atlanta": 0,
+      "Boston": 1,
+      "Dallas": 2,
+      "Houston": 3,
+      "Kansas City": 4,
+      "Los Angeles": 5,
+      "Miami": 6,
+      "New York/New Jersey": 7,
+      "Philadelphia": 8,
+      "San Francisco Bay Area": 9,
+      "Seattle": 10
+    }
+  }
+}
