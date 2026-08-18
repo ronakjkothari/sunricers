@@ -1,0 +1,1073 @@
+{
+  "meta": {
+    "engine": "plan_d_eleven_hosts_playbook",
+    "version": "0.1.0",
+    "generated_at": "2026-08-15T18:47:58.666972+00:00",
+    "disclaimer": "Sample data are transformed (noise/jitter). Scores demonstrate comparative methodology for mega-event resource readiness \u2014 not ground-truth city rankings.",
+    "formula": {
+      "stress": "0.35*z(energy)+0.25*z(co2e)+0.20*z(water)+0.10*z(cdd)+0.10*z(uhi)",
+      "readiness": "min-max rescale of inverted stress to 0\u2013100 across 11 hosts; higher = lower relative summer nexus load",
+      "window": "months=[6, 7] (tournament analog)",
+      "uncertainty_pct": 0.15
+    },
+    "config": {
+      "summer_months": [
+        6,
+        7
+      ],
+      "weight_energy": 0.35,
+      "weight_food_co2e": 0.25,
+      "weight_water": 0.2,
+      "weight_cdd": 0.1,
+      "weight_uhi": 0.1,
+      "uncertainty_pct": 0.15,
+      "peer_count": 3,
+      "plays_per_city": 3,
+      "curated_dir": "data\\curated",
+      "output_dir": "data\\playbook"
+    },
+    "allocation": {
+      "Dallas / Houston": {
+        "Dallas": 0.35481491416309013,
+        "Houston": 0.6451850858369099
+      },
+      "Los Angeles / SF Bay Area": {
+        "Los Angeles": 0.2895588900880827,
+        "San Francisco Bay Area": 0.7104411099119172
+      }
+    }
+  },
+  "scorecards": [
+    {
+      "host_city": "Seattle",
+      "rank": 1,
+      "readiness_score": 100.0,
+      "readiness_band": [
+        85.0,
+        100.0
+      ],
+      "stress_index": -1.1318,
+      "z_components": {
+        "energy_kwh": -1.1333,
+        "kg_co2e": -1.1339,
+        "water_liters": -1.211,
+        "cdd": -1.7442,
+        "uhi": -0.3507
+      },
+      "raw_indicators": {
+        "energy_kwh": 7515397555.2,
+        "water_liters": 16129411213.0,
+        "kg_co2e": 3685551133.9,
+        "visits": 664016786.0,
+        "cdd": 740.4833,
+        "uhi": 4.7077,
+        "spend_total": 1877754058.888,
+        "summer_month_rows": 10.0,
+        "poi_food_share": 0.487,
+        "poi_energy_share": 0.0246,
+        "poi_water_share": 0.0265,
+        "poi_venue_share": 0.1744
+      },
+      "peer_cities": [
+        "Boston",
+        "Kansas City",
+        "Philadelphia"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.0,
+          "rationale": "Seattle shows elevated food/CO\u2082e pressure (z=-1.13). Peers Boston, Kansas City, Philadelphia face a similar dining mix \u2014 shared catering specs travel well."
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 0.0,
+          "rationale": "Seattle water intensity is high relative to hosts (z=-1.21). Lodging-cluster interventions compound across visitor nights."
+        },
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 0.0,
+          "rationale": "Seattle couples heat and cooling load (UHI z=-0.35, CDD z=-1.74). Corridor-scale cool roofs cut HVAC share for hotels and dining."
+        }
+      ]
+    },
+    {
+      "host_city": "Boston",
+      "rank": 2,
+      "readiness_score": 97.01,
+      "readiness_band": [
+        82.01,
+        100.0
+      ],
+      "stress_index": -1.0616,
+      "z_components": {
+        "energy_kwh": -1.3874,
+        "kg_co2e": -1.3302,
+        "water_liters": -1.2779,
+        "cdd": 0.2755,
+        "uhi": -0.1539
+      },
+      "raw_indicators": {
+        "energy_kwh": 5284899021.2,
+        "water_liters": 14689264629.0,
+        "kg_co2e": 2853624340.9,
+        "visits": 545562521.0,
+        "cdd": 10436.2073,
+        "uhi": 5.0144,
+        "spend_total": 360704347.1084,
+        "summer_month_rows": 10.0,
+        "poi_food_share": 0.5646,
+        "poi_energy_share": 0.0182,
+        "poi_water_share": 0.047,
+        "poi_venue_share": 0.2448
+      },
+      "peer_cities": [
+        "Philadelphia",
+        "Kansas City",
+        "Dallas"
+      ],
+      "recommended_plays": [
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 0.276,
+          "rationale": "Boston couples heat and cooling load (UHI z=-0.15, CDD z=0.28). Corridor-scale cool roofs cut HVAC share for hotels and dining."
+        },
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 0.276,
+          "rationale": "Boston summer CDD pressure is material (z=0.28). Operational setpoint protocols are fast to deploy and reuse annually."
+        },
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.0,
+          "rationale": "Boston shows elevated food/CO\u2082e pressure (z=-1.33). Peers Philadelphia, Kansas City, Dallas face a similar dining mix \u2014 shared catering specs travel well."
+        }
+      ]
+    },
+    {
+      "host_city": "Kansas City",
+      "rank": 3,
+      "readiness_score": 93.32,
+      "readiness_band": [
+        78.32,
+        100.0
+      ],
+      "stress_index": -0.9749,
+      "z_components": {
+        "energy_kwh": -1.0847,
+        "kg_co2e": -0.9969,
+        "water_liters": -0.8356,
+        "cdd": -0.0484,
+        "uhi": -1.741
+      },
+      "raw_indicators": {
+        "energy_kwh": 7941240557.8,
+        "water_liters": 24204774760.5,
+        "kg_co2e": 4266622640.7,
+        "visits": 864031044.0,
+        "cdd": 8880.9852,
+        "uhi": 2.54,
+        "spend_total": 827009228.7857,
+        "summer_month_rows": 10.0,
+        "poi_food_share": 0.3842,
+        "poi_energy_share": 0.0467,
+        "poi_water_share": 0.0421,
+        "poi_venue_share": 0.1548
+      },
+      "peer_cities": [
+        "Boston",
+        "Philadelphia",
+        "Seattle"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.0,
+          "rationale": "Kansas City shows elevated food/CO\u2082e pressure (z=-1.00). Peers Boston, Philadelphia, Seattle face a similar dining mix \u2014 shared catering specs travel well."
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 0.0,
+          "rationale": "Kansas City water intensity is high relative to hosts (z=-0.84). Lodging-cluster interventions compound across visitor nights."
+        },
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 0.0,
+          "rationale": "Kansas City couples heat and cooling load (UHI z=-1.74, CDD z=-0.05). Corridor-scale cool roofs cut HVAC share for hotels and dining."
+        }
+      ]
+    },
+    {
+      "host_city": "Philadelphia",
+      "rank": 4,
+      "readiness_score": 64.67,
+      "readiness_band": [
+        49.67,
+        79.67
+      ],
+      "stress_index": -0.3014,
+      "z_components": {
+        "energy_kwh": -0.3705,
+        "kg_co2e": -0.4091,
+        "water_liters": -0.5968,
+        "cdd": 0.3475,
+        "uhi": 0.151
+      },
+      "raw_indicators": {
+        "energy_kwh": 14208951379.2,
+        "water_liters": 29342372120.0,
+        "kg_co2e": 6758152694.2,
+        "visits": 1174617045.0,
+        "cdd": 10781.8859,
+        "uhi": 5.4899,
+        "spend_total": 1102230718.5697,
+        "summer_month_rows": 10.0,
+        "poi_food_share": 0.5086,
+        "poi_energy_share": 0.0205,
+        "poi_water_share": 0.0212,
+        "poi_venue_share": 0.1263
+      },
+      "peer_cities": [
+        "Dallas",
+        "Boston",
+        "Los Angeles"
+      ],
+      "recommended_plays": [
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 0.499,
+          "rationale": "Philadelphia couples heat and cooling load (UHI z=0.15, CDD z=0.35). Corridor-scale cool roofs cut HVAC share for hotels and dining."
+        },
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 0.348,
+          "rationale": "Philadelphia summer CDD pressure is material (z=0.35). Operational setpoint protocols are fast to deploy and reuse annually."
+        },
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.0,
+          "rationale": "Philadelphia shows elevated food/CO\u2082e pressure (z=-0.41). Peers Dallas, Boston, Los Angeles face a similar dining mix \u2014 shared catering specs travel well."
+        }
+      ]
+    },
+    {
+      "host_city": "Los Angeles",
+      "rank": 5,
+      "readiness_score": 57.72,
+      "readiness_band": [
+        42.72,
+        72.72
+      ],
+      "stress_index": -0.1381,
+      "z_components": {
+        "energy_kwh": -0.5699,
+        "kg_co2e": -0.5084,
+        "water_liters": -0.5569,
+        "cdd": 0.8915,
+        "uhi": 2.107
+      },
+      "raw_indicators": {
+        "energy_kwh": 12459022397.0689,
+        "water_liters": 30199720174.3031,
+        "kg_co2e": 6337214628.96,
+        "visits": 1191486167.1289,
+        "cdd": 13393.1556,
+        "uhi": 8.5397,
+        "spend_total": 1043851394.9561,
+        "summer_month_rows": 2.8956,
+        "poi_food_share": 0.5581,
+        "poi_energy_share": 0.0369,
+        "poi_water_share": 0.0322,
+        "poi_venue_share": 0.1367
+      },
+      "peer_cities": [
+        "Dallas",
+        "Philadelphia",
+        "Boston"
+      ],
+      "recommended_plays": [
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 2.998,
+          "rationale": "Los Angeles couples heat and cooling load (UHI z=2.11, CDD z=0.89). Corridor-scale cool roofs cut HVAC share for hotels and dining."
+        },
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 0.891,
+          "rationale": "Los Angeles summer CDD pressure is material (z=0.89). Operational setpoint protocols are fast to deploy and reuse annually."
+        },
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.0,
+          "rationale": "Los Angeles shows elevated food/CO\u2082e pressure (z=-0.51). Peers Dallas, Philadelphia, Boston face a similar dining mix \u2014 shared catering specs travel well."
+        }
+      ]
+    },
+    {
+      "host_city": "Dallas",
+      "rank": 6,
+      "readiness_score": 56.92,
+      "readiness_band": [
+        41.92,
+        71.92
+      ],
+      "stress_index": -0.1195,
+      "z_components": {
+        "energy_kwh": -0.2357,
+        "kg_co2e": -0.3775,
+        "water_liters": -0.2907,
+        "cdd": 0.7997,
+        "uhi": 0.3555
+      },
+      "raw_indicators": {
+        "energy_kwh": 15391937176.6261,
+        "water_liters": 35927486046.5424,
+        "kg_co2e": 6891866409.3067,
+        "visits": 1269427969.052,
+        "cdd": 12952.5176,
+        "uhi": 5.8087,
+        "spend_total": 1014160928.8833,
+        "summer_month_rows": 3.5481,
+        "poi_food_share": 0.4545,
+        "poi_energy_share": 0.0361,
+        "poi_water_share": 0.0352,
+        "poi_venue_share": 0.1276
+      },
+      "peer_cities": [
+        "Philadelphia",
+        "Los Angeles",
+        "Boston"
+      ],
+      "recommended_plays": [
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 1.155,
+          "rationale": "Dallas couples heat and cooling load (UHI z=0.36, CDD z=0.80). Corridor-scale cool roofs cut HVAC share for hotels and dining."
+        },
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 0.8,
+          "rationale": "Dallas summer CDD pressure is material (z=0.80). Operational setpoint protocols are fast to deploy and reuse annually."
+        },
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.0,
+          "rationale": "Dallas shows elevated food/CO\u2082e pressure (z=-0.38). Peers Philadelphia, Los Angeles, Boston face a similar dining mix \u2014 shared catering specs travel well."
+        }
+      ]
+    },
+    {
+      "host_city": "Atlanta",
+      "rank": 7,
+      "readiness_score": 51.78,
+      "readiness_band": [
+        36.78,
+        66.78
+      ],
+      "stress_index": 0.0015,
+      "z_components": {
+        "energy_kwh": 0.0957,
+        "kg_co2e": -0.0975,
+        "water_liters": -0.132,
+        "cdd": 1.6368,
+        "uhi": -1.4491
+      },
+      "raw_indicators": {
+        "energy_kwh": 18300347338.4,
+        "water_liters": 39342166073.5,
+        "kg_co2e": 8078729311.6,
+        "visits": 1449697602.0,
+        "cdd": 16970.7712,
+        "uhi": 2.995,
+        "spend_total": 921605704.0786,
+        "summer_month_rows": 10.0,
+        "poi_food_share": 0.3397,
+        "poi_energy_share": 0.0252,
+        "poi_water_share": 0.0334,
+        "poi_venue_share": 0.1164
+      },
+      "peer_cities": [
+        "Dallas",
+        "Philadelphia",
+        "Kansas City"
+      ],
+      "recommended_plays": [
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 1.733,
+          "rationale": "Atlanta couples heat and cooling load (UHI z=-1.45, CDD z=1.64). Corridor-scale cool roofs cut HVAC share for hotels and dining."
+        },
+        {
+          "id": "peak_cooling_setpoints",
+          "title": "Event-week HVAC setpoint & pre-cooling protocols",
+          "owner": "Hotel engineering + venue facilities",
+          "effort": "low",
+          "legacy_use": "Heat-wave building ops for any summer peak",
+          "targets": [
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -8,
+            "food_co2e_pct": 0,
+            "water_pct": -1
+          },
+          "match_score": 1.733,
+          "rationale": "Atlanta summer CDD pressure is material (z=1.64). Operational setpoint protocols are fast to deploy and reuse annually."
+        },
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 0.096,
+          "rationale": "Atlanta shows elevated food/CO\u2082e pressure (z=-0.10). Peers Dallas, Philadelphia, Kansas City face a similar dining mix \u2014 shared catering specs travel well."
+        }
+      ]
+    },
+    {
+      "host_city": "New York/New Jersey",
+      "rank": 8,
+      "readiness_score": 35.87,
+      "readiness_band": [
+        20.87,
+        50.87
+      ],
+      "stress_index": 0.3753,
+      "z_components": {
+        "energy_kwh": 0.5314,
+        "kg_co2e": 0.8063,
+        "water_liters": 0.7618,
+        "cdd": -1.2934,
+        "uhi": -0.353
+      },
+      "raw_indicators": {
+        "energy_kwh": 22123047211.4,
+        "water_liters": 58571627477.5,
+        "kg_co2e": 11910046228.2,
+        "visits": 2249681045.0,
+        "cdd": 2904.4307,
+        "uhi": 4.704,
+        "spend_total": 1786010648.8195,
+        "summer_month_rows": 10.0,
+        "poi_food_share": 0.6099,
+        "poi_energy_share": 0.0289,
+        "poi_water_share": 0.0353,
+        "poi_venue_share": 0.1472
+      },
+      "peer_cities": [
+        "San Francisco Bay Area",
+        "Miami",
+        "Houston"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 2.099,
+          "rationale": "New York/New Jersey shows elevated food/CO\u2082e pressure (z=0.81). Peers San Francisco Bay Area, Miami, Houston face a similar dining mix \u2014 shared catering specs travel well."
+        },
+        {
+          "id": "kitchen_water_efficiency",
+          "title": "Commercial kitchen water-efficiency retrofit grants",
+          "owner": "Economic development + water utility",
+          "effort": "medium",
+          "legacy_use": "Restaurant resilience grants post-event",
+          "targets": [
+            "water_liters",
+            "kg_co2e"
+          ],
+          "expected_effects": {
+            "energy_pct": -2,
+            "food_co2e_pct": -5,
+            "water_pct": -15
+          },
+          "match_score": 1.568,
+          "rationale": "New York/New Jersey food-service density drives water use (water z=0.76). Kitchen retrofits persist as legacy infrastructure after the Cup."
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 1.293,
+          "rationale": "New York/New Jersey water intensity is high relative to hosts (z=0.76). Lodging-cluster interventions compound across visitor nights."
+        }
+      ]
+    },
+    {
+      "host_city": "Houston",
+      "rank": 9,
+      "readiness_score": 10.37,
+      "readiness_band": [
+        0.0,
+        25.37
+      ],
+      "stress_index": 0.9747,
+      "z_components": {
+        "energy_kwh": 1.1997,
+        "kg_co2e": 0.953,
+        "water_liters": 1.0759,
+        "cdd": 0.757,
+        "uhi": 0.256
+      },
+      "raw_indicators": {
+        "energy_kwh": 27988249400.1739,
+        "water_liters": 65329492204.4576,
+        "kg_co2e": 12531968762.7933,
+        "visits": 2308290774.948,
+        "cdd": 12747.5288,
+        "uhi": 5.6535,
+        "spend_total": 1844120638.2131,
+        "summer_month_rows": 6.4519,
+        "poi_food_share": 0.5412,
+        "poi_energy_share": 0.0605,
+        "poi_water_share": 0.0453,
+        "poi_venue_share": 0.1233
+      },
+      "peer_cities": [
+        "Miami",
+        "San Francisco Bay Area",
+        "New York/New Jersey"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 3.229,
+          "rationale": "Houston shows elevated food/CO\u2082e pressure (z=0.95). Peers Miami, San Francisco Bay Area, New York/New Jersey face a similar dining mix \u2014 shared catering specs travel well."
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 2.276,
+          "rationale": "Houston water intensity is high relative to hosts (z=1.08). Lodging-cluster interventions compound across visitor nights."
+        },
+        {
+          "id": "cool_roofs_shade_uhi",
+          "title": "Cool roofs + shade in high-UHI hospitality corridors",
+          "owner": "City planning + downtown BID",
+          "effort": "high",
+          "legacy_use": "Heat-action planning for summer festivals / playoffs",
+          "targets": [
+            "uhi",
+            "cdd",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -12,
+            "food_co2e_pct": 0,
+            "water_pct": -2
+          },
+          "match_score": 2.213,
+          "rationale": "Houston couples heat and cooling load (UHI z=0.26, CDD z=0.76). Corridor-scale cool roofs cut HVAC share for hotels and dining."
+        }
+      ]
+    },
+    {
+      "host_city": "San Francisco Bay Area",
+      "rank": 10,
+      "readiness_score": 2.58,
+      "readiness_band": [
+        0.0,
+        17.58
+      ],
+      "stress_index": 1.1577,
+      "z_components": {
+        "energy_kwh": 1.4938,
+        "kg_co2e": 1.6647,
+        "water_liters": 1.4834,
+        "cdd": -1.016,
+        "uhi": 0.2359
+      },
+      "raw_indicators": {
+        "energy_kwh": 30568571724.7311,
+        "water_liters": 74095886723.1969,
+        "kg_co2e": 15548539343.34,
+        "visits": 2923345764.8711,
+        "cdd": 4236.1232,
+        "uhi": 5.6223,
+        "spend_total": 2561119582.2381,
+        "summer_month_rows": 7.1044,
+        "poi_food_share": 0.5259,
+        "poi_energy_share": 0.039,
+        "poi_water_share": 0.0461,
+        "poi_venue_share": 0.173
+      },
+      "peer_cities": [
+        "Miami",
+        "New York/New Jersey",
+        "Houston"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 4.642,
+          "rationale": "San Francisco Bay Area shows elevated food/CO\u2082e pressure (z=1.66). Peers Miami, New York/New Jersey, Houston face a similar dining mix \u2014 shared catering specs travel well."
+        },
+        {
+          "id": "kitchen_water_efficiency",
+          "title": "Commercial kitchen water-efficiency retrofit grants",
+          "owner": "Economic development + water utility",
+          "effort": "medium",
+          "legacy_use": "Restaurant resilience grants post-event",
+          "targets": [
+            "water_liters",
+            "kg_co2e"
+          ],
+          "expected_effects": {
+            "energy_pct": -2,
+            "food_co2e_pct": -5,
+            "water_pct": -15
+          },
+          "match_score": 3.148,
+          "rationale": "San Francisco Bay Area food-service density drives water use (water z=1.48). Kitchen retrofits persist as legacy infrastructure after the Cup."
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 2.977,
+          "rationale": "San Francisco Bay Area water intensity is high relative to hosts (z=1.48). Lodging-cluster interventions compound across visitor nights."
+        }
+      ]
+    },
+    {
+      "host_city": "Miami",
+      "rank": 11,
+      "readiness_score": 0.0,
+      "readiness_band": [
+        0.0,
+        15.0
+      ],
+      "stress_index": 1.2183,
+      "z_components": {
+        "energy_kwh": 1.4609,
+        "kg_co2e": 1.4296,
+        "water_liters": 1.5797,
+        "cdd": -0.6059,
+        "uhi": 0.9424
+      },
+      "raw_indicators": {
+        "energy_kwh": 30279761203.6,
+        "water_liters": 76167328327.5,
+        "kg_co2e": 14552019654.4,
+        "visits": 2721508317.0,
+        "cdd": 6204.9139,
+        "uhi": 6.7238,
+        "spend_total": 869737062.0272,
+        "summer_month_rows": 10.0,
+        "poi_food_share": 0.485,
+        "poi_energy_share": 0.0313,
+        "poi_water_share": 0.0422,
+        "poi_venue_share": 0.1315
+      },
+      "peer_cities": [
+        "San Francisco Bay Area",
+        "Houston",
+        "New York/New Jersey"
+      ],
+      "recommended_plays": [
+        {
+          "id": "plant_forward_concessions",
+          "title": "Plant-forward concessions & catering defaults",
+          "owner": "Venue concessions + city food policy",
+          "effort": "medium",
+          "legacy_use": "Any stadium / convention F&B contract cycle",
+          "targets": [
+            "kg_co2e",
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -5,
+            "food_co2e_pct": -25,
+            "water_pct": -8
+          },
+          "match_score": 4.47,
+          "rationale": "Miami shows elevated food/CO\u2082e pressure (z=1.43). Peers San Francisco Bay Area, Houston, New York/New Jersey face a similar dining mix \u2014 shared catering specs travel well."
+        },
+        {
+          "id": "hotel_water_reuse",
+          "title": "Hotel linen / laundry water-reuse program",
+          "owner": "Hotel association + utility",
+          "effort": "medium",
+          "legacy_use": "Hotel BID ordinances for any mega-event peak week",
+          "targets": [
+            "water_liters",
+            "energy_kwh"
+          ],
+          "expected_effects": {
+            "energy_pct": -3,
+            "food_co2e_pct": 0,
+            "water_pct": -30
+          },
+          "match_score": 3.041,
+          "rationale": "Miami water intensity is high relative to hosts (z=1.58). Lodging-cluster interventions compound across visitor nights."
+        },
+        {
+          "id": "kitchen_water_efficiency",
+          "title": "Commercial kitchen water-efficiency retrofit grants",
+          "owner": "Economic development + water utility",
+          "effort": "medium",
+          "legacy_use": "Restaurant resilience grants post-event",
+          "targets": [
+            "water_liters",
+            "kg_co2e"
+          ],
+          "expected_effects": {
+            "energy_pct": -2,
+            "food_co2e_pct": -5,
+            "water_pct": -15
+          },
+          "match_score": 3.009,
+          "rationale": "Miami food-service density drives water use (water z=1.58). Kitchen retrofits persist as legacy infrastructure after the Cup."
+        }
+      ]
+    }
+  ]
+}
