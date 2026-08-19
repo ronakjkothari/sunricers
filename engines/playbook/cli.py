@@ -80,14 +80,27 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  indicator_source: {src.get('resolved')} — {src.get('label')}")
 
     if args.sync_app and "app_scorecards" in paths:
-        dest = root / "app" / "data" / "scorecards.json"
+        app_data = root / "app" / "data"
+        dest = app_data / "scorecards.json"
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(paths["app_scorecards"], dest)
         print(f"  synced -> {dest}")
         if "ops_context_app" in paths:
-            ops_dest = root / "app" / "data" / "ops_context.json"
+            ops_dest = app_data / "ops_context.json"
             shutil.copyfile(paths["ops_context_app"], ops_dest)
             print(f"  synced -> {ops_dest}")
+        # A shell is served from app/, so it needs the contract and the
+        # one-pagers inside that root too.
+        if "a_integration" in paths:
+            a_dest = app_data / "a_integration.json"
+            shutil.copyfile(paths["a_integration"], a_dest)
+            print(f"  synced -> {a_dest}")
+        if "city_cards_dir" in paths:
+            cards_dest = app_data / "city_cards"
+            cards_dest.mkdir(parents=True, exist_ok=True)
+            for card in sorted(paths["city_cards_dir"].glob("*.md")):
+                shutil.copyfile(card, cards_dest / card.name)
+            print(f"  synced -> {cards_dest} ({len(list(cards_dest.glob('*.md')))} cards)")
 
     if errors:
         print("A-CONTRACT INVALID:", file=sys.stderr)

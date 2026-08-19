@@ -4,7 +4,7 @@
   "meta": {
     "engine": "plan_d_eleven_hosts_playbook",
     "engine_version": "0.4.0",
-    "generated_at": "2026-08-19T06:37:03.549283+00:00",
+    "generated_at": "2026-08-19T06:16:25.750198+00:00",
     "disclaimer": "Sample data are transformed (noise/jitter). Scores demonstrate comparative methodology for mega-event resource readiness \u2014 not ground-truth city rankings.",
     "formula": {
       "stress": "0.35*z(energy)+0.25*z(co2e)+0.20*z(water)+0.10*z(cdd)+0.10*z(uhi)",

@@ -35,8 +35,14 @@ python -m engines.playbook.cli --source map --sync-app --validate
 Also emitted:
 
 - `data/playbook/ops_context_v1.json` — full ops pack for A/C
-- `app/data/ops_context.json` — compact B side panel (`--sync-app`)
 - `data/playbook/city_cards/*.md` — one-pagers with ops scale section
+
+Copied into the app's serving root by `--sync-app`:
+
+- `app/data/a_integration.json` — what the A shell actually fetches
+- `app/data/city_cards/*.md` — A's Compare-tab export links
+- `app/data/scorecards.json` — B's standalone readiness strip
+- `app/data/ops_context.json` — compact B side panel
 
 ## Play object (steal-this-play)
 
