@@ -24,7 +24,8 @@ See [`app/README.md`](app/README.md) for how the pieces wire together.
 2. [`docs/DATA_TECH_DOCUMENT.md`](docs/DATA_TECH_DOCUMENT.md) — schemas, intensity factors, joins  
 3. [`docs/PROPOSED_SOLUTION_PLANS.md`](docs/PROPOSED_SOLUTION_PLANS.md) — 4 architectures to brainstorm from  
 4. [`docs/A_FEATURE_REQUIREMENTS.md`](docs/A_FEATURE_REQUIREMENTS.md) — what the A shell must do, plus the demo script  
-5. **[`data/curated/`](data/curated/)** — viz-ready CSV package (load these, not the 8 GB raw dumps)
+5. [`docs/A_ARCHITECTURE.md`](docs/A_ARCHITECTURE.md) — how A is built: state, the D and B seams, where C plugs in  
+6. **[`data/curated/`](data/curated/)** — viz-ready CSV package (load these, not the 8 GB raw dumps)
 
 ### Plan D engine (standalone)
 

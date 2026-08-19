@@ -204,9 +204,14 @@
   .searchbox { padding:12px 16px 4px; font-size:13px; color:var(--ink-2); }
   .searchbox b { color:var(--ink-1); }
 
-  /* ?embed=1 — the A shell supplies the title, the theme switch and the compare strip */
-  body.embed .wrap { padding-top:10px; }
-  body.embed header { display:none; }
+  /* ?embed=1 — the A shell supplies the title, the theme switch and the compare
+     strip. The "how to read this" line stays: setView() rewrites it, and it is
+     the only thing telling you what a dot means. */
+  body.embed .wrap { padding-top:6px; }
+  body.embed header h1,
+  body.embed header .t > p:not(.how),
+  body.embed #theme { display:none; }
+  body.embed header .how { margin-top:0; }
   body.embed #scorepanel { display:none !important; }
 </style>
 </head>

@@ -17,10 +17,15 @@ area is blank, click on the tab: Chrome pauses MapLibre while a tab is in the ba
 
 ## How A and B talk
 
+Full detail — including why each rule exists — is in
+[`../docs/A_ARCHITECTURE.md`](../docs/A_ARCHITECTURE.md).
+
 A embeds B in a same-origin iframe and steers it rather than reloading it:
 
 - `spatial.html?embed=1&city=<host>&theme=<light\|dark>` seeds the first load.
-  `embed=1` hides B's own header and its readiness strip, because A supplies both.
+  `embed=1` hides B's title, lead paragraph, theme button and readiness strip, because A
+  supplies all four. B's "how to read this" line stays — it is the only thing explaining
+  what a dot means, and the view switcher rewrites it.
 - After that, A calls `setCity()` / `setTheme()` on the frame once
   `window.__spatialReady` is set, reading `window.__spatialState` to avoid redundant
   calls. Switching cities therefore does **not** re-download B's ~16 MB of place data.

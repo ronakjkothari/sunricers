@@ -194,6 +194,17 @@ function run() {
     check(showsPlays && showsGen, `${city}: ${plays} plays / ${gen} general options render correctly`);
   });
 
+  section("Spatial wiring (the pop-out and the iframe must agree with the shell)");
+  for (const city of ["Miami", "New York/New Jersey", "__all__"]) {
+    state.city = city; state.theme = "dark"; state.tab = "spatial"; renderAll();
+    const href = nodes.get("popout").href || "";
+    const title = nodes.get("spatialtitle").textContent;
+    const wantCity = `city=${encodeURIComponent(city)}`;
+    check(href.includes(wantCity) && href.includes("theme=dark") && title.length > 0,
+      `${city}: pop-out carries city+theme (${href}), title "${title}"`);
+  }
+  state.theme = "light";
+
   section("Pressure filter");
   Object.entries(C.indexes.by_primary_driver).forEach(([driver, expected]) => {
     state.filter = driver; drawStrip();

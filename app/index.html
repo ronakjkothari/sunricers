@@ -469,6 +469,7 @@ function renderAll() {
   drawCta();
   drawStrip();
   drawCompare();
+  drawSpatial();
   drawSurge();
   if (state.tab === "spatial") mountFrame();
 }
@@ -808,6 +809,13 @@ function playCard(p) {
 }
 
 // --- Spatial ---------------------------------------------------------------
+function drawSpatial() {
+  document.getElementById("spatialtitle").textContent = cityName();
+  // the pop-out must open on the same city, or the two views disagree
+  document.getElementById("popout").href =
+    `spatial.html?city=${encodeURIComponent(state.city)}&theme=${state.theme}`;
+}
+
 function mountFrame() {
   const f = document.getElementById("frame");
   if (f.dataset.loaded) { pushToFrame(); return; }
