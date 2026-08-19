@@ -2,7 +2,7 @@
 
 **Audience:** teammate building Iteration 1 of A  
 **Product:** FIFA 2026 Track 2 — Energy–Food–Water Resource Intelligence Platform  
-**Related:** [`PROPOSED_SOLUTION_PLANS.md`](./PROPOSED_SOLUTION_PLANS.md) · D contract [`../engines/playbook/CONTRACT.md`](../engines/playbook/CONTRACT.md) (on D branch) · B app `app/index.html` (on B branch)
+**Related:** [`PROPOSED_SOLUTION_PLANS.md`](./PROPOSED_SOLUTION_PLANS.md) · D contract [`../engines/playbook/CONTRACT.md`](../engines/playbook/CONTRACT.md) · A shell `app/index.html` · B map `app/spatial.html`
 
 ---
 
@@ -20,12 +20,14 @@ Avoid “foolproof” (sample data is noisy by design) and “controlled environ
 
 ## 1. Current repo reality (so A doesn’t rebuild what’s done)
 
-| Branch | State | What A should do with it |
+B and D are **merged onto the A branch** — the demo runs from one checkout.
+
+| Vertical | State | What A does with it |
 |--------|--------|---------------------------|
-| **main** | Data shortlist + curated CSVs + solution plans only | Treat as docs/data baseline |
-| **B** `feat/plan-b-efw_inspection` | Full MapLibre map: shops/districts, heat, month scrubber, 2026 matches, +30% match-day lift, readiness strip | **Embed / route into** as the Spatial tab — do not rewrite |
-| **D** `feat/plan-d-playbook-engine` | Scoring engine + `a_integration_v1.json` + steal-this-play payload + city one-pagers + preview | **Mount JSON contract** into Compare / Playbook — do not re-score in the frontend |
-| **C** | Not started | Leave a **Scenario lab** tab stub in I1; fill later |
+| **main** | Data shortlist + curated CSVs + solution plans | Docs/data baseline |
+| **B** `app/spatial.html` | Full MapLibre map: shops/districts, heat, month scrubber, 2026 matches, +30% match-day lift | **Embedded** as the Spatial tab via same-origin iframe — not rewritten |
+| **D** `engines/playbook/` | Scoring engine + `a_integration_v1.json` + steal-this-play payload + city one-pagers + preview | **Mounts the JSON contract** into Compare and the Overview KPIs — no re-scoring in the frontend |
+| **C** | Not started | **Scenario lab** tab stubbed with a live surge slider; levers land in I2 |
 
 **Rule:** A is orchestration + decision chrome. B is the map. D is the comparative brain. C will be the lever engine.
 
@@ -267,6 +269,45 @@ UNLEASH-style framing for the pitch (optional copy block):
 **Exit test for I1:** a stranger can pick a host, see why it’s pressured, jump to the map, and leave with a named play — without asking you which folder to open.
 
 ---
+
+## 10b. What Iteration 1 actually shipped
+
+```bash
+python -m engines.playbook.cli --source map --sync-app --validate
+python scripts/build_overview_kpis.py
+cd app && python -m http.server 8000
+```
+
+| Requirement (§3) | Where it lives |
+|---|---|
+| App chrome + 4 tabs + global city | `app/index.html` — header selector, hash routes `#overview/Miami` etc. |
+| Overview KPIs + time series | Dual-grain KPI cards (absolute + rate) and a 60-month SVG chart with June–July shading and a CDD axis |
+| Compare wired to D | Readiness strip with ±15 band, pressure filter, z-driver bars, steal-this-play cards with citywide Δ, clickable peers, one-pager download |
+| Spatial embeds B | `app/spatial.html` in a same-origin iframe, steered via `setCity`/`setTheme` — no reload on city change |
+| Scenario stub | Live visitor-surge slider (1.0×–2.0×) on the absolutes + greyed preview of the I2 levers, read from D's play catalogue |
+| Disclaimer | Persistent drawer carrying the contract's own disclaimer, both grains, the formula, and engine provenance |
+
+Two supporting changes: `--sync-app` now also copies `a_integration_v1.json` and
+`city_cards/` into `app/data/` (A is served from `app/`), and
+`scripts/build_overview_kpis.py` builds the monthly series, asserting its June–July sums
+match D's `ops_scale.absolute` — they reconcile to 0.0000%.
+
+### Demo script (≈2 minutes)
+
+1. **Land on Dallas** — rank #11, readiness 0.0. Every driver elevated. Read the two grains
+   off one KPI card: 15.4B kWh to provision this summer, 793 kWh per trading shop-month.
+2. **Load through the year** — the June–July bands are shaded; that is the only window
+   readiness is scored on. Cooling degree days ride the same chart.
+3. **Compare hosts** — filter to *Urban heat*: 6 of 11 hosts, spanning rank #2 to #11 —
+   heat alone does not decide readiness. Click Miami (#8); the whole shell follows.
+4. **Steal this play** — "Hotel linen / laundry water-reuse", owner *hotel association +
+   utility*, effort medium, −30% water ≈ −22.9B L citywide. It is already indicated for
+   Dallas and Seattle — click Dallas to jump to the peer.
+5. **Spatial** — same city, no reload. Districts, heat, the month scrubber, and a 2026
+   fixture with its measured +30% match-day halo.
+6. **Scenarios** — push visitor surge to 1.6× and show the Δ on the absolutes. Say plainly
+   that this is linear and that the coupled lever lab is the next iteration.
+7. **Leave with something** — download the city one-pager from Compare.
 
 ## 11. Out of scope / anti-goals
 

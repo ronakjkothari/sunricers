@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nexus Pulse — EFW map</title>
-<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<title>Nexus Pulse — FIFA 2026 EFW Command</title>
 <style>
+  /* tokens are shared with spatial.html so the shell and the embedded map read as one product */
   :root {
     color-scheme: light;
     --surface-1:#fcfcfb; --plane:#f9f9f7;
@@ -13,10 +13,7 @@
     --grid:#e1e0d9; --axis:#c3c2b7; --hairline:rgba(11,11,11,0.10);
     --s-food:#2a78d6; --s-energy:#eb6834; --s-water:#1baf7a;
     --s-venue:#eda100; --s-other:#e87ba4;
-    --dot:#2a78d6; --dot-ring:#fcfcfb;
     --bar:#b7d3f6; --bar-sel:#2a78d6;
-    --h1:#fde7d9; --h2:#fbc9a8; --h3:#f7a877; --h4:#f08b4e; --h5:#eb6834; --h6:#c8501f; --h7:#9c3c15; --h8:#6e2a0e;
-    --d1:#e3eefb; --d2:#b7d3f6; --d3:#86b3ec; --d4:#559ae4; --d5:#2a78d6; --d6:#184f95;
     --shadow:0 4px 14px rgba(0,0,0,.10);
   }
   :root[data-theme="dark"] {
@@ -26,9 +23,7 @@
     --grid:#2c2c2a; --axis:#383835; --hairline:rgba(255,255,255,0.10);
     --s-food:#3987e5; --s-energy:#d95926; --s-water:#199e70;
     --s-venue:#c98500; --s-other:#d55181;
-    --dot:#3987e5; --dot-ring:#1a1a19;
     --bar:#184f95; --bar-sel:#3987e5;
-    --d1:#12294a; --d2:#184f95; --d3:#1f63bd; --d4:#3987e5; --d5:#6aa6ec; --d6:#a9caf3;
     --shadow:0 4px 14px rgba(0,0,0,.45);
   }
 
@@ -36,81 +31,111 @@
   body { margin:0; background:var(--plane); color:var(--ink-1);
          font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
   .wrap { max-width:1280px; margin:0 auto; padding:22px 20px 64px; }
+
   header { display:flex; align-items:flex-start; gap:16px; }
   header .t { flex:1; }
-  header h1 { font-size:22px; margin:0 0 3px; letter-spacing:-0.01em; }
+  header h1 { font-size:22px; margin:0 0 3px; letter-spacing:-0.01em; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   header p { margin:0; color:var(--ink-2); font-size:13px; }
-  header p.how { margin-top:6px; color:var(--ink-1); }
+  .loop { color:var(--ink-2); font-size:12px; margin-top:5px; }
+  .loop b { color:var(--ink-1); font-weight:600; }
 
-  select, input[type=search], .btn { font:inherit; color:var(--ink-1); background:var(--plane);
+  select, input, .btn { font:inherit; color:var(--ink-1); background:var(--plane);
                  border:1px solid var(--hairline); border-radius:7px; padding:7px 11px; cursor:pointer; }
-  select { max-width:100%; }
-  input[type=search] { cursor:text; width:100%; }
-  input[type=search]::placeholder { color:var(--ink-muted); }
   .btn:hover { border-color:var(--ink-muted); }
   .btn.small { padding:4px 9px; font-size:12px; }
+  .btn.primary { background:var(--ink-1); color:var(--plane); border-color:var(--ink-1); }
   .seg { display:inline-flex; border:1px solid var(--hairline); border-radius:7px; overflow:hidden; }
   .seg button { font:inherit; padding:6px 12px; border:0; background:var(--plane); color:var(--ink-2); cursor:pointer; }
   .seg button.on { background:var(--ink-1); color:var(--plane); }
-  .info { display:inline-flex; width:15px; height:15px; border-radius:50%; border:1px solid var(--ink-muted);
-          color:var(--ink-muted); font-size:10px; align-items:center; justify-content:center; cursor:help; margin-left:4px;
-          position:relative; vertical-align:middle; }
-  .info:hover { border-color:var(--ink-1); color:var(--ink-1); }
-  .info::after { content:attr(data-tip); position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%);
-          width:max-content; max-width:280px; white-space:normal; text-align:left; font-size:12px; line-height:1.45;
-          color:var(--ink-1); background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
-          padding:8px 10px; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .1s; z-index:20; }
-  .info:hover::after, .info:focus::after { opacity:1; }
-  .info { outline:none; }
+  .pill { display:inline-block; font-weight:500; font-size:12px; color:var(--ink-2); background:var(--plane);
+          border:1px solid var(--hairline); border-radius:999px; padding:2px 9px; }
 
-  /* control panel: what to look at | how to draw it */
-  .controls { display:grid; grid-template-columns:1fr 1.4fr; gap:14px; margin:18px 0 12px; }
-  .group { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; padding:12px 16px 14px; }
-  .group h3 { margin:0 0 10px; font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
-  .row { display:grid; grid-template-columns:96px 1fr; gap:10px; align-items:start; margin-bottom:9px; }
-  .row:last-child { margin-bottom:0; }
-  .row label.k, .row .k { font-size:12px; color:var(--ink-2); padding-top:7px; }
-  .cbs { display:flex; flex-wrap:wrap; gap:4px 14px; padding-top:6px; }
-  .cb { display:inline-flex; align-items:center; gap:6px; font-size:13px; cursor:pointer; position:relative; padding-right:34px; }
-  .cb input { margin:0; accent-color:var(--ink-1); }
-  .cb .sw { width:10px; height:10px; border-radius:50%; background:var(--c); }
-  .cb .n { color:var(--ink-muted); font-size:12px; }
-  .cb .only { position:absolute; right:0; font-size:11px; color:var(--s-food); opacity:0; text-decoration:underline dotted; }
-  .cb:hover .only { opacity:1; }
-  .cb.off { color:var(--ink-muted); }
-  .cb.off .sw { background:var(--grid); }
-  .inline { display:flex; flex-wrap:wrap; gap:6px 16px; align-items:center; padding-top:6px; font-size:13px; }
-  .inline label { display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
-  @media (max-width:900px) { .controls { grid-template-columns:1fr; } }
+  /* global control bar — one city for every tab */
+  .globals { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:16px 0 0;
+             background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; padding:10px 14px; }
+  .globals .lbl { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
+  .globals .grow { flex:1; }
+  .globals .rank { font-size:12px; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+  .globals .rank b { color:var(--ink-1); }
 
-  /* active filter chips */
-  .active { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0 0 14px; font-size:12px; color:var(--ink-muted); }
-  .achip { display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px; background:var(--surface-1);
-           border:1px solid var(--hairline); color:var(--ink-1); font-size:12px; }
-  .achip button { border:0; background:none; color:var(--ink-muted); cursor:pointer; font-size:13px; padding:0 0 0 2px; line-height:1; }
-  .achip button:hover { color:var(--ink-1); }
-  .active a { color:var(--s-food); cursor:pointer; text-decoration:underline dotted; }
+  /* tabs */
+  .tabs { display:flex; gap:4px; margin:14px 0 0; border-bottom:1px solid var(--hairline); flex-wrap:wrap; }
+  .tabs button { font:inherit; font-size:13px; padding:9px 15px; border:0; background:none; cursor:pointer;
+                 color:var(--ink-2); border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .tabs button:hover { color:var(--ink-1); }
+  .tabs button.on { color:var(--ink-1); font-weight:600; border-bottom-color:var(--ink-1); }
+  .tabs .num { font-size:10px; color:var(--ink-muted); margin-right:5px; }
+  .pane[hidden] { display:none; }
 
-  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(178px,1fr)); gap:12px; }
-  .kpi { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; padding:13px 15px 11px; position:relative; }
-  .kpi .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
-  .kpi .v { font-size:25px; font-weight:600; margin-top:3px; letter-spacing:-0.02em; }
-  .kpi .u { font-size:12px; color:var(--ink-2); margin-top:1px; min-height:18px; }
-  .kpi svg { height:26px; width:100%; margin-top:6px; }
-  .kpi .delta { display:inline-block; font-size:11px; font-weight:600; padding:1px 7px; border-radius:999px; margin-left:6px; vertical-align:middle; }
-  .kpi .delta.up { background:var(--s-water); color:#fff; } .kpi .delta.down { background:var(--grid); color:var(--ink-1); }
+  .disc { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; margin-top:14px; }
+  .disc summary { cursor:pointer; padding:9px 14px; font-size:12px; color:var(--ink-2); }
+  .disc .body { padding:0 14px 12px; font-size:12px; color:var(--ink-2); }
+  .disc .body p { margin:5px 0; }
+  .disc code { font-size:11px; background:var(--plane); padding:1px 5px; border-radius:4px; }
 
   .panel { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; margin-top:16px; overflow:hidden; }
   .panel h2 { font-size:13px; margin:0; padding:12px 16px; font-weight:600;
               border-bottom:1px solid var(--hairline); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .panel h2 .spacer { flex:1; }
-  .pill { display:inline-block; font-weight:500; font-size:12px; color:var(--ink-2); background:var(--plane);
-          border:1px solid var(--hairline); border-radius:999px; padding:2px 9px; }
-  .panel h2 .toggle { display:inline-flex; align-items:center; gap:6px; font-weight:400; color:var(--ink-2); cursor:pointer; font-size:12px; }
   .lead { padding:10px 16px 0; font-size:13px; color:var(--ink-2); }
   .lead b { color:var(--ink-1); }
+  .pad { padding:12px 16px 14px; }
 
-  /* compare-hosts strip */
+  /* dual-grain KPI cards: absolute on top, rate underneath */
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(212px,1fr)); gap:12px; margin-top:16px; }
+  .kpi { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; padding:13px 15px 11px; }
+  .kpi .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
+  .kpi .v { font-size:25px; font-weight:600; margin-top:3px; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
+  .kpi .v .un { font-size:14px; font-weight:500; color:var(--ink-2); letter-spacing:0; }
+  .kpi .u { font-size:12px; color:var(--ink-2); margin-top:1px; min-height:18px; }
+  .kpi .rate { font-size:12px; color:var(--ink-2); margin-top:9px; padding-top:8px; border-top:1px dashed var(--hairline); }
+  .kpi .rate b { color:var(--ink-1); font-variant-numeric:tabular-nums; }
+  .kpi .rate .tagr { display:block; font-size:10px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+  .kpi .surge { display:inline-block; font-size:11px; font-weight:600; padding:1px 7px; border-radius:999px;
+                margin-left:6px; vertical-align:middle; background:var(--s-venue); color:#fff; }
+
+  /* chips */
+  .chips { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .chip { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px;
+          background:var(--plane); border:1px solid var(--hairline); color:var(--ink-1); font-size:12px; cursor:pointer; }
+  .chip:hover { border-color:var(--ink-muted); }
+  .chip.on { background:var(--ink-1); color:var(--plane); border-color:var(--ink-1); }
+  .chip.hot { border-color:var(--s-energy); color:var(--s-energy); cursor:default; }
+  .chip.cool { color:var(--ink-muted); cursor:default; }
+  .chip i { width:8px; height:8px; border-radius:50%; background:currentColor; display:block; }
+
+  /* chart */
+  .chartbox { padding:8px 8px 4px; position:relative; }
+  svg { display:block; width:100%; height:auto; }
+  .glabel { fill:var(--ink-muted); font-size:11px; }
+  .gline { stroke:var(--grid); stroke-width:1; }
+  .axis { stroke:var(--axis); stroke-width:1; }
+  .serie { fill:none; stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+  .legend { display:flex; gap:16px; flex-wrap:wrap; padding:2px 16px 14px; font-size:12px; color:var(--ink-2); }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .legend i { width:12px; height:3px; border-radius:2px; display:block; }
+  .tip { position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-100%);
+         background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
+         padding:8px 10px; font-size:12px; white-space:nowrap; z-index:5; box-shadow:var(--shadow); }
+  .tip b { display:block; margin-bottom:4px; color:var(--ink-1); }
+  .tip div { color:var(--ink-2); display:flex; gap:14px; justify-content:space-between; }
+
+  /* structure row */
+  .struct { display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:16px; padding:12px 16px 14px; font-size:13px; }
+  .struct h4 { margin:0 0 7px; font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+  .mixbar { display:flex; height:12px; border-radius:6px; overflow:hidden; background:var(--grid); }
+  .mixbar i { display:block; height:100%; }
+  .mixkey { display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:7px; font-size:12px; color:var(--ink-2); }
+  .mixkey span { display:inline-flex; align-items:center; gap:5px; }
+  .mixkey em { width:9px; height:9px; border-radius:2px; font-style:normal; }
+  .struct ol { margin:0; padding-left:18px; font-size:12px; }
+  .struct ol li { margin:3px 0; }
+  .struct ol small { color:var(--ink-muted); }
+  @media (max-width:900px) { .struct { grid-template-columns:1fr; } }
+
+  .cta { display:flex; gap:10px; flex-wrap:wrap; padding:0 16px 14px; }
+
+  /* compare strip */
   .strip { display:grid; grid-template-columns:repeat(11, minmax(0,1fr)); gap:6px; padding:12px 16px 6px; }
   .card { border:1px solid var(--hairline); border-radius:8px; padding:8px 8px 7px; cursor:pointer; background:var(--plane); }
   .card:hover { border-color:var(--ink-muted); }
@@ -121,88 +146,56 @@
   .card .bar { height:5px; background:var(--grid); border-radius:3px; margin-top:5px; position:relative; overflow:hidden; }
   .card .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:3px; }
   .card .bar em { position:absolute; top:0; bottom:0; background:var(--ink-1); opacity:.18; }
-  .card .tag { font-size:10px; color:var(--ink-muted); margin-top:3px; }
-  .cityfacts { padding:4px 16px 14px; display:grid; grid-template-columns:1.1fr 1fr; gap:14px; font-size:13px; }
-  .cityfacts dl { display:grid; grid-template-columns:auto 1fr; gap:3px 14px; margin:6px 0 0; font-size:12px; }
-  .cityfacts dt { color:var(--ink-muted); } .cityfacts dd { margin:0; font-variant-numeric:tabular-nums; }
-  .cityfacts ul { margin:6px 0 0; padding-left:18px; }
-  .cityfacts li { margin:4px 0; }
-  .zbars { display:grid; grid-template-columns:auto 1fr auto; gap:3px 8px; align-items:center; font-size:12px; margin-top:6px; }
-  .zbars .zb { height:8px; background:var(--grid); border-radius:4px; position:relative; }
-  .zbars .zb i { position:absolute; top:0; bottom:0; border-radius:4px; }
-  @media (max-width:900px) { .strip { grid-template-columns:repeat(4,1fr); } .cityfacts { grid-template-columns:1fr; } }
+  .card .tag { font-size:10px; color:var(--ink-muted); margin-top:3px; min-height:15px; }
+  @media (max-width:900px) { .strip { grid-template-columns:repeat(4,1fr); } }
 
-  /* match card */
-  .match { display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:14px; padding:12px 16px 14px; font-size:13px; }
-  .match .big { font-size:22px; font-weight:600; letter-spacing:-0.01em; }
-  .match .sub { color:var(--ink-2); font-size:12px; margin-top:2px; }
-  .match .box { border:1px solid var(--hairline); border-radius:8px; padding:10px 12px; background:var(--plane); }
-  .match .box .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
-  .match .box .v { font-size:20px; font-weight:600; margin-top:2px; }
-  .match .box .u { font-size:12px; color:var(--ink-2); }
-  .match table { font-size:12px; margin-top:6px; }
-  .match th, .match td { padding:3px 8px 3px 0; }
-  @media (max-width:900px) { .match { grid-template-columns:1fr; } }
+  .cmpgrid { display:grid; grid-template-columns:0.85fr 1.15fr; gap:16px; padding:6px 16px 14px; }
+  @media (max-width:900px) { .cmpgrid { grid-template-columns:1fr; } }
+  .zbars { display:grid; grid-template-columns:auto 1fr auto; gap:5px 10px; align-items:center; font-size:12px; margin-top:8px; }
+  .zbars .zb { height:9px; background:var(--grid); border-radius:5px; position:relative; }
+  .zbars .zb i { position:absolute; top:0; bottom:0; border-radius:5px; }
+  .zbars .zn { color:var(--ink-muted); font-variant-numeric:tabular-nums; }
+  dl.facts { display:grid; grid-template-columns:auto 1fr; gap:3px 14px; margin:10px 0 0; font-size:12px; }
+  dl.facts dt { color:var(--ink-muted); } dl.facts dd { margin:0; font-variant-numeric:tabular-nums; }
 
-  /* the time scrubber */
-  .scrub { padding:8px 16px 4px; position:relative; }
-  .scrub svg { cursor:pointer; }
-  .transport { display:flex; align-items:center; gap:8px; padding:0 16px 12px; font-size:12px; color:var(--ink-2); flex-wrap:wrap; }
-  .transport .now { font-weight:600; color:var(--ink-1); font-size:15px; font-variant-numeric:tabular-nums; min-width:96px; }
+  /* steal-this-play cards */
+  .playcard { border:1px solid var(--hairline); border-radius:9px; padding:11px 13px; background:var(--plane); margin-bottom:10px; }
+  .playcard .pt { font-size:14px; font-weight:600; letter-spacing:-0.01em; }
+  .playcard .meta { font-size:11px; color:var(--ink-muted); margin-top:3px; display:flex; flex-wrap:wrap; gap:4px 10px; }
+  .playcard .eff { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+  .playcard .eff span { font-size:12px; padding:2px 8px; border-radius:6px; background:var(--surface-1);
+                        border:1px solid var(--hairline); font-variant-numeric:tabular-nums; }
+  .playcard .why { font-size:12px; color:var(--ink-2); margin-top:8px; }
+  .playcard .steal { font-size:12px; margin-top:8px; color:var(--ink-2); }
+  .lnk { color:var(--s-food); cursor:pointer; text-decoration:underline dotted; background:none; border:0; font:inherit; padding:0; }
+  .effort { text-transform:capitalize; }
+  .empty { color:var(--ink-muted); font-size:13px; }
 
-  .mapwrap { position:relative; }
-  #map { height:560px; }
-  .maplibregl-popup-content { background:var(--surface-1); color:var(--ink-1); font:inherit;
-    border-radius:8px; padding:9px 12px; border:1px solid var(--hairline); max-width:290px; box-shadow:var(--shadow); }
-  .maplibregl-popup-content b { display:block; margin-bottom:2px; }
-  .maplibregl-popup-content small { color:var(--ink-2); }
-  .maplibregl-popup-content table { font-size:12px; margin-top:4px; width:auto; }
-  .maplibregl-popup-content td { padding:1px 8px 1px 0; border:0; }
-  .maplibregl-popup-content td:last-child { text-align:right; font-variant-numeric:tabular-nums; }
-  .maplibregl-popup-tip { display:none; }
-  .legendcard { position:absolute; left:12px; bottom:28px; background:var(--surface-1); border:1px solid var(--hairline);
-    border-radius:8px; padding:9px 11px; font-size:11px; color:var(--ink-2); box-shadow:var(--shadow); max-width:230px; }
-  .legendcard .blk { margin-bottom:7px; } .legendcard .blk:last-child { margin-bottom:0; }
-  .legendcard .h { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-muted); margin-bottom:3px; }
-  .legendcard .rowl { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .legendcard .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
-  .ramp { display:flex; border-radius:3px; overflow:hidden; }
-  .ramp i { width:15px; height:9px; display:block; }
-  .emptymap { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
-  .emptymap[hidden] { display:none; }
-  .emptymap div { background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px; padding:10px 14px; font-size:13px; pointer-events:auto; }
+  /* spatial */
+  /* the iframe must have real size *before* its src is set, or MapLibre boots at 0x0 */
+  .frameshell { position:relative; }
+  .frameshell iframe { width:100%; height:0; border:0; display:block; background:var(--plane); }
+  .frameshell iframe.on { height:1500px; }
+  .frameplaceholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+                      background:var(--surface-1); color:var(--ink-muted); font-size:13px; text-align:center; padding:0 16px; }
+  .frameplaceholder[hidden] { display:none; }
 
-  .churn { padding:8px 16px 12px; }
-  .churn table { font-size:12px; }
-  td.link { cursor:pointer; color:var(--s-food); text-decoration:underline dotted; }
-  .coords { color:var(--ink-muted); font-size:11px; }
-
-  .chartbox { padding:8px 8px 4px; position:relative; }
-  svg { display:block; width:100%; height:auto; }
-  .glabel { fill:var(--ink-muted); font-size:11px; }
-  .gline { stroke:var(--grid); stroke-width:1; }
-  .axis { stroke:var(--axis); stroke-width:1; }
-  .serie { fill:none; stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
-  .legend { display:flex; gap:16px; flex-wrap:wrap; padding:4px 16px 14px; font-size:12px; color:var(--ink-2); }
-  .legend span { display:inline-flex; align-items:center; gap:6px; }
-  .legend i { width:12px; height:3px; border-radius:2px; display:block; }
-
-  .tip { position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-100%);
-         background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
-         padding:8px 10px; font-size:12px; white-space:nowrap; z-index:5; box-shadow:var(--shadow); }
-  .tip b { display:block; margin-bottom:4px; color:var(--ink-1); }
-  .tip div { color:var(--ink-2); display:flex; gap:10px; justify-content:space-between; }
-  .tip i { width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:5px; }
+  /* scenarios */
+  .lab { display:grid; grid-template-columns:1fr 1.1fr; gap:18px; padding:12px 16px 14px; }
+  @media (max-width:900px) { .lab { grid-template-columns:1fr; } }
+  .slider { display:flex; align-items:center; gap:12px; margin-top:10px; }
+  .slider input[type=range] { flex:1; cursor:pointer; padding:0; }
+  .slider .val { font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; min-width:56px; }
+  .levers { display:grid; gap:8px; margin-top:10px; }
+  .lever { border:1px dashed var(--hairline); border-radius:8px; padding:9px 12px; opacity:.62; }
+  .lever .lt { font-size:13px; font-weight:600; }
+  .lever .lm { font-size:11px; color:var(--ink-muted); margin-top:2px; }
 
   table { border-collapse:collapse; width:100%; font-size:13px; }
-  th, td { text-align:right; padding:7px 16px; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums; }
+  th, td { text-align:right; padding:7px 0; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums; }
   th:first-child, td:first-child { text-align:left; font-variant-numeric:normal; }
   th { color:var(--ink-muted); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
-  details summary { cursor:pointer; padding:12px 16px; font-size:13px; color:var(--ink-2); }
-  details .body { padding:0 16px 14px; font-size:13px; color:var(--ink-2); }
-  details .body p { margin:6px 0; }
-  .searchbox { padding:12px 16px 4px; font-size:13px; color:var(--ink-2); }
-  .searchbox b { color:var(--ink-1); }
+  .note { font-size:11px; color:var(--ink-muted); margin-top:8px; }
 </style>
 </head>
 <body>
@@ -210,910 +203,673 @@
 
   <header>
     <div class="t">
-      <h1>Nexus Pulse — energy, food and water in the 11 World Cup host cities</h1>
-      <p>Where food, energy and water demand actually sits in the host cities, built from five years of anonymised card spend.</p>
-      <p class="how" id="how">Every dot is a shop. Bigger dots serve more customers. Colours show what kind of shop it is.</p>
+      <h1>Nexus Pulse <span class="pill">FIFA 2026 · Energy–Food–Water command</span></h1>
+      <p>Comparable evidence on summer resource pressure across the 11 U.S. host cities — and the plays that move it.</p>
+      <p class="loop"><b>Monitor</b> the load → <b>Locate</b> where it sits → <b>Decide</b> which play to run → <b>Hand over</b> the playbook.</p>
     </div>
     <button class="btn" id="theme" title="switch between light and dark">☾ Dark</button>
   </header>
 
-  <div class="controls">
-    <div class="group">
-      <h3>What to look at</h3>
-      <div class="row"><label class="k" for="city">City</label><select id="city"></select></div>
-      <div class="row"><label class="k" for="match">2026 match</label><select id="match"></select></div>
-      <div class="row"><label class="k" for="q">Shop name</label><input type="search" id="q" placeholder="e.g. Starbucks" autocomplete="off"></div>
-    </div>
-    <div class="group">
-      <h3>How to draw it</h3>
-      <div class="row"><div class="k">View</div>
-        <div><span class="seg" id="viewseg"><button data-v="shops" class="on">Shops</button><button data-v="districts">Districts</button></span>
-          <span class="info" tabindex="0" data-tip="Shops: one dot per place. Districts: shops summed into 1.1 km squares.">i</span></div></div>
-      <div class="row"><div class="k">Show</div><div class="cbs" id="cbs"></div></div>
-      <div class="row"><div class="k">Colour by</div>
-        <div><span class="seg" id="colourseg"><button data-c="type" class="on">Type of shop</button><button data-c="visitor" id="visbtn" hidden>Visitor share</button></span>
-          <span class="info" tabindex="0" id="visinfo" hidden data-tip="Share of a shop's card customers whose home city is outside the metro's states. From CUSTOMER_HOME_CITY, 2022–2024.">i</span></div></div>
-      <div class="row"><div class="k">Overlay</div>
-        <div class="inline">
-          <label><input type="checkbox" id="heaton"> heat index
-            <span class="info" tabindex="0" data-tip="Urban heat index, 1 (cool) to 11 (hot), averaged into 1.1 km squares. The source has no dates, so this layer never changes with the month.">i</span></label>
-          <label id="mdwrap" hidden><input type="checkbox" id="matchday"> match-day halo
-            <span class="info" tabindex="0" data-tip="Adds the measured +30% to shops within 2 km of the picked stadium and draws an orange halo on them.">i</span></label>
-        </div></div>
-    </div>
+  <div class="globals">
+    <span class="lbl">Host city</span>
+    <select id="city"></select>
+    <span class="pill" id="season">Season: Jun–Jul tournament analog</span>
+    <span class="grow"></span>
+    <span class="rank" id="rankline"></span>
   </div>
 
-  <div class="active" id="active"></div>
+  <nav class="tabs" id="tabs">
+    <button data-t="overview"><span class="num">01</span>Overview</button>
+    <button data-t="compare"><span class="num">02</span>Compare hosts</button>
+    <button data-t="spatial"><span class="num">03</span>Spatial map</button>
+    <button data-t="scenarios"><span class="num">04</span>Scenarios</button>
+  </nav>
 
-  <div class="kpis" id="kpis"></div>
+  <details class="disc" id="disc">
+    <summary>Method &amp; disclaimer — read before quoting any number</summary>
+    <div class="body" id="discbody"></div>
+  </details>
 
-  <section class="panel" id="matchpanel" hidden>
-    <h2>Match <span class="pill" id="matchtitle"></span><span class="spacer"></span><button class="btn small" id="clearmatch">clear match</button></h2>
-    <div class="match" id="matchbody"></div>
-  </section>
+  <!-- 01 ------------------------------------------------------------------ -->
+  <section class="pane" id="pane-overview" hidden>
+    <div class="kpis" id="kpis"></div>
 
-  <section class="panel" id="scorepanel" hidden>
-    <h2>Compare hosts <span class="pill">readiness score, 0–100</span>
-      <span class="info" tabindex="0" data-tip="For each city: energy, water and CO₂ per trading shop in a summer month (June–July 2022–2024), plus cooling-degree-days and heat index. Each is turned into a z-score across the 11 cities, blended 0.35 / 0.25 / 0.20 / 0.10 / 0.10, then stretched so the leanest city is 100 and the most pressured is 0. Band is ±15.">i</span></h2>
-    <div class="lead">Higher means the city's shops already run lean on energy, water and carbon. The scale is stretched across these eleven, so 100 is the leanest of the group and 0 the most pressured — not "no data".</div>
-    <div class="strip" id="strip"></div>
-    <div class="cityfacts" id="cityfacts"></div>
-  </section>
-
-  <section class="panel" id="searchpanel" hidden>
-    <h2>Search results <span class="pill" id="searchtitle"></span></h2>
-    <div class="searchbox" id="searchsum"></div>
-    <table id="searchtbl"></table>
-  </section>
-
-  <section class="panel">
-    <h2>Move through time <span class="pill" id="scrubtitle"></span></h2>
-    <div class="scrub">
-      <svg id="scrubsvg" viewBox="0 0 1000 96" preserveAspectRatio="none" role="img" aria-label="Customers per month — click or drag to pick a month"></svg>
-      <div class="tip" id="stip"></div>
-    </div>
-    <div class="transport">
-      <button class="btn" id="play">▶ Play</button>
-      <button class="btn" id="prev">←</button>
-      <button class="btn" id="next">→</button>
-      <span class="now" id="now"></span>
-      <span>speed <span class="seg" id="speed"><button data-s="900">slow</button><button data-s="600" class="on">normal</button><button data-s="300">fast</button></span></span>
-      <span>click a bar, drag, or use ← → and space</span>
-    </div>
-  </section>
-
-  <section class="panel">
-    <h2>Where the demand sits <span class="pill" id="maptitle"></span></h2>
-    <div class="mapwrap">
-      <div id="map"></div>
-      <div class="legendcard" id="legendcard"></div>
-      <div class="emptymap" id="emptymap" hidden><div>No shops match these filters. <a id="emptyreset" style="cursor:pointer;text-decoration:underline">Reset filters</a></div></div>
-    </div>
-    <div class="churn" id="churn" hidden></div>
-  </section>
-
-  <section class="panel">
-    <h2>Day by day inside that month <span class="pill" id="charttitle"></span>
-      <span class="spacer"></span>
-      <label class="toggle"><input type="checkbox" id="smooth"> Smooth the weekly card-settlement spikes
-        <span class="info" tabindex="0" data-tip="Card payments are recorded on the day they settle, so raw days show Monday about 2.5× a weekday and tiny weekends. This averages each day with the 3 days either side.">i</span></label>
-      <span class="seg" id="scaleseg"><button data-sc="abs" class="on">Customers</button><button data-sc="idx">Indexed (month avg = 100)</button></span>
-    </h2>
-    <div class="chartbox">
-      <svg id="chart" viewBox="0 0 1000 290" preserveAspectRatio="none" role="img" aria-label="Daily customers by resource type"></svg>
-      <div class="tip" id="tip"></div>
-    </div>
-    <div class="legend" id="legend"></div>
-    <details>
-      <summary>Show the numbers as a table</summary>
-      <table id="tbl"></table>
-    </details>
-  </section>
-
-  <section class="panel">
-    <details>
-      <summary>How this was built</summary>
-      <div class="body">
-        <p>Demand comes from <code>spend-patterns-rice</code>: for each shop, monthly card customers (<code>RAW_NUM_CUSTOMERS</code>) and daily spend (<code>SPEND_BY_DAY</code>), 2019-12 to 2024-12, 20,569 energy / food / water / venue businesses within 75 km of the 11 host-city centres. Heat comes from <code>urban-heat-index-rice</code>, averaged into 0.01° squares. Fixtures and stadiums come from the published 2026 schedule.</p>
-        <p>Sample data were transformed by the organisers — multiplicative noise on magnitudes, spatial jitter on coordinates. Footprints are estimated by multiplying customer counts by the hand-set factors in <code>intensity_factors.csv</code> (food 2.8 kWh, 25 L, 3.5 kg CO₂e per customer; energy 45 / 1.5 / 12; lodging 28 / 300 / 2; venue 4 / 15 / 2.5). This demonstrates method, not real conditions in any city.</p>
-        <p>The match-day effect (+30% within 2 km) was measured as game week ÷ normal week on the same shops across 566 NFL home games at these stadiums (+33%) and 19 Copa América 2024 matches (+27%). A citywide visitor lift could not be separated from noise (Copa 2024 host cities vs Boston / Philadelphia / Seattle, ±8%). Nothing on this page is a forecast; a 2026 match is shown against the same month of 2024.</p>
-        <p>Visitor share uses <code>CUSTOMER_HOME_CITY</code>: the share of a shop's card customers whose home city is outside the metro's states, 2022–2024, shops with 20+ such customers. Readiness scores use the team's Plan D scoring on per-shop rates.</p>
+    <section class="panel">
+      <h2>Pressure profile <span class="pill" id="presstitle"></span></h2>
+      <div class="pad">
+        <div class="chips" id="presschips"></div>
+        <div class="note" id="pressnote"></div>
       </div>
-    </details>
+    </section>
+
+    <section class="panel">
+      <h2>Load through the year <span class="pill" id="serietitle"></span>
+        <span class="spacer"></span>
+        <span class="seg" id="metricseg">
+          <button data-m="e" class="on">Energy</button><button data-m="w">Water</button>
+          <button data-m="co2">CO₂e</button><button data-m="v">Visits</button>
+        </span>
+      </h2>
+      <div class="chartbox">
+        <svg id="chart" viewBox="0 0 1000 264" preserveAspectRatio="none" role="img"
+             aria-label="Monthly footprint with cooling degree days"></svg>
+        <div class="tip" id="tip"></div>
+      </div>
+      <div class="legend" id="serielegend"></div>
+    </section>
+
+    <section class="panel">
+      <h2>What that load is made of</h2>
+      <div class="struct" id="struct"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Next step</h2>
+      <div class="lead" id="ctalead"></div>
+      <div class="cta" style="padding-top:10px">
+        <button class="btn primary" id="gocompare">Open the playbook for this city →</button>
+        <button class="btn" id="gospatial">Inspect it on the map →</button>
+      </div>
+    </section>
+  </section>
+
+  <!-- 02 ------------------------------------------------------------------ -->
+  <section class="pane" id="pane-compare" hidden>
+    <section class="panel">
+      <h2>Readiness across the 11 hosts <span class="pill">0–100, higher = lower relative summer load</span>
+        <span class="spacer"></span>
+        <span style="font-size:12px;color:var(--ink-muted)">Pressure filter</span>
+      </h2>
+      <div class="pad" style="padding-bottom:0"><div class="chips" id="drvfilter"></div></div>
+      <div class="strip" id="strip"></div>
+      <div class="note" style="padding:0 16px 12px" id="stripnote"></div>
+    </section>
+
+    <section class="panel">
+      <h2 id="cmptitle">Select a host</h2>
+      <div class="cmpgrid">
+        <div id="cmpleft"></div>
+        <div id="cmpright"></div>
+      </div>
+    </section>
+  </section>
+
+  <!-- 03 ------------------------------------------------------------------ -->
+  <section class="pane" id="pane-spatial" hidden>
+    <section class="panel">
+      <h2>Where the demand actually sits <span class="pill" id="spatialtitle"></span>
+        <span class="spacer"></span>
+        <a class="btn small" id="popout" href="spatial.html" target="_blank" rel="noopener">open full map ↗</a>
+      </h2>
+      <div class="lead" style="padding-bottom:10px">Shops, districts, the heat index, the 61-month scrubber and the
+        measured +30% match-day effect. The city selector above drives this map. The readiness strip is hidden here —
+        it lives on the Compare tab.</div>
+      <div class="frameshell">
+        <iframe id="frame" title="Nexus Pulse spatial map"></iframe>
+        <div class="frameplaceholder" id="frameph">Loading the map — this tab carries the heavy place data (~16 MB).</div>
+      </div>
+    </section>
+  </section>
+
+  <!-- 04 ------------------------------------------------------------------ -->
+  <section class="pane" id="pane-scenarios" hidden>
+    <section class="panel">
+      <h2>Intervention lab <span class="pill">preview</span></h2>
+      <div class="lead">Toggle strategies and watch ΔkWh / ΔL / ΔCO₂e move against the baseline. The full lever set —
+        with cross-resource coupling and a cost-vs-abatement frontier — lands in the next iteration.
+        One lever is live today.</div>
+      <div class="lab">
+        <div>
+          <h4 style="margin:0 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Live lever · visitor surge</h4>
+          <div style="font-size:13px;color:var(--ink-2)">Scale tournament-window visitors against the summer baseline.</div>
+          <div class="slider">
+            <input type="range" id="surge" min="1" max="2" step="0.05" value="1">
+            <span class="val" id="surgeval">1.00×</span>
+          </div>
+          <div class="note">Footprints here are visits × intensity factors, so a visitor surge scales them linearly.
+            Climate amplifiers (CDD, urban heat) are <b>not</b> scaled — they do not depend on visitor counts.
+            Illustrative only.</div>
+
+          <h4 style="margin:18px 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Landing next iteration</h4>
+          <div class="levers" id="levers"></div>
+        </div>
+        <div>
+          <h4 style="margin:0 0 8px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em"
+              id="surgetitle">Baseline vs surge</h4>
+          <table id="surgetbl"></table>
+          <div class="note" id="surgenote"></div>
+        </div>
+      </div>
+    </section>
   </section>
 
 </div>
 
-<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
 // ---------------------------------------------------------------------------
-const LAYERS = [
-  { key:"Food",      label:"Food",   css:"--s-food"   },
-  { key:"Energy",    label:"Energy", css:"--s-energy" },
-  { key:"Water",     label:"Lodging & water", css:"--s-water"  },
-  { key:"Venue",     label:"Venues", css:"--s-venue"  },
-  { key:"Other_EFW", label:"Other",  css:"--s-other"  },
-];
-const FACTORS = {
-  Food:{kwh:2.8,water:25,co2:3.5},  Energy:{kwh:45,water:1.5,co2:12},
-  Water:{kwh:28,water:300,co2:2},   Venue:{kwh:4,water:15,co2:2.5},
-  Other_EFW:{kwh:3,water:12,co2:1.8},
-};
+// Plan A shell. Reads Plan D's frozen contract and the Overview series; embeds
+// Plan B's map. It computes no scores of its own — every readiness number here
+// comes straight out of a_integration.json.
+// ---------------------------------------------------------------------------
 const ALL = "__all__";
-const GRID = 0.01;               // district cell size in degrees, same as the heat tiles
-const MATCH_LIFT = 0.30;         // measured: +33% (566 NFL games) and +27% (19 Copa 2024 matches) within 2 km
-const RING_KM = [2, 5];
-const CITY_ZOOM = 8;             // below this, cities are drawn as one bubble each
-const VIS_MIN_CUST = 30;         // districts with fewer customers than this show grey in visitor mode
-const BASEMAP = {
-  light:"https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-  dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+const METRICS = {
+  e:   { label:"Energy",  unit:"kWh",      css:"--s-energy", abs:"energy_kwh",   rate:"energy_kwh"   },
+  w:   { label:"Water",   unit:"L",        css:"--s-water",  abs:"water_liters", rate:"water_liters" },
+  co2: { label:"CO₂e",    unit:"kg CO₂e",  css:"--s-other",  abs:"kg_co2e",      rate:"kg_co2e"      },
+  v:   { label:"Visits",  unit:"visits",   css:"--s-food",   abs:"visits",       rate:null           },
 };
-const ROUND_ORDER = ["Group","Round of 32","Round of 16","Quarter-final","Semi-final","Third place","Final"];
+const DRIVERS = [
+  ["energy_kwh","Energy"], ["kg_co2e","Food CO₂e"], ["water_liters","Water"],
+  ["cdd","Cooling (CDD)"], ["uhi","Urban heat"],
+];
+// Lodging is the spend-side name for the same lodging/water layer the map colours green
+const LAYER_CSS = { Food:"--s-food", Energy:"--s-energy", Water:"--s-water", Lodging:"--s-water",
+                    Venue:"--s-venue", Other_EFW:"--s-other" };
+const TABS = ["overview","compare","spatial","scenarios"];
 
 const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const RAMP  = () => ["--h1","--h2","--h3","--h4","--h5","--h6","--h7","--h8"].map(cssv);
-const DRAMP = () => ["--d1","--d2","--d3","--d4","--d5","--d6"].map(cssv);
-const VRAMP = () => [cssv("--s-water"), cssv("--s-venue"), cssv("--s-energy")];   // locals → visitors
 const fmt = n => { if(!isFinite(n)) return "—"; const a=Math.abs(n);
   if(a>=1e9) return (n/1e9).toFixed(1)+"B"; if(a>=1e6) return (n/1e6).toFixed(1)+"M";
-  if(a>=1e3) return (n/1e3).toFixed(0)+"k"; return n.toFixed(0); };
+  if(a>=1e3) return (n/1e3).toFixed(1)+"k"; return n.toFixed(0); };
 const full = n => Math.round(n).toLocaleString();
-const pct = v => v==null || !isFinite(v) ? "—" : (v*100).toFixed(0)+"%";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const MNAME = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const pretty = m => MNAME[+m.slice(5,7)-1] + " " + m.slice(0,4);
-const prettyD = d => { const [y,mo,da]=d.split("-"); return `${+da} ${MNAME[+mo-1]} ${y}`; };
-const daysIn = m => new Date(+m.slice(0,4), +m.slice(5,7), 0).getDate();
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const kmBetween = (x1,y1,x2,y2) => Math.sqrt(((y1-y2)*111)**2 + ((x1-x2)*111*Math.cos(y1*Math.PI/180))**2);
+const isSummer = m => { const x = +m.slice(5,7); return x === 6 || x === 7; };
+const slug = s => s.toLowerCase().replace(/\//g,"_").replace(/ /g,"_");
+const niceMax = v => { if(v<=0) return 1; const p=Math.pow(10,Math.floor(Math.log10(v))); return Math.ceil(v/p*2)/2*p; };
+const scoreColour = s => s >= 66 ? cssv("--s-water") : s >= 33 ? cssv("--s-venue") : cssv("--s-energy");
 
-// ---------------------------------------------------------------------------
-let DATA=null, MONTHS=[], CITIES=[], SM={}, MATCHES=[], STADIUMS={}, SCORES=null, VIS=null;
-let map=null, mapReady=false, timer=null, HEATIDX={}, CHURN={}, hoverPopup=null;
-const state = { city:null, mi:0, on:null, q:"", heat:false, theme:"light", view:"shops",
-                match:null, matchday:false, colour:"type", smooth:false, scale:"abs", speed:600 };
+let C = null, S = null, BY = {}, CITIES = [], SUMMER_IDX = [];
+const state = { city:null, tab:"overview", theme:"light", metric:"e", surge:1, filter:null };
 
-const opt = url => fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
 Promise.all([
-  fetch("data/places.json").then(r=>r.json()),
-  fetch("data/heat.json").then(r=>r.json()),
-  fetch("data/daily.json").then(r=>r.json()),
-  fetch("data/months.json").then(r=>r.json()),
-  opt("data/matches.json"), opt("data/stadiums.json"), opt("data/scorecards.json"), opt("data/visitors.json"),
-]).then(([places,heat,daily,months,matches,stadiums,scores,vis]) => {
-  DATA={places,heat,daily}; MONTHS=months;
-  MATCHES = matches || []; STADIUMS = stadiums || {}; SCORES = scores;
-  if (vis) { VIS = {}; vis.forEach(v => VIS[v.k] = v); }
-  DATA.places.forEach(p => { p.nl = (p.n||"").toLowerCase(); p.cell = cellKey(p.x, p.y);
-                             p.vs = VIS && VIS[p.k] ? VIS[p.k].v : null; });
-  heat.forEach(h => { (HEATIDX[h.m] ||= {})[cellKey(h.x, h.y)] = h.u; });
+  fetch("data/a_integration.json").then(r => r.json()),
+  fetch("data/overview_kpis.json").then(r => r.json()),
+]).then(([contract, series]) => {
+  C = contract; S = series;
+  C.scorecards.forEach(c => BY[c.host_city] = c);
+  CITIES = C.scorecards.map(c => c.host_city).sort();
+  SUMMER_IDX = S.months.map((m,i) => isSummer(m) ? i : -1).filter(i => i >= 0);
   boot();
 }).catch(err => {
   document.getElementById("kpis").innerHTML =
-    '<div class="kpi"><div class="k">No data</div><div class="v" style="font-size:15px">Copy the web folder into app/data/</div>' +
-    '<div class="u">keep the <code>sm/</code> subfolder, then serve this directory with <code>python -m http.server</code>.</div></div>';
+    `<div class="kpi"><div class="k">No data</div><div class="v" style="font-size:15px">Contract missing</div>
+     <div class="u">Run <code>python -m engines.playbook.cli --source map --sync-app</code> and
+     <code>python scripts/build_overview_kpis.py</code>, then serve this folder.</div></div>`;
+  document.getElementById("pane-overview").hidden = false;
   console.error(err);
 });
 
-const cellKey = (x, y) => Math.round(x/GRID) + "_" + Math.round(y/GRID);
-const cellCentre = key => { const [i,j] = key.split("_").map(Number); return [i*GRID, j*GRID]; };
-
-async function boot() {
-  CITIES = [...new Set(DATA.places.map(p=>p.m))].sort();
-  // land on the biggest city so the first thing on screen is a populated map
-  const counts = {}; DATA.places.forEach(p => counts[p.m] = (counts[p.m]||0)+1);
-  state.city = CITIES.reduce((a,b) => counts[a] >= counts[b] ? a : b);
-  const j = MONTHS.map((m,i)=>({m,i})).filter(o=>o.m.endsWith("-06")).pop();
-  state.mi = j ? j.i : MONTHS.length-1;
-
+// ---------------------------------------------------------------------------
+function boot() {
   const sel = document.getElementById("city");
-  sel.innerHTML = `<option value="${ALL}">All 11 host cities</option>` + CITIES.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
-  sel.value = state.city;
+  sel.innerHTML = `<option value="${ALL}">All 11 hosts</option>` +
+    CITIES.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
   sel.onchange = e => setCity(e.target.value);
 
-  // match picker, grouped by round
-  const ms = document.getElementById("match");
-  ms.innerHTML = `<option value="">— none —</option>` + ROUND_ORDER.map(r => {
-    const rows = MATCHES.filter(m => m.g === r);
-    return rows.length ? `<optgroup label="${esc(r === "Group" ? "Group stage" : r)}">` + rows.map(m =>
-      `<option value="${m.id}">${prettyD(m.d)} · ${esc(m.t1)} v ${esc(m.t2)} · ${esc(m.m)}</option>`).join("") + `</optgroup>` : "";
-  }).join("");
-  ms.onchange = e => e.target.value === "" ? clearMatch(true) : pickMatch(MATCHES[+e.target.value]);
-  document.getElementById("clearmatch").onclick = () => clearMatch(true);
-  document.getElementById("matchday").onchange = e => { state.matchday = e.target.checked; render(); };
-
-  document.querySelectorAll("#viewseg button").forEach(b => b.onclick = () => setView(b.dataset.v));
-  document.querySelectorAll("#colourseg button").forEach(b => b.onclick = () => setColour(b.dataset.c));
-  document.querySelectorAll("#scaleseg button").forEach(b => b.onclick = () => { state.scale = b.dataset.sc;
-    document.querySelectorAll("#scaleseg button").forEach(x => x.classList.toggle("on", x === b)); render(); });
-  document.querySelectorAll("#speed button").forEach(b => b.onclick = () => { state.speed = +b.dataset.s;
-    document.querySelectorAll("#speed button").forEach(x => x.classList.toggle("on", x === b)); if (timer) { stop(); play(); } });
-  if (VIS) { document.getElementById("visbtn").hidden = false; document.getElementById("visinfo").hidden = false; }
-
-  const q = document.getElementById("q");
-  let qt = null;
-  q.oninput = () => { clearTimeout(qt); qt = setTimeout(() => { state.q = q.value.trim().toLowerCase(); render(); }, 180); };
-
+  document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => setTab(b.dataset.t));
+  document.querySelectorAll("#metricseg button").forEach(b => b.onclick = () => {
+    state.metric = b.dataset.m;
+    document.querySelectorAll("#metricseg button").forEach(x => x.classList.toggle("on", x === b));
+    drawSeries();
+  });
   document.getElementById("theme").onclick = () => setTheme(state.theme === "light" ? "dark" : "light");
-  document.getElementById("heaton").onchange = e => { state.heat = e.target.checked; applyHeatVisibility(); paintLegend(); paintActive(); };
-  document.getElementById("smooth").onchange = e => { state.smooth = e.target.checked; render(); };
-  document.getElementById("emptyreset").onclick = resetFilters;
+  document.getElementById("gocompare").onclick = () => setTab("compare");
+  document.getElementById("gospatial").onclick = () => setTab("spatial");
 
-  document.getElementById("prev").onclick = () => { stop(); step(-1); };
-  document.getElementById("next").onclick = () => { stop(); step(1); };
-  document.getElementById("play").onclick = () => timer ? stop() : play();
-  addEventListener("keydown", e => {
-    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "SELECT")) return;
-    if (e.key==="ArrowLeft")  { stop(); step(-1); }
-    if (e.key==="ArrowRight") { stop(); step(1); }
-    if (e.key===" ")          { e.preventDefault(); timer ? stop() : play(); }
-  });
+  const sl = document.getElementById("surge");
+  sl.oninput = () => { state.surge = +sl.value; drawKpis(); drawSurge(); };
 
-  paintCbs();
-  drawScores();
-  initMap();
-  await loadSM();
-  render();
+  document.getElementById("discbody").innerHTML = methodHtml();
+  drawFilter();
+  drawLevers();
+
+  addEventListener("hashchange", () => { readHash(); renderAll(); });
+  readHash();
+  renderAll();
 }
 
-async function setCity(c, keepMatch) {
-  stop(); if (!keepMatch) clearMatch(false);
-  state.city = c; document.getElementById("city").value = c;
-  await loadSM(); flyToCity(); render();
+// hash is #tab or #tab/City so any view in the demo is linkable.
+// Split on the first "/" *before* decoding — "New York/New Jersey" is percent-encoded,
+// so the raw fragment holds exactly one literal separator.
+function readHash() {
+  const raw = location.hash.replace(/^#/, "");
+  const cut = raw.indexOf("/");
+  const tab = cut < 0 ? raw : raw.slice(0, cut);
+  const city = cut < 0 ? "" : decodeURIComponent(raw.slice(cut + 1));
+  state.tab = TABS.includes(tab) ? tab : "overview";
+  if (city && (city === ALL || BY[city])) state.city = city;
+  else if (!state.city) state.city = C.scorecards.find(c => c.rank === C.scorecards.length).host_city;
 }
-function setView(v) {
-  state.view = v;
-  document.querySelectorAll("#viewseg button").forEach(x => x.classList.toggle("on", x.dataset.v === v));
-  document.getElementById("how").textContent = v === "districts"
-    ? "Every square is 1.1 km across. Darker squares hold more customers this month. Click one to see its numbers."
-    : "Every dot is a shop. Bigger dots serve more customers. Colours show what kind of shop it is.";
-  render();
+function writeHash() {
+  const want = `#${state.tab}/${encodeURIComponent(state.city)}`;
+  if (location.hash !== want) history.replaceState(null, "", want);
 }
-function setColour(c) {
-  state.colour = c;
-  document.querySelectorAll("#colourseg button").forEach(x => x.classList.toggle("on", x.dataset.c === c));
-  render();
-}
-function resetFilters() {
-  state.on = null; state.q = ""; document.getElementById("q").value = "";
-  state.colour = "type"; setColour("type"); paintCbs(); render();
-}
-
-// show checkboxes with live counts and an "only" link
-function paintCbs() {
-  const inScope = DATA.places.filter(p => inCity(p) && matchesQ(p));
-  const counts = {}; inScope.forEach(p => counts[p.l] = (counts[p.l]||0)+1);
-  document.getElementById("cbs").innerHTML = LAYERS.map(l => `
-    <label class="cb ${layerOn(l.key) ? "" : "off"}" style="--c:var(${l.css})">
-      <input type="checkbox" data-k="${l.key}" ${layerOn(l.key) ? "checked" : ""}>
-      <span class="sw"></span>${l.label} <span class="n">(${(counts[l.key]||0).toLocaleString()})</span>
-      <a class="only" data-only="${l.key}">only</a></label>`).join("");
-  document.querySelectorAll("#cbs input").forEach(cb => cb.onchange = () => {
-    const on = new Set(LAYERS.filter(l => layerOn(l.key)).map(l => l.key));
-    cb.checked ? on.add(cb.dataset.k) : on.delete(cb.dataset.k);
-    state.on = on.size === LAYERS.length ? null : on;
-    paintCbs(); render();
-  });
-  document.querySelectorAll("#cbs .only").forEach(a => a.onclick = e => { e.preventDefault(); state.on = new Set([a.dataset.only]); paintCbs(); render(); });
-}
-const layerOn = k => state.on === null || state.on.has(k);
-const activeLayers = () => LAYERS.filter(l => layerOn(l.key));
-
-// removable chips for everything that is currently narrowing the picture
-function paintActive() {
-  const chips = [];
-  const chip = (label, undo) => chips.push({label, undo});
-  chip(state.city === ALL ? "All 11 cities" : state.city, () => setCity(ALL));
-  chip(pretty(MONTHS[state.mi]), null);
-  if (state.match) chip(`${prettyD(state.match.d)} · ${state.match.s}`, () => clearMatch(true));
-  if (state.view === "districts") chip("Districts", () => setView("shops"));
-  if (state.on) chip("Only " + activeLayers().map(l=>l.label.toLowerCase()).join(", "), () => { state.on = null; paintCbs(); render(); });
-  if (state.q) chip(`“${state.q}”`, () => { state.q = ""; document.getElementById("q").value = ""; render(); });
-  if (state.colour === "visitor") chip(state.view === "districts" ? "Squares coloured by visitor share" : "Dots coloured by visitor share", () => setColour("type"));
-  if (state.heat) chip("Heat overlay", () => { state.heat = false; document.getElementById("heaton").checked = false; applyHeatVisibility(); paintLegend(); paintActive(); });
-  if (state.matchday) chip("Match-day halo, +30% within 2 km", () => { state.matchday = false; document.getElementById("matchday").checked = false; render(); });
-  const box = document.getElementById("active");
-  box.innerHTML = `<span>Showing</span>` + chips.map((c,i) => `<span class="achip">${esc(c.label)}${c.undo ? `<button data-i="${i}" title="remove">×</button>` : ""}</span>`).join("") +
-    (chips.length > 2 ? `<a id="resetall">Reset</a>` : "");
-  box.querySelectorAll("button").forEach(b => b.onclick = () => chips[+b.dataset.i].undo());
-  const r = document.getElementById("resetall"); if (r) r.onclick = () => { clearMatch(false); resetFilters(); setView("shops"); setCity(ALL); };
-}
-
+function setCity(c) { state.city = c; writeHash(); renderAll(); }
+function setTab(t)  { state.tab = t;  writeHash(); renderAll(); }
 function setTheme(t) {
   state.theme = t;
   document.documentElement.setAttribute("data-theme", t);
   document.getElementById("theme").textContent = t === "light" ? "☾ Dark" : "☀ Light";
-  if (map) { if (mapReady) applyBasemap(t); else map.once("load", () => applyBasemap(state.theme)); }
-  render();
-}
-function applyBasemap(t) {
-  const OURS = new Set(["heat-fill","district-fill","district-line","shop-near","shop-dots","city-bubbles","city-labels","ring-line","stadium-pt"]);
-  map.setStyle(BASEMAP[t], { transformStyle: (prev, next) => ({
-    ...next,
-    sources: { ...next.sources, heat:prev.sources.heat, shops:prev.sources.shops, districts:prev.sources.districts,
-               rings:prev.sources.rings, stadium:prev.sources.stadium, cities:prev.sources.cities },
-    layers:  [ ...next.layers, ...prev.layers.filter(l => OURS.has(l.id)) ],
-  }) });
-  map.once("idle", () => paintMap());
+  pushToFrame();
+  renderAll();
 }
 
-function step(d) { state.mi = (state.mi + d + MONTHS.length) % MONTHS.length; render(); }
-function play() { document.getElementById("play").textContent = "❚❚ Pause"; timer = setInterval(() => step(1), state.speed); }
-function stop() { clearInterval(timer); timer = null; document.getElementById("play").textContent = "▶ Play"; }
-
-// legend card in the map's corner: one block per encoding
-function paintLegend() {
-  const blocks = [];
-  const rampHtml = cols => `<span class="ramp">${cols.map(c=>`<i style="background:${c}"></i>`).join("")}</span>`;
-  const zoomedOut = mapReady && map.getZoom() < CITY_ZOOM && state.city === ALL;
-  if (zoomedOut) {
-    blocks.push(`<div class="blk"><div class="h">Size: customers this month</div><div class="rowl">one bubble per city — click to open</div></div>`);
-  } else if (state.view === "districts") {
-    blocks.push(state.colour === "visitor"
-      ? `<div class="blk"><div class="h">Colour: visitor share</div><div class="rowl">≤5% ${rampHtml(VRAMP())} ≥55%</div><div class="rowl">grey = under ${VIS_MIN_CUST} customers</div></div>`
-      : `<div class="blk"><div class="h">Colour: customers this month</div><div class="rowl">fewer ${rampHtml(DRAMP())} more</div><div class="rowl">1.1 km squares</div></div>`);
-  } else {
-    blocks.push(state.colour === "visitor"
-      ? `<div class="blk"><div class="h">Colour: visitor share</div><div class="rowl">≤5% ${rampHtml(VRAMP())} ≥55%</div><div class="rowl">grey = unknown</div></div>`
-      : `<div class="blk"><div class="h">Colour: type of shop</div><div class="rowl">${LAYERS.map(l => `<span><i class="dot" style="background:var(${l.css})"></i> ${l.label}</span>`).join(" ")}</div></div>`);
-    blocks.push(`<div class="blk"><div class="h">Size: customers this month</div></div>`);
-  }
-  if (state.heat) blocks.push(`<div class="blk"><div class="h">Overlay: heat index</div><div class="rowl">cooler ${rampHtml(RAMP())} hotter</div></div>`);
-  if (state.match) blocks.push(`<div class="blk"><div class="h">Stadium</div><div class="rowl">● pin, dashed rings at 2 and 5 km${state.matchday ? ", orange halo = +30%" : ""}</div></div>`);
-  document.getElementById("legendcard").innerHTML = blocks.join("");
+function renderAll() {
+  document.getElementById("city").value = state.city;
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.t === state.tab));
+  TABS.forEach(t => document.getElementById("pane-" + t).hidden = t !== state.tab);
+  writeHash();
+  drawRank();
+  drawKpis();
+  drawPressure();
+  drawSeries();
+  drawStruct();
+  drawCta();
+  drawStrip();
+  drawCompare();
+  drawSurge();
+  if (state.tab === "spatial") mountFrame();
 }
 
-// shop x month, one file per city, fetched once and kept; churn per district computed once per city
-async function loadSM() {
-  const want = state.city === ALL ? CITIES : [state.city];
-  await Promise.all(want.filter(c => !SM[c]).map(async c => {
-    const r = await fetch(`data/sm/${encodeURIComponent(c.replace(/\//g,"_"))}.json`);
-    const j = await r.json();
-    const idx = {}; j.keys.forEach((k,i) => idx[k] = i);
-    SM[c] = { idx, v:j.v };
-    computeChurn(c);
-  }));
+// --- selection helpers -----------------------------------------------------
+const isAll = () => state.city === ALL;
+const cardOf = () => isAll() ? null : BY[state.city];
+const cityName = () => isAll() ? "All 11 hosts" : state.city;
+
+/** Absolute summer totals. For "All hosts" these sum — absolutes are additive. */
+function absolutes() {
+  if (!isAll()) return BY[state.city].ops_scale.absolute;
+  const out = { energy_kwh:0, water_liters:0, kg_co2e:0, visits:0 };
+  C.scorecards.forEach(c => { for (const k in out) out[k] += c.ops_scale.absolute[k] || 0; });
+  return out;
 }
-function computeChurn(c) {
-  const s = SM[c]; const cells = {}, tops = {};
-  for (const p of DATA.places) {
-    if (p.m !== c) continue;
-    const i = s.idx[p.k]; if (i === undefined) continue;
-    const arr = cells[p.cell] ||= new Float64Array(MONTHS.length);
-    const v = s.v[i]; let tot = 0; for (let t = 0; t < v.length; t++) { arr[t] += v[t] || 0; tot += v[t] || 0; }
-    (tops[p.cell] ||= []).push([tot, p.n]);
-  }
-  const out = {};
-  for (const key in cells) {
-    const a = cells[key]; const on = [];
-    for (let t = 0; t < a.length; t++) if (a[t] > 0) on.push(t);
-    if (on.length < 6) continue;
-    const mean = on.reduce((x,t)=>x+a[t],0) / on.length;
-    const jumps = [];
-    for (let t = 1; t < a.length; t++) if (a[t] > 0 && a[t-1] > 0) jumps.push(Math.abs(a[t]-a[t-1]) / mean);
-    if (jumps.length < 5) continue;
-    jumps.sort((x,y)=>x-y);
-    const top = (tops[key]||[]).sort((x,y)=>y[0]-x[0]).slice(0,2).map(t=>t[1]);
-    out[key] = { churn: jumps[Math.floor(jumps.length/2)], mean, months: on.length, top };
-  }
-  CHURN[c] = out;
+/** Per-shop-month rates. These are NOT additive — weight by shop_months. */
+function rates() {
+  if (!isAll()) return BY[state.city].raw_indicators;
+  const out = { energy_kwh:0, water_liters:0, kg_co2e:0, cdd:0, uhi:0, shops:0, shop_months:0 };
+  let wsum = 0;
+  C.scorecards.forEach(c => {
+    const r = c.raw_indicators, w = r.shop_months || 0;
+    ["energy_kwh","water_liters","kg_co2e","cdd","uhi"].forEach(k => out[k] += (r[k] || 0) * w);
+    out.shops += r.shops || 0; out.shop_months += w; wsum += w;
+  });
+  if (wsum) ["energy_kwh","water_liters","kg_co2e","cdd","uhi"].forEach(k => out[k] /= wsum);
+  return out;
+}
+function seriesOf(key) {
+  if (!isAll()) return S.cities[state.city][key];
+  const n = S.months.length, out = new Array(n).fill(0);
+  CITIES.forEach(c => S.cities[c][key].forEach((v,i) => out[i] += v));
+  // CDD is a climate reading, not a quantity — average it instead of summing
+  if (key === "cdd") for (let i = 0; i < n; i++) out[i] /= CITIES.length;
+  return out;
 }
 
-// ---------------------------------------------------------------------------
-const inCity = p => state.city === ALL || p.m === state.city;
-const matchesQ = p => !state.q || p.nl.includes(state.q);
-const cityPlaces = () => DATA.places.filter(p => inCity(p) && layerOn(p.l) && matchesQ(p));
-const monthOf = (p, mi = state.mi) => { const s = SM[p.m]; if (!s) return 0; const i = s.idx[p.k]; return i === undefined ? 0 : (s.v[i][mi] || 0); };
-const nearStadium = p => state.match && kmBetween(p.x, p.y, STADIUMS[state.match.s].x, STADIUMS[state.match.s].y) <= RING_KM[0];
-const shown = (p, mi) => { const c = monthOf(p, mi); return (state.matchday && nearStadium(p)) ? c * (1 + MATCH_LIFT) : c; };
-const scopeName = () => state.city === ALL ? "all 11 host cities" : state.city;
-
-function render() {
-  const month = MONTHS[state.mi];
-  const pl = cityPlaces();
-  paintCbs();
-
-  const byLayer = {}; let customers = 0, visW = 0, visN = 0;
-  for (const p of pl) { const c = shown(p); byLayer[p.l] = (byLayer[p.l]||0)+c; customers += c;
-    if (p.vs != null && c > 0) { visW += p.vs * c; visN += c; } }
-  let kwh=0, water=0, co2=0;
-  for (const k in byLayer) { const f = FACTORS[k]||FACTORS.Other_EFW; kwh += byLayer[k]*f.kwh; water += byLayer[k]*f.water; co2 += byLayer[k]*f.co2; }
-
-  // last 24 months for the sparklines, and the year-earlier comparison
-  const series = []; for (let i = Math.max(0, state.mi-23); i <= state.mi; i++) series.push(totalAt(pl, i));
-  const yi = state.mi - 12, prev = yi >= 0 ? totalAt(pl, yi) : null;
-  const dPct = prev ? (customers - prev) / prev * 100 : null;
-  const delta = dPct === null ? "" : `<span class="delta ${dPct>=0?"up":"down"}" title="compared with ${pretty(MONTHS[yi])}">${dPct>=0?"▲":"▼"} ${Math.abs(dPct).toFixed(0)}%</span>`;
-  const trading = pl.filter(p=>monthOf(p)>0).length;
-
-  const tiles = [
-    kpi(`Customers in ${pretty(month)}`, fmt(customers) + delta, prev ? `vs ${fmt(prev)} in ${pretty(MONTHS[yi])}` : "no year-earlier month to compare", series),
-    kpi("Energy", fmt(kwh)+" kWh", `≈ ${full(kwh/900)} homes for a month`, series.map(v => v * kwh / (customers||1))),
-    kpi("Water", fmt(water)+" L", `≈ ${full(water/9000)} people's use for a month`, series.map(v => v * water / (customers||1))),
-    kpi("Carbon", fmt(co2)+" kg CO₂e", `≈ ${full(co2/4600)} cars driven for a year`, series.map(v => v * co2 / (customers||1))),
-    kpi("Shops trading", full(trading), `${pct(pl.length ? trading/pl.length : 0)} of ${full(pl.length)} shops here`, null),
-  ];
-  if (VIS) tiles.push(kpi("Visitors", visN ? pct(visW/visN) : "—", "share of card customers from outside the metro", null));
-  document.getElementById("kpis").innerHTML = tiles.join("");
-
-  const where = state.city === ALL ? "All 11 cities" : state.city;
-  document.getElementById("now").textContent = pretty(month);
-  document.getElementById("scrubtitle").textContent = `${where} · customers per month`;
-  document.getElementById("maptitle").textContent   = `${where} · ${pretty(month)}` + (state.match ? " · standing in for the 2026 match" : "");
-  document.getElementById("charttitle").textContent = `${where} · ${pretty(month)}`;
-
-  paintActive();
-  drawMatch(pl, month);
-  drawSearch(pl, month);
-  drawScrub(pl);
-  if (mapReady) paintMap();
-  paintLegend();
-  drawChurn();
-  drawDaily(month);
-  drawCityFacts();
-  document.querySelectorAll(".card").forEach(c => c.classList.toggle("sel", c.dataset.city === state.city));
-  document.getElementById("emptymap").hidden = pl.length > 0;
+// --- header ----------------------------------------------------------------
+function drawRank() {
+  const el = document.getElementById("rankline"), c = cardOf();
+  el.innerHTML = c
+    ? `Readiness <b>${c.readiness_score.toFixed(1)}</b> · rank <b>#${c.rank}</b> of ${C.scorecards.length}
+       <span style="color:var(--ink-muted)">(band ${c.readiness_band[0].toFixed(0)}–${c.readiness_band[1].toFixed(0)})</span>`
+    : `<span style="color:var(--ink-muted)">Rollup of all 11 hosts — pick a city for readiness</span>`;
 }
 
-function totalAt(pl, mi) { let t = 0; for (const p of pl) t += shown(p, mi); return t; }
-function kpi(k, v, u, series) {
-  let spark = "";
-  if (series && series.length > 2) {
-    const mx = Math.max(...series, 1), mn = Math.min(...series);
-    const pts = series.map((s,i) => `${(i/(series.length-1)*100).toFixed(1)},${(24 - (s-mn)/((mx-mn)||1)*22).toFixed(1)}`).join(" ");
-    spark = `<svg viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="var(--bar-sel)" stroke-width="1.5"/></svg>`;
-  }
-  return `<div class="kpi"><div class="k">${k}</div><div class="v">${v}</div><div class="u">${u}</div>${spark}</div>`;
+function methodHtml() {
+  const f = C.meta.formula, s = C.meta.indicator_source;
+  return `
+    <p><b>Read this first.</b> ${esc(C.meta.disclaimer)}</p>
+    <p><b>Two grains, never mixed.</b> Big KPI numbers are <i>absolute</i> summer totals
+       (store-visits × intensity factors, merged TX/CA markets split by POI share) — they size the load a city must
+       provision. The smaller line under each is a <i>rate</i> per trading shop-month from
+       ${esc(s.label)} — that is what drives the readiness rank, so city size does not.</p>
+    <p><b>Readiness formula.</b> <code>${esc(f.stress)}</code> → ${esc(f.readiness)}.
+       Window <code>${esc(f.window)}</code>; band ±${(f.uncertainty_pct * 100).toFixed(0)}%.</p>
+    <p><b>Provenance.</b> Contract <code>${esc(C.contract_id)} ${esc(C.contract_version)}</code>,
+       engine <code>${esc(C.meta.engine_version)}</code>, generated ${esc(C.meta.generated_at.slice(0,10))}.
+       Rebuild with <code>python -m engines.playbook.cli --source map --sync-app --validate</code>.</p>`;
 }
-function median(a){ if(!a.length) return null; const s=[...a].sort((x,y)=>x-y); return s[Math.floor(s.length/2)]; }
-function niceMax(v){ if(v<=0) return 1; const p=Math.pow(10,Math.floor(Math.log10(v))); return Math.ceil(v/p*2)/2*p; }
 
-// ---------------------------------------------------------------------------
-// match to match
-// ---------------------------------------------------------------------------
-async function pickMatch(m) {
-  stop();
-  state.match = m; state.matchday = false; document.getElementById("matchday").checked = false;
-  document.getElementById("mdwrap").hidden = false;
-  document.getElementById("match").value = m.id;
-  state.city = m.m; document.getElementById("city").value = m.m;
-  const mi = MONTHS.indexOf("2024-" + m.d.slice(5,7)); if (mi >= 0) state.mi = mi;
-  await loadSM();
-  const st = STADIUMS[m.s];
-  if (mapReady) map.flyTo({ center:[st.x, st.y], zoom:11.6, duration:900 });
-  render();
-  document.getElementById("map").scrollIntoView({ behavior:"smooth", block:"center" });
-}
-function clearMatch(rerender) {
-  state.match = null; state.matchday = false;
-  document.getElementById("matchday").checked = false; document.getElementById("mdwrap").hidden = true;
-  document.getElementById("match").value = "";
-  document.getElementById("matchpanel").hidden = true;
-  if (rerender) { flyToCity(); render(); }
-}
-function drawMatch(pl, month) {
-  const panel = document.getElementById("matchpanel");
-  const m = state.match;
-  if (!m) { panel.hidden = true; return; }
-  panel.hidden = false;
-  const st = STADIUMS[m.s];
-  document.getElementById("matchtitle").textContent = `${prettyD(m.d)} · ${m.s}`;
-  const dim = daysIn(month);
-  const rings = RING_KM.map(km => pl.filter(p => kmBetween(p.x, p.y, st.x, st.y) <= km));
-  const stats = ring => {
-    const by = {}; let c = 0, kwh = 0, water = 0, vW = 0, vN = 0;
-    for (const p of ring) { const v = monthOf(p); c += v; by[p.l] = (by[p.l]||0) + 1;
-      const f = FACTORS[p.l]||FACTORS.Other_EFW; kwh += v*f.kwh; water += v*f.water;
-      if (p.vs != null && v > 0) { vW += p.vs*v; vN += v; } }
-    return { n:ring.length, by, perDay:c/dim, kwh:kwh/dim, water:water/dim, vis: vN ? vW/vN : null };
+// --- Overview: dual-grain KPIs ---------------------------------------------
+function drawKpis() {
+  const a = absolutes(), r = rates(), n = SUMMER_IDX.length, k = state.surge;
+  const badge = k !== 1 ? `<span class="surge">×${k.toFixed(2)} surge</span>` : "";
+  const human = {
+    energy_kwh:   v => `≈ ${fmt(v / n / 900)} homes for a month`,
+    water_liters: v => `≈ ${fmt(v / n / 9000)} people's use for a month`,
+    kg_co2e:      v => `≈ ${fmt(v / n / 4600)} cars driven for a year`,
+    visits:       v => `≈ ${fmt(v / n)} per summer month`,
   };
-  const s2 = stats(rings[0]), s5 = stats(rings[1]);
-  const mix = by => LAYERS.filter(l=>by[l.key]).map(l=>`${by[l.key]} ${l.label.toLowerCase()}`).join(", ") || "none";
-  document.getElementById("matchbody").innerHTML = `
+  const tiles = ["e","w","co2","v"].map(key => {
+    const m = METRICS[key], v = (a[m.abs] || 0) * k;
+    const rate = m.rate && r[m.rate] != null
+      ? `<div class="rate"><b>${fmt(r[m.rate])}</b> ${m.unit} per trading shop-month
+           <span class="tagr">intensity · drives the rank</span></div>`
+      : `<div class="rate"><b>${full(r.shops || 0)}</b> shops across ${isAll() ? "11 hosts" : "the panel"}
+           <span class="tagr">panel size</span></div>`;
+    return `<div class="kpi">
+      <div class="k">${m.label}</div>
+      <div class="v">${fmt(v)} <span class="un">${m.unit}</span>${badge}</div>
+      <div class="u">summer total, ${n} tournament-analog months · ${human[m.abs](v)}</div>
+      ${rate}</div>`;
+  });
+  document.getElementById("kpis").innerHTML = tiles.join("");
+}
+
+function drawPressure() {
+  const c = cardOf(), box = document.getElementById("presschips");
+  document.getElementById("presstitle").textContent = cityName();
+  if (!c) {
+    box.innerHTML = `<span class="empty">Readiness drivers are per host — pick a city to see which resources are elevated.</span>`;
+    document.getElementById("pressnote").textContent = "";
+    return;
+  }
+  box.innerHTML = c.drivers.map(d =>
+    `<span class="chip ${d.elevated ? "hot" : "cool"}" title="z = ${d.z.toFixed(2)} vs the other hosts">
+       <i></i>${esc(d.label)} ${d.z >= 0 ? "+" : ""}${d.z.toFixed(2)}</span>`).join("");
+  const hot = c.drivers.filter(d => d.elevated).map(d => d.label);
+  document.getElementById("pressnote").innerHTML = hot.length
+    ? `Elevated vs the other hosts: <b>${hot.map(esc).join(", ")}</b>. z is standard deviations from the 11-host mean on per-shop-month rates.`
+    : `No driver sits above the 11-host mean. ${esc(c.host_city)} is comparatively lean this window.`;
+}
+
+// --- Overview: month series ------------------------------------------------
+function drawSeries() {
+  const m = METRICS[state.metric], months = S.months;
+  const vals = seriesOf(state.metric), cdd = seriesOf("cdd");
+  document.getElementById("serietitle").textContent = `${cityName()} · ${m.label.toLowerCase()} per month`;
+
+  const W = 1000, H = 264, M = { l:66, r:54, t:14, b:30 };
+  const iw = W - M.l - M.r, ih = H - M.t - M.b;
+  const mx = niceMax(Math.max(...vals)), cmx = niceMax(Math.max(...cdd, 1));
+  const X = i => M.l + (months.length < 2 ? 0 : i / (months.length - 1) * iw);
+  const Y = v => M.t + ih - (v / mx) * ih;
+  const YC = v => M.t + ih - (v / cmx) * ih;
+  const col = cssv(m.css);
+
+  let s = "";
+  // shade the June–July blocks: those are the months D scores on
+  let i = 0;
+  while (i < months.length) {
+    if (isSummer(months[i])) {
+      let j = i; while (j + 1 < months.length && isSummer(months[j + 1])) j++;
+      const half = months.length > 1 ? iw / (months.length - 1) / 2 : 4;
+      const x0 = Math.max(M.l, X(i) - half), x1 = Math.min(W - M.r, X(j) + half);
+      s += `<rect x="${x0.toFixed(1)}" y="${M.t}" width="${(x1-x0).toFixed(1)}" height="${ih}"
+             fill="${cssv("--s-venue")}" opacity="0.10"/>`;
+      i = j + 1;
+    } else i++;
+  }
+  // grid + left axis (metric) + right axis (CDD)
+  for (let g = 0; g <= 4; g++) {
+    const y = M.t + ih - g / 4 * ih;
+    s += `<line class="gline" x1="${M.l}" y1="${y.toFixed(1)}" x2="${W-M.r}" y2="${y.toFixed(1)}"/>`;
+    s += `<text class="glabel" x="${M.l-8}" y="${(y+4).toFixed(1)}" text-anchor="end">${fmt(mx*g/4)}</text>`;
+    s += `<text class="glabel" x="${W-M.r+8}" y="${(y+4).toFixed(1)}">${fmt(cmx*g/4)}</text>`;
+  }
+  s += `<line class="axis" x1="${M.l}" y1="${M.t+ih}" x2="${W-M.r}" y2="${M.t+ih}"/>`;
+  months.forEach((mo, k) => { if (mo.endsWith("-01"))
+    s += `<text class="glabel" x="${X(k).toFixed(1)}" y="${H-10}" text-anchor="middle">${mo.slice(0,4)}</text>`; });
+
+  s += `<polyline class="serie" stroke="${cssv("--ink-muted")}" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.75"
+          points="${cdd.map((v,k) => `${X(k).toFixed(1)},${YC(v).toFixed(1)}`).join(" ")}"/>`;
+  s += `<polyline class="serie" stroke="${col}"
+          points="${vals.map((v,k) => `${X(k).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")}"/>`;
+  s += `<line id="cross" class="axis" x1="0" y1="${M.t}" x2="0" y2="${M.t+ih}" opacity="0"/>`;
+  s += `<circle id="dot" r="3.5" fill="${col}" opacity="0"/>`;
+  s += `<rect id="hit" x="${M.l}" y="${M.t}" width="${iw}" height="${ih}" fill="transparent"/>`;
+
+  const svg = document.getElementById("chart");
+  svg.innerHTML = s;
+  document.getElementById("serielegend").innerHTML =
+    `<span><i style="background:${col}"></i>${esc(m.label)} (${esc(m.unit)}, left)</span>
+     <span><i style="background:${cssv("--ink-muted")}"></i>Cooling degree days${isAll() ? ", 11-host mean" : ""} (right)</span>
+     <span><i style="background:${cssv("--s-venue")};opacity:.5"></i>June–July — the window readiness is scored on</span>`;
+
+  const tip = document.getElementById("tip"), box = svg.parentElement;
+  const cross = svg.querySelector("#cross"), dot = svg.querySelector("#dot");
+  svg.onmousemove = ev => {
+    const b = svg.getBoundingClientRect();
+    const px = (ev.clientX - b.left) / b.width * W;
+    let k = Math.round((px - M.l) / (iw || 1) * (months.length - 1));
+    k = Math.max(0, Math.min(months.length - 1, k));
+    cross.setAttribute("x1", X(k)); cross.setAttribute("x2", X(k)); cross.setAttribute("opacity", "0.5");
+    dot.setAttribute("cx", X(k)); dot.setAttribute("cy", Y(vals[k])); dot.setAttribute("opacity", "1");
+    tip.innerHTML = `<b>${pretty(months[k])}${isSummer(months[k]) ? " · scored month" : ""}</b>
+      <div><span>${esc(m.label)}</span><span>${fmt(vals[k])} ${esc(m.unit)}</span></div>
+      <div><span>Cooling degree days</span><span>${fmt(cdd[k])}</span></div>`;
+    tip.style.left = (X(k) / W * box.clientWidth) + "px";
+    tip.style.top = (Y(vals[k]) / H * box.clientHeight - 8) + "px";
+    tip.style.opacity = 1;
+  };
+  svg.onmouseleave = () => { tip.style.opacity = 0; cross.setAttribute("opacity","0"); dot.setAttribute("opacity","0"); };
+}
+
+// --- Overview: structure ---------------------------------------------------
+function drawStruct() {
+  const box = document.getElementById("struct");
+  if (isAll()) {
+    box.innerHTML = `<div class="empty">Category mix, brands and spend are published per host — pick a city.</div>`;
+    return;
+  }
+  const o = BY[state.city].ops_scale;
+  const bar = (mixObj) => {
+    const ent = Object.entries(mixObj).filter(([,v]) => v > 0);
+    return `<div class="mixbar">${ent.map(([k,v]) =>
+        `<i style="width:${(v*100).toFixed(2)}%;background:${cssv(LAYER_CSS[k] || "--s-other")}" title="${esc(k)} ${(v*100).toFixed(1)}%"></i>`).join("")}</div>
+      <div class="mixkey">${ent.map(([k,v]) =>
+        `<span><em style="background:${cssv(LAYER_CSS[k] || "--s-other")}"></em>${esc(k)} ${(v*100).toFixed(0)}%</span>`).join("")}</div>`;
+  };
+  box.innerHTML = `
     <div>
-      <div class="big">${esc(m.t1)} v ${esc(m.t2)}</div>
-      <div class="sub">${esc(m.st)} · ${prettyD(m.d)} · ${esc(m.s)}, ${esc(m.m)}</div>
-      <div class="sub">${m.a ? `attendance ${m.a.toLocaleString()} of ${m.cap.toLocaleString()} (${pct(m.a/m.cap)})` : `capacity ${m.cap.toLocaleString()}`}</div>
-      <table>
-        <tr><th></th><th>within 2 km</th><th>within 5 km</th></tr>
-        <tr><td>shops on the map</td><td>${s2.n}</td><td>${s5.n}</td></tr>
-        <tr><td>customers a day in ${pretty(month)}</td><td>${fmt(s2.perDay)}</td><td>${fmt(s5.perDay)}</td></tr>
-        <tr><td>kWh a day</td><td>${fmt(s2.kwh)}</td><td>${fmt(s5.kwh)}</td></tr>
-        <tr><td>water, litres a day</td><td>${fmt(s2.water)}</td><td>${fmt(s5.water)}</td></tr>
-        ${VIS ? `<tr><td>visitor share</td><td>${pct(s2.vis)}</td><td>${pct(s5.vis)}</td></tr>` : ""}
-      </table>
-      <div class="sub" style="margin-top:6px">${pretty(month)} is a stand-in month (we don't forecast 2026). Within 2 km: ${mix(s2.by)}.</div>
+      <h4>Visit mix — where the demand comes from</h4>
+      ${bar(o.visit_mix)}
+      <h4 style="margin-top:14px">Money mix — summer brand spend</h4>
+      ${bar(o.spend.mix)}
+      <div class="note">Spend corroborates the visit story; it is never fed into readiness.
+        Summer total ${fmt(o.spend.total)} USD.</div>
     </div>
-    <div class="box">
-      <div class="k">Measured match-day effect</div>
-      <div class="v">+${(MATCH_LIFT*100).toFixed(0)}%</div>
-      <div class="u">extra card spend at shops within 2 km on match day and the day after — about <b>${fmt(s2.perDay*MATCH_LIFT)}</b> more customers a day here, mostly food and venues. Beyond 5 km nothing measurable. From 566 NFL home games at these stadiums and 19 Copa América 2024 matches.</div>
+    <div>
+      <h4>Busiest brands, summer</h4>
+      <ol>${o.top_brands_by_visits.map(b =>
+        `<li>${esc(b.brand)} — ${fmt(b.summer_visits)} visits<br><small>${esc(b.category)}</small></li>`).join("")}</ol>
     </div>
-    <div class="box">
-      <div class="k">Citywide visitor lift</div>
-      <div class="v" style="font-size:15px">too small to measure</div>
-      <div class="u">Out-of-town visitors spread across the whole city for weeks. In Copa América 2024 that lift was under the ±8% noise of the method, in line with the Club World Cup's published +7%. It's real but too small and too spread out to show on this map.</div>
+    <div>
+      <h4>Climate &amp; heat</h4>
+      <dl class="facts">
+        <dt>Mean summer CDD</dt><dd>${fmt(o.climate.mean_cdd_c)}</dd>
+        <dt>Mean summer temp</dt><dd>${o.climate.mean_temp_c.toFixed(1)} °C</dd>
+        <dt>Mean urban heat index</dt><dd>${o.climate.mean_uhi.toFixed(1)}</dd>
+        <dt>Shops in the panel</dt><dd>${full(BY[state.city].raw_indicators.shops || 0)}</dd>
+      </dl>
+      <div class="note">Climate amplifies the load but is not demand — it enters readiness as its own two drivers.</div>
     </div>`;
 }
 
-// ---------------------------------------------------------------------------
-// compare hosts
-// ---------------------------------------------------------------------------
-const scoreColour = s => s >= 66 ? cssv("--s-water") : s >= 33 ? cssv("--s-venue") : cssv("--s-energy");
-function drawScores() {
-  if (!SCORES || !SCORES.cards) return;
-  document.getElementById("scorepanel").hidden = false;
-  const cards = [...SCORES.cards].sort((a,b)=>a.rank-b.rank);
-  document.getElementById("strip").innerHTML = cards.map(c => `
-    <div class="card" data-city="${esc(c.c)}" title="readiness ${c.score.toFixed(1)}, band ${c.band[0]}–${c.band[1]}">
-      <div class="r">#${c.rank}</div><div class="n">${esc(c.c)}</div>
-      <div class="s">${c.score.toFixed(1)}</div>
-      <div class="bar"><em style="left:${c.band[0]}%;width:${Math.max(0,c.band[1]-c.band[0])}%"></em><i style="width:${Math.max(2,c.score)}%;background:${scoreColour(c.score)}"></i></div>
-      <div class="tag">${c.rank === 1 ? "leanest" : c.rank === cards.length ? "most pressure" : "&nbsp;"}</div>
-    </div>`).join("");
-  document.querySelectorAll(".card").forEach(el => el.onclick = () => setCity(el.dataset.city));
-}
-const PLAY_WHY = {
-  "Plant-forward concessions & catering defaults": (c, r, top) => `Cuts food CO₂ 25%. ${c}'s shops produce ${fmt(r.kg_co2e)} kg CO₂e per shop-month${top ? ", among the highest of the hosts" : ""}.`,
-  "Hotel linen / laundry water-reuse program": (c, r, top) => `Cuts water 30%. ${c}'s shops use ${fmt(r.water_liters)} L per shop-month${top ? ", among the highest of the hosts" : ""}.`,
-  "Cool roofs + shade in high-UHI hospitality corridors": (c, r) => `Cuts energy 12%. ${c} sits at heat index ${(r.uhi||0).toFixed(1)} with ${fmt(r.cdd)} summer cooling-degree-days.`,
-  "Event-week HVAC setpoint & pre-cooling protocols": (c, r) => `Cuts energy 8%. ${c}'s summer cooling load is ${fmt(r.cdd)} degree-days.`,
-  "Commercial kitchen water-efficiency retrofit grants": (c, r) => `Cuts water 20% in kitchens. ${c}'s shops use ${fmt(r.water_liters)} L per shop-month.`,
-};
-function drawCityFacts() {
-  const box = document.getElementById("cityfacts");
-  if (!SCORES) return;
-  const c = SCORES.cards.find(x => x.c === state.city);
-  if (!c) { box.innerHTML = `<div style="color:var(--ink-muted);font-size:12px">Pick a city to see its numbers, closest peers and suggested plays.</div>`; return; }
-  const r = c.raw || {};
-  const Z = [["energy_kwh","energy"],["kg_co2e","CO₂"],["water_liters","water"],["cdd","cooling days"],["uhi","heat index"]];
-  const zb = Z.map(([k,l]) => { const z = c.z[k]||0, w = Math.min(50, Math.abs(z)*20);
-    return `<span>${l}</span><div class="zb"><i style="left:${z<0?50-w:50}%;width:${w}%;background:${z>0?cssv("--s-energy"):cssv("--s-water")}"></i></div><span style="color:var(--ink-muted)">${z>0?"more":"less"} than average</span>`; }).join("");
-  box.innerHTML = `
-    <div>
-      <b>${esc(c.c)}</b> — rank ${c.rank} of 11, readiness ${c.score.toFixed(1)} (band ${c.band[0]}–${c.band[1]}). Closest peers: ${c.peers.map(esc).join(", ")}.
-      <dl><dt>energy per shop-month</dt><dd>${fmt(r.energy_kwh)} kWh</dd><dt>water per shop-month</dt><dd>${fmt(r.water_liters)} L</dd>
-          <dt>CO₂e per shop-month</dt><dd>${fmt(r.kg_co2e)} kg</dd><dt>summer cooling-degree-days</dt><dd>${fmt(r.cdd)}</dd>
-          <dt>heat index</dt><dd>${(r.uhi||0).toFixed(1)}</dd><dt>shops in the panel</dt><dd>${full(r.shops||0)}</dd></dl>
-      <details><summary style="padding:6px 0 0;font-size:12px">show the maths</summary><div class="zbars">${zb}</div></details>
-    </div>
-    <div><b>Suggested plays</b><ul>${c.plays.map(p => { const f = PLAY_WHY[p.t]; const top = (c.z.water_liters > 0.5) || (c.z.kg_co2e > 0.5);
-      return `<li><b>${esc(p.t.split(" & ")[0].split(" + ")[0])}</b> — ${f ? f(c.c, r, top) : `energy ${p.e.energy_pct}%, water ${p.e.water_pct}%.`}</li>`; }).join("")}</ul></div>`;
+function drawCta() {
+  const c = cardOf();
+  document.getElementById("ctalead").innerHTML = c
+    ? `<b>${esc(c.host_city)}</b> ranks #${c.rank} of ${C.scorecards.length} on summer nexus pressure with
+       ${c.recommended_plays.length} pressing play${c.recommended_plays.length === 1 ? "" : "s"} on the board.`
+    : `Pick a host city to open its playbook, or compare all 11 side by side.`;
 }
 
-// ---------------------------------------------------------------------------
-// search results
-// ---------------------------------------------------------------------------
-function drawSearch(pl, month) {
-  const panel = document.getElementById("searchpanel");
-  if (!state.q) { panel.hidden = true; return; }
-  panel.hidden = false;
-  document.getElementById("searchtitle").textContent = `“${state.q}” · ${scopeName()} · ${pretty(month)}`;
-  const life = p => { const s = SM[p.m]; const i = s ? s.idx[p.k] : undefined; return i === undefined ? 0 : s.v[i].reduce((a,b)=>a+(b||0),0); };
-  const rows = pl.map(p => ({p, c:monthOf(p), t:life(p)}));
-  const nowSum = rows.reduce((a,r)=>a+r.c,0), lifeSum = rows.reduce((a,r)=>a+r.t,0);
-  const names = new Map(); rows.forEach(r => names.set(r.p.n, (names.get(r.p.n)||0)+1));
-  const topNames = [...names.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4).map(([n,k]) => `${esc(n)} (${k})`).join(", ");
-  document.getElementById("searchsum").innerHTML = rows.length
-    ? `<b>${rows.length.toLocaleString()} locations</b> match, ${rows.filter(r=>r.c>0).length.toLocaleString()} trading in ${pretty(month)}.
-       Together they had <b>${fmt(nowSum)}</b> card customers that month and <b>${fmt(lifeSum)}</b> across all ${MONTHS.length} months. Names matched: ${topNames}${names.size>4 ? ` and ${names.size-4} more` : ""}.`
-    : `No shop name contains “${esc(state.q)}” in ${scopeName()}${state.on ? " for the picked types" : ""}. <a style="cursor:pointer;text-decoration:underline" onclick="resetFilters()">Clear filters</a>`;
-  let body;
-  if (state.city === ALL) {
-    const by = {};
-    rows.forEach(r => { const b = by[r.p.m] ||= {n:0, c:0, k:0, w:0, t:0}; const f = FACTORS[r.p.l]||FACTORS.Other_EFW;
-      b.n++; b.c += r.c; b.k += r.c*f.kwh; b.w += r.c*f.water; b.t += r.t; });
-    body = Object.entries(by).sort((a,b)=>b[1].c-a[1].c).map(([m,b]) =>
-      `<tr><td class="link" data-city="${esc(m)}">${esc(m)}</td><td>${b.n.toLocaleString()}</td><td>${fmt(b.c)}</td><td>${fmt(b.k)}</td><td>${fmt(b.w)}</td><td>${fmt(b.t)}</td></tr>`).join("");
-    document.getElementById("searchtbl").innerHTML = rows.length ? `<thead><tr><th>City</th><th>Locations</th><th>Customers ${pretty(month)}</th><th>kWh</th><th>Water L</th><th>Customers, all months</th></tr></thead><tbody>${body}</tbody>` : "";
-    document.querySelectorAll("#searchtbl td.link").forEach(td => td.onclick = () => setCity(td.dataset.city));
-  } else {
-    const shownRows = rows.sort((a,b)=>b.c-a.c).slice(0,40);
-    body = shownRows.map(r => { const f = FACTORS[r.p.l]||FACTORS.Other_EFW;
-      return `<tr><td class="link" data-x="${r.p.x}" data-y="${r.p.y}">⌖ ${esc(r.p.n)}</td><td style="text-align:left">${esc(r.p.l)}</td><td>${fmt(r.c)}</td><td>${fmt(r.c*f.kwh)}</td>
-        <td>${fmt(r.c*f.water)}</td><td>${r.p.u==null?"—":(+r.p.u).toFixed(1)}</td>${VIS?`<td>${pct(r.p.vs)}</td>`:""}<td>${fmt(r.t)}</td></tr>`; }).join("");
-    document.getElementById("searchtbl").innerHTML = rows.length ? `<thead><tr><th>Location</th><th style="text-align:left">Type</th><th>Customers ${pretty(month)}</th><th>kWh</th><th>Water L</th><th>Heat idx</th>${VIS?"<th>Visitors</th>":""}<th>Customers, all months</th></tr></thead>
-      <tbody>${body}</tbody>${rows.length>40 ? `<tfoot><tr><th colspan="8">showing the busiest 40 of ${rows.length}</th></tr></tfoot>` : ""}` : "";
-    document.querySelectorAll("#searchtbl td.link").forEach(td => td.onclick = () => { if (mapReady) map.flyTo({center:[+td.dataset.x, +td.dataset.y], zoom:14, duration:700}); });
+// --- Compare ---------------------------------------------------------------
+function drawFilter() {
+  const box = document.getElementById("drvfilter");
+  box.innerHTML = `<span class="chip on" data-f="">All hosts</span>` +
+    DRIVERS.map(([k,l]) => `<span class="chip" data-f="${k}">${esc(l)}</span>`).join("");
+  box.querySelectorAll(".chip").forEach(el => el.onclick = () => {
+    state.filter = el.dataset.f || null;
+    box.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x === el));
+    drawStrip();
+  });
+}
+
+function visibleCards() {
+  const cards = [...C.scorecards].sort((a,b) => a.rank - b.rank);
+  if (!state.filter) return cards;
+  return cards.filter(c => c.drivers.some(d => d.key === state.filter && d.elevated));
+}
+
+function drawStrip() {
+  const cards = visibleCards(), n = C.scorecards.length;
+  document.getElementById("strip").innerHTML = cards.length ? cards.map(c => `
+    <div class="card ${c.host_city === state.city ? "sel" : ""}" data-city="${esc(c.host_city)}"
+         title="readiness ${c.readiness_score.toFixed(1)}, band ${c.readiness_band[0]}–${c.readiness_band[1]}">
+      <div class="r">#${c.rank}</div><div class="n">${esc(c.host_city)}</div>
+      <div class="s">${c.readiness_score.toFixed(1)}</div>
+      <div class="bar">
+        <em style="left:${c.readiness_band[0]}%;width:${Math.max(0, c.readiness_band[1] - c.readiness_band[0])}%"></em>
+        <i style="width:${Math.max(2, c.readiness_score)}%;background:${scoreColour(c.readiness_score)}"></i></div>
+      <div class="tag">${c.rank === 1 ? "leanest" : c.rank === n ? "most pressure" : "&nbsp;"}</div>
+    </div>`).join("") : `<div class="empty" style="grid-column:1/-1">No host is elevated on that driver.</div>`;
+  document.querySelectorAll("#strip .card").forEach(el => el.onclick = () => setCity(el.dataset.city));
+  document.getElementById("stripnote").innerHTML = state.filter
+    ? `Showing ${cards.length} of ${n} hosts with elevated <b>${esc(DRIVERS.find(d => d[0] === state.filter)[1])}</b>. Shaded bar = ±15% uncertainty band.`
+    : `Shaded bar = ±15% uncertainty band on transformed sample data. Click a host to make it the global selection.`;
+}
+
+function drawCompare() {
+  const left = document.getElementById("cmpleft"), right = document.getElementById("cmpright");
+  const c = cardOf();
+  if (!c) {
+    document.getElementById("cmptitle").textContent = "Select a host";
+    left.innerHTML = `<div class="empty">Click a readiness card above, or choose a city in the header.</div>`;
+    right.innerHTML = "";
+    return;
   }
+  document.getElementById("cmptitle").innerHTML =
+    `${esc(c.host_city)} — rank #${c.rank}, readiness ${c.readiness_score.toFixed(1)}`;
+
+  const zb = c.drivers.map(d => {
+    const w = Math.min(50, Math.abs(d.z) * 20);
+    return `<span>${esc(d.label)}</span>
+      <div class="zb"><i style="left:${d.z < 0 ? 50 - w : 50}%;width:${w}%;
+        background:${d.z > 0 ? cssv("--s-energy") : cssv("--s-water")}"></i></div>
+      <span class="zn">${d.z >= 0 ? "+" : ""}${d.z.toFixed(2)}</span>`;
+  }).join("");
+  const r = c.raw_indicators;
+  left.innerHTML = `
+    <div style="font-size:13px;color:var(--ink-2)">Pressure drivers, z vs the other ten hosts.
+      Right of centre = more pressure than the 11-host mean.</div>
+    <div class="zbars">${zb}</div>
+    <dl class="facts">
+      <dt>Energy per shop-month</dt><dd>${fmt(r.energy_kwh)} kWh</dd>
+      <dt>Water per shop-month</dt><dd>${fmt(r.water_liters)} L</dd>
+      <dt>CO₂e per shop-month</dt><dd>${fmt(r.kg_co2e)} kg</dd>
+      <dt>Summer CDD</dt><dd>${fmt(r.cdd)}</dd>
+      <dt>Urban heat index</dt><dd>${(r.uhi || 0).toFixed(1)}</dd>
+      <dt>Shops in the panel</dt><dd>${full(r.shops || 0)}</dd>
+    </dl>
+    <div style="margin-top:12px;font-size:13px">Closest peers:
+      ${c.peer_cities.map(p => `<button class="lnk" data-peer="${esc(p)}">${esc(p)}</button>`).join(" · ")}</div>
+    <div style="margin-top:12px">
+      <a class="btn small" href="data/city_cards/${esc(slug(c.host_city))}.md" download>Download the one-pager (.md)</a>
+    </div>`;
+  left.querySelectorAll("[data-peer]").forEach(b => b.onclick = () => setCity(b.dataset.peer));
+
+  const plays = c.recommended_plays || [], gen = c.general_options || [];
+  right.innerHTML =
+    `<div style="font-size:13px;color:var(--ink-2)">Steal this play — matched to ${esc(c.host_city)}'s elevated drivers,
+       with the citywide effect of applying it to this summer's totals.</div>` +
+    (plays.length
+      ? plays.map(playCard).join("")
+      : `<div class="empty" style="margin-top:10px">No pressing plays: no driver here sits above the 11-host mean.</div>`) +
+    (gen.length
+      ? `<details ${plays.length ? "" : "open"} style="margin-top:6px">
+           <summary style="cursor:pointer;font-size:12px;color:var(--ink-2)">
+             ${gen.length} general option${gen.length === 1 ? "" : "s"} — not pressing for this host</summary>
+           <div style="margin-top:9px">${gen.map(playCard).join("")}</div></details>`
+      : "");
+  right.querySelectorAll("[data-peer]").forEach(b => b.onclick = () => setCity(b.dataset.peer));
 }
 
-// ---------------------------------------------------------------------------
-// the scrubber
-// ---------------------------------------------------------------------------
-const SW=1000, SH=96, SM_=({t:12,r:8,b:18,l:44});
-function drawScrub(pl) {
-  const svg = document.getElementById("scrubsvg");
-  const totals = MONTHS.map((_,i) => totalAt(pl, i));
-  const ymax = niceMax(Math.max(...totals, 1));
-  const n = MONTHS.length, bw = (SW - SM_.l - SM_.r) / n;
-  const x = i => SM_.l + bw*i, y = v => SH - SM_.b - (SH - SM_.t - SM_.b) * (v/ymax);
-  let out = "";
-  // summer bands (June + July) so the tournament months are easy to find
-  MONTHS.forEach((m,i) => { if (m.endsWith("-06")) out += `<rect x="${x(i)}" y="${SM_.t}" width="${bw*2}" height="${SH-SM_.t-SM_.b}" fill="var(--grid)" opacity=".45"/>`; });
-  for (const t of [0.5, 1]) { out += `<line class="gline" x1="${SM_.l}" y1="${y(ymax*t)}" x2="${SW-SM_.r}" y2="${y(ymax*t)}"/>`;
-    out += `<text class="glabel" x="${SM_.l-8}" y="${y(ymax*t)+4}" text-anchor="end">${fmt(ymax*t)}</text>`; }
-  out += `<line class="axis" x1="${SM_.l}" y1="${SH-SM_.b}" x2="${SW-SM_.r}" y2="${SH-SM_.b}"/>`;
-  totals.forEach((v,i) => { const h = Math.max(1, SH - SM_.b - y(v)), sel = i===state.mi;
-    out += `<rect x="${(x(i)+1).toFixed(2)}" y="${y(v).toFixed(2)}" width="${Math.max(1,bw-2).toFixed(2)}" height="${h.toFixed(2)}" rx="${Math.min(4, bw/2)}" fill="${sel?"var(--bar-sel)":"var(--bar)"}"/>`; });
-  MONTHS.forEach((m,i) => { if (m.endsWith("-01")) out += `<text class="glabel" x="${(x(i)+bw/2).toFixed(1)}" y="${SH-4}" text-anchor="middle">${m.slice(0,4)}</text>`; });
-  // label the selected bar directly
-  const sv = totals[state.mi]; const lx = x(state.mi)+bw/2, anchor = state.mi > n-6 ? "end" : state.mi < 5 ? "start" : "middle";
-  out += `<text x="${lx}" y="${Math.max(10, y(sv)-4)}" text-anchor="${anchor}" style="font-size:11px;font-weight:600" fill="var(--ink-1)">${pretty(MONTHS[state.mi])} · ${fmt(sv)}</text>`;
-  out += `<rect x="${SM_.l}" y="0" width="${SW-SM_.l-SM_.r}" height="${SH}" fill="transparent"/>`;
-  svg.innerHTML = out;
-  const pick = ev => { const r = svg.getBoundingClientRect(); const sx = (ev.clientX - r.left)/r.width*SW;
-    const i = Math.max(0, Math.min(n-1, Math.floor((sx - SM_.l)/bw))); if (i !== state.mi) { state.mi = i; render(); } };
-  let dragging = false;
-  svg.onmousedown = e => { stop(); dragging = true; pick(e); };
-  svg.onmousemove = e => { if (dragging) pick(e);
-    const r = svg.getBoundingClientRect(); const sx = (e.clientX - r.left)/r.width*SW;
-    const i = Math.max(0, Math.min(n-1, Math.floor((sx - SM_.l)/bw)));
-    const tip = document.getElementById("stip");
-    tip.innerHTML = `<b>${pretty(MONTHS[i])}</b><div><span>customers</span><span>${fmt(totals[i])}</span></div>`;
-    tip.style.left = ((x(i)+bw/2)/SW*r.width)+"px"; tip.style.top = (y(totals[i])/SH*r.height - 6)+"px"; tip.style.opacity = 1; };
-  svg.onmouseleave = () => { dragging=false; document.getElementById("stip").style.opacity = 0; };
-  addEventListener("mouseup", () => dragging=false);
+function playCard(p) {
+  const e = p.expected_effects || {}, d = p.illustrative_absolute_delta || {};
+  const eff = [
+    ["Energy", e.energy_pct, d.energy_kwh, "kWh"],
+    ["Water", e.water_pct, d.water_liters, "L"],
+    ["CO₂e", e.food_co2e_pct, d.kg_co2e, "kg"],
+  ].filter(([,pct]) => pct).map(([l,pct,abs,u]) =>
+    `<span title="${esc(d.basis || "")}"><b>${l}</b> ${pct > 0 ? "+" : ""}${pct}% · ${fmt(abs)} ${u}</span>`).join("");
+  const steal = (p.steal_from_peers || []).length
+    ? `<div class="steal">Already indicated for peers:
+        ${p.steal_from_peers.map(s => `<button class="lnk" data-peer="${esc(s)}">${esc(s)}</button>`).join(" · ")}</div>`
+    : "";
+  return `<div class="playcard">
+    <div class="pt">${esc(p.title)}</div>
+    <div class="meta"><span>Owner: ${esc(p.owner)}</span><span>Effort: <b class="effort">${esc(p.effort)}</b></span>
+      <span>Legacy: ${esc(p.legacy_use)}</span></div>
+    <div class="eff">${eff || `<span>No quantified effect</span>`}</div>
+    <div class="why">${esc(p.rationale)}</div>
+    ${steal}</div>`;
 }
 
-// ---------------------------------------------------------------------------
-function initMap() {
-  map = new maplibregl.Map({ container:"map", style:BASEMAP[state.theme], center:[-96,38], zoom:3.4, attributionControl:{compact:true} });
-  map.addControl(new maplibregl.NavigationControl({showCompass:false}), "top-right");
-  hoverPopup = new maplibregl.Popup({ closeButton:false, closeOnClick:false, offset:10 });
-  map.on("load", () => { addOurLayers(); mapReady = true; paintMap(); requestAnimationFrame(() => { map.resize(); flyToCity(true); }); });
-  map.on("zoomend", () => { if (state.city === ALL) { paintMap(); paintLegend(); } });
-
-  const shopHtml = p => `<b>${esc(p.name)}</b><small>${esc(p.city)} · ${esc(p.layer)}${p.near==1 ? " · within 2 km of the stadium" : ""}</small>
-    <table><tr><td>customers, ${pretty(MONTHS[state.mi])}</td><td>${fmt(+p.cust)}</td></tr><tr><td>heat index</td><td>${(+p.uhi).toFixed(1)}</td></tr>
-    ${+p.vs >= 0 ? `<tr><td>visitors</td><td>${pct(+p.vs)}</td></tr>` : ""}</table>`;
-  const hover = (layer, html) => {
-    map.on("mousemove", layer, e => { map.getCanvas().style.cursor = "pointer"; const f = e.features[0];
-      hoverPopup.setLngLat(e.lngLat).setHTML(html(f.properties)).addTo(map); });
-    map.on("mouseleave", layer, () => { map.getCanvas().style.cursor = ""; hoverPopup.remove(); });
+// --- Spatial ---------------------------------------------------------------
+function mountFrame() {
+  const f = document.getElementById("frame");
+  if (f.dataset.loaded) { pushToFrame(); return; }
+  f.dataset.loaded = "1";
+  f.classList.add("on");   // give it height before src, so the map measures itself correctly
+  f.src = `spatial.html?embed=1&city=${encodeURIComponent(state.city)}&theme=${state.theme}`;
+  f.onload = () => {
+    // the map finishes booting asynchronously; wait for its flag before steering it
+    const t = setInterval(() => {
+      try {
+        if (f.contentWindow.__spatialReady) {
+          clearInterval(t);
+          document.getElementById("frameph").hidden = true;
+          pushToFrame();
+        }
+      } catch (_) { clearInterval(t); document.getElementById("frameph").hidden = true; }
+    }, 150);
+    setTimeout(() => { clearInterval(t); document.getElementById("frameph").hidden = true; }, 20000);
   };
-  hover("shop-dots", shopHtml);
-  hover("district-fill", p => p.html);
-  hover("city-bubbles", p => `<b>${esc(p.name)}</b><small>${fmt(+p.cust)} customers in ${pretty(MONTHS[state.mi])} · ${full(+p.n)} shops · click to open</small>`);
-  hover("stadium-pt", p => `<b>${esc(p.name)}</b><small>capacity ${(+p.cap).toLocaleString()}</small>`);
-  map.on("click", "city-bubbles", e => setCity(e.features[0].properties.name));
-  map.on("click", "shop-dots", e => { const p = e.features[0].properties;
-    new maplibregl.Popup({closeButton:true, offset:10}).setLngLat(e.lngLat).setHTML(shopHtml(p)).addTo(map); });
-  map.on("click", "district-fill", e => { if (map.queryRenderedFeatures(e.point, {layers:["shop-dots"]}).length) return;
-    new maplibregl.Popup({closeButton:true, offset:6}).setLngLat(e.lngLat).setHTML(e.features[0].properties.html).addTo(map); });
 }
-const empty = () => ({type:"FeatureCollection", features:[]});
-
-function addOurLayers() {
-  if (map.getSource("heat")) return;
-  for (const s of ["heat","districts","shops","rings","stadium","cities"]) map.addSource(s, {type:"geojson", data:empty()});
-  map.addLayer({ id:"heat-fill", type:"fill", source:"heat", layout:{ visibility: state.heat ? "visible" : "none" }, paint:{ "fill-color":["get","col"], "fill-opacity":0.5 } });
-  map.addLayer({ id:"district-fill", type:"fill", source:"districts", paint:{ "fill-color":["get","col"], "fill-opacity":0.8 } });
-  map.addLayer({ id:"district-line", type:"line", source:"districts", paint:{ "line-color":cssv("--plane"), "line-width":0.6, "line-opacity":0.7 } });
-  map.addLayer({ id:"shop-near", type:"circle", source:"shops", filter:["==",["get","near"],1],
-    paint:{ "circle-radius":nearRadius(false), "circle-color":cssv("--s-energy"), "circle-opacity":0, "circle-stroke-width":1.6, "circle-stroke-color":cssv("--ink-1") } });
-  map.addLayer({ id:"shop-dots", type:"circle", source:"shops",
-    paint:{
-      "circle-radius":["interpolate",["linear"],["zoom"],
-        8,  ["interpolate",["linear"],["get","r"],0,1.4,1,4],
-        11, ["interpolate",["linear"],["get","r"],0,2.2,1,7],
-        14, ["interpolate",["linear"],["get","r"],0,4,  1,15]],
-      "circle-color":dotColor(), "circle-opacity":["interpolate",["linear"],["zoom"],8,0.6,12,0.85],
-      "circle-stroke-width":["interpolate",["linear"],["zoom"],9,0,11.5,2], "circle-stroke-color":cssv("--dot-ring"),
-    } });
-  map.addLayer({ id:"city-bubbles", type:"circle", source:"cities",
-    paint:{ "circle-radius":["interpolate",["linear"],["get","r"],0,10,1,38], "circle-color":cssv("--dot"), "circle-opacity":0.55,
-            "circle-stroke-width":2, "circle-stroke-color":cssv("--dot") } });
-  map.addLayer({ id:"city-labels", type:"symbol", source:"cities",
-    layout:{ "text-field":["get","label"], "text-size":12, "text-font":["Open Sans Bold","Arial Unicode MS Bold"], "text-offset":[0,0], "text-anchor":"center", "text-allow-overlap":true },
-    paint:{ "text-color":cssv("--ink-1"), "text-halo-color":cssv("--plane"), "text-halo-width":1.4 } });
-  map.addLayer({ id:"ring-line", type:"line", source:"rings", paint:{ "line-color":cssv("--ink-1"), "line-width":1.5, "line-dasharray":[2,2], "line-opacity":0.8 } });
-  map.addLayer({ id:"stadium-pt", type:"circle", source:"stadium", paint:{ "circle-radius":9, "circle-color":cssv("--ink-1"), "circle-stroke-width":3, "circle-stroke-color":cssv("--plane") } });
-}
-const nearRadius = halo => halo
-  ? ["interpolate",["linear"],["zoom"], 8,["interpolate",["linear"],["get","r"],0,4,1,8], 11,["interpolate",["linear"],["get","r"],0,6,1,14], 14,["interpolate",["linear"],["get","r"],0,9,1,28]]
-  : ["interpolate",["linear"],["zoom"], 8,["interpolate",["linear"],["get","r"],0,2.4,1,5.5], 11,["interpolate",["linear"],["get","r"],0,3.4,1,8.5], 14,["interpolate",["linear"],["get","r"],0,5.5,1,17]];
-function dotColor() {
-  if (state.colour === "visitor") { const [a,b,c] = VRAMP();
-    return ["case",["<",["get","vs"],0], cssv("--ink-muted"), ["interpolate",["linear"],["get","vs"], 0.05, a, 0.25, b, 0.55, c]]; }
-  return ["match",["get","layer"], "Food",cssv("--s-food"), "Energy",cssv("--s-energy"), "Water",cssv("--s-water"), "Venue",cssv("--s-venue"), cssv("--s-other")];
-}
-function visColour(v) {   // same three stops as the dots, interpolated by hand for the squares
-  const [a,b,c] = VRAMP(); const mix = (c1,c2,t) => { const h = s => [1,3,5].map(i => parseInt(s.slice(i,i+2),16));
-    const [r1,g1,b1] = h(c1), [r2,g2,b2] = h(c2); return `rgb(${Math.round(r1+(r2-r1)*t)},${Math.round(g1+(g2-g1)*t)},${Math.round(b1+(b2-b1)*t)})`; };
-  if (v <= 0.05) return a; if (v >= 0.55) return c;
-  return v < 0.25 ? mix(a, b, (v-0.05)/0.20) : mix(b, c, (v-0.25)/0.30);
-}
-function applyHeatVisibility() {
-  if (!mapReady || !map.getLayer("heat-fill")) return;
-  map.setLayoutProperty("heat-fill", "visibility", state.heat ? "visible" : "none");
-  map.setPaintProperty("heat-fill", "fill-opacity", state.view === "districts" ? 0.28 : 0.5);
-}
-function flyToCity(instant) {
-  if (!mapReady) return;
-  const pl = DATA.places.filter(inCity); if (!pl.length) return;
-  const b = new maplibregl.LngLatBounds(); pl.forEach(p => b.extend([p.x,p.y]));
-  map.fitBounds(b, {padding:46, duration:instant?0:700, maxZoom:12});
-}
-const square = (x, y, half) => ({ type:"Polygon", coordinates:[[[x-half,y-half],[x+half,y-half],[x+half,y+half],[x-half,y+half],[x-half,y-half]]] });
-function circlePoly(x, y, km, n=72) { const pts = []; for (let i = 0; i <= n; i++) { const a = i/n*2*Math.PI;
-  pts.push([x + km/(111*Math.cos(y*Math.PI/180))*Math.cos(a), y + km/111*Math.sin(a)]); } return { type:"Polygon", coordinates:[pts] }; }
-
-function paintMap() {
-  const ramp = RAMP(), half = GRID/2;
-  map.getSource("heat").setData({ type:"FeatureCollection", features: DATA.heat.filter(h => state.city === ALL || h.m===state.city).map(h => {
-    const i = Math.max(0, Math.min(ramp.length-1, Math.round((h.u-1)/10*(ramp.length-1))));
-    return { type:"Feature", properties:{col:ramp[i]}, geometry:square(h.x, h.y, half) }; }) });
-
-  const pl = cityPlaces().map(p => ({p, c:shown(p)})).filter(o => o.c > 0);
-  const zoomedOut = state.city === ALL && map.getZoom() < CITY_ZOOM;
-
-  // national view: one bubble per city
-  if (zoomedOut) {
-    const by = {}; for (const {p,c} of pl) { const b = by[p.m] ||= {c:0, n:0, x:0, y:0}; b.c += c; b.n++; b.x += p.x; b.y += p.y; }
-    const mx = Math.max(1, ...Object.values(by).map(b=>b.c));
-    map.getSource("cities").setData({ type:"FeatureCollection", features: Object.entries(by).map(([m,b]) => ({ type:"Feature",
-      properties:{ name:m, cust:b.c, n:b.n, r:Math.sqrt(b.c/mx), label:`${m.replace("/","/\n")}\n${fmt(b.c)}` }, geometry:{ type:"Point", coordinates:[b.x/b.n, b.y/b.n] } })) });
-  } else map.getSource("cities").setData(empty());
-
-  const dots = state.view === "shops" && !zoomedOut;
-  const max = Math.max(1, ...pl.map(o=>o.c));
-  map.getSource("shops").setData({ type:"FeatureCollection", features: dots ? pl.map(({p,c}) => ({ type:"Feature",
-    properties:{ name:p.n, city:p.m, layer:p.l, uhi:p.u??0, cust:c, r:Math.sqrt(c/max), vs: p.vs==null ? -1 : p.vs, near: nearStadium(p) ? 1 : 0 },
-    geometry:{type:"Point", coordinates:[p.x,p.y]} })) : [] });
-  map.getSource("districts").setData(state.view === "districts" && !zoomedOut ? districtsGeo(pl) : empty());
-
-  if (state.match) { const st = STADIUMS[state.match.s];
-    map.getSource("rings").setData({ type:"FeatureCollection", features: RING_KM.map(km => ({ type:"Feature", properties:{km}, geometry:circlePoly(st.x, st.y, km) })) });
-    map.getSource("stadium").setData({ type:"FeatureCollection", features:[{ type:"Feature", properties:{ name:state.match.s, cap:st.cap }, geometry:{ type:"Point", coordinates:[st.x, st.y] } }] });
-  } else { map.getSource("rings").setData(empty()); map.getSource("stadium").setData(empty()); }
-
-  map.setPaintProperty("shop-dots","circle-color", dotColor());
-  map.setPaintProperty("shop-dots","circle-stroke-color", cssv("--dot-ring"));
-  map.setPaintProperty("shop-near","circle-stroke-color", cssv("--ink-1"));
-  map.setPaintProperty("shop-near","circle-color", cssv("--s-energy"));
-  map.setPaintProperty("shop-near","circle-opacity", state.matchday ? 0.45 : 0);
-  map.setPaintProperty("shop-near","circle-radius", nearRadius(state.matchday));
-  map.setPaintProperty("city-bubbles","circle-color", cssv("--dot")); map.setPaintProperty("city-bubbles","circle-stroke-color", cssv("--dot"));
-  map.setPaintProperty("city-labels","text-color", cssv("--ink-1")); map.setPaintProperty("city-labels","text-halo-color", cssv("--plane"));
-  map.setPaintProperty("ring-line","line-color", cssv("--ink-1"));
-  map.setPaintProperty("stadium-pt","circle-color", cssv("--ink-1")); map.setPaintProperty("stadium-pt","circle-stroke-color", cssv("--plane"));
-  map.setPaintProperty("district-line","line-color", cssv("--plane"));
-  applyHeatVisibility();
+/** Steer the already-loaded map instead of reloading its ~16 MB of data. */
+function pushToFrame() {
+  const f = document.getElementById("frame");
+  if (!f || !f.dataset.loaded) return;
+  try {
+    const w = f.contentWindow;
+    if (!w || !w.__spatialReady) return;
+    const st = w.__spatialState;              // `state` there is a const, not a window property
+    if (st.city !== state.city) w.setCity(state.city);
+    if (st.theme !== state.theme) w.setTheme(state.theme);
+  } catch (_) { /* frame not ready yet — mountFrame's poll will catch up */ }
 }
 
-// districts: this month's customers summed into 1.1 km squares
-function districtsGeo(pl) {
-  const cells = {};
-  for (const {p,c} of pl) {
-    const d = cells[p.cell] ||= { c:0, n:0, by:{}, kwh:0, water:0, co2:0, vW:0, vN:0, top:[], m:p.m };
-    d.c += c; d.n++; d.by[p.l] = (d.by[p.l]||0) + c;
-    const f = FACTORS[p.l]||FACTORS.Other_EFW; d.kwh += c*f.kwh; d.water += c*f.water; d.co2 += c*f.co2;
-    if (p.vs != null) { d.vW += p.vs*c; d.vN += c; }      // customer-weighted: Σ visitor customers / Σ customers
-    d.top.push([c, p.n]);
-  }
-  const keys = Object.keys(cells); if (!keys.length) return empty();
-  const vals = keys.map(k => cells[k].c).sort((a,b)=>a-b);
-  const ramp = DRAMP();
-  const cuts = ramp.map((_,i) => vals[Math.min(vals.length-1, Math.floor(vals.length * i / ramp.length))]);
-  const month = pretty(MONTHS[state.mi]);
-  return { type:"FeatureCollection", features: keys.map(k => {
-    const d = cells[k]; const [x,y] = cellCentre(k);
-    let col;
-    if (state.colour === "visitor") col = d.vN >= VIS_MIN_CUST ? visColour(d.vW/d.vN) : cssv("--grid");
-    else { let bin = 0; for (let i = 0; i < cuts.length; i++) if (d.c >= cuts[i]) bin = i; col = ramp[bin]; }
-    const heat = (HEATIDX[d.m]||{})[k]; const ch = (CHURN[d.m]||{})[k];
-    d.top.sort((a,b)=>b[0]-a[0]);
-    const topL = LAYERS.reduce((a,l) => (d.by[l.key]||0) > (d.by[a.key]||0) ? l : a, LAYERS[0]);
-    const html = `<b>${esc(placeName(x,y) || ("near " + d.top.slice(0,2).map(t=>t[1]).join(" · ")))} · ${esc(d.m)}</b><small>${d.n} shops · ${month} · mostly ${topL.label.toLowerCase()}</small>
-      <table><tr><td>customers</td><td>${fmt(d.c)}</td></tr><tr><td>energy</td><td>${fmt(d.kwh)} kWh</td></tr>
-      <tr><td>water</td><td>${fmt(d.water)} L</td></tr><tr><td>CO₂e</td><td>${fmt(d.co2)} kg</td></tr>
-      <tr><td>heat index</td><td>${heat==null?"—":heat.toFixed(1)}</td></tr>
-      <tr><td>month-to-month wobble</td><td>${ch ? pct(ch.churn) : "—"}</td></tr>
-      ${VIS ? `<tr><td>visitor share</td><td>${d.vN >= VIS_MIN_CUST ? pct(d.vW/d.vN) : "n/a"}</td></tr>` : ""}</table>
-      <small>${d.top.slice(0,3).map(t=>esc(t[1])).join(" · ")}</small><br><small class="coords">${x.toFixed(2)}, ${y.toFixed(2)}</small>`;
-    return { type:"Feature", properties:{ col, html }, geometry:square(x, y, GRID/2) };
-  }) };
+// --- Scenarios -------------------------------------------------------------
+function drawLevers() {
+  // titles + effects come from D's play catalogue so the preview cannot drift from the engine
+  const seen = new Map();
+  C.scorecards.forEach(c => [...(c.recommended_plays||[]), ...(c.general_options||[])]
+    .forEach(p => { if (!seen.has(p.id)) seen.set(p.id, p); }));
+  document.getElementById("levers").innerHTML = [...seen.values()].map(p => {
+    const e = p.expected_effects || {};
+    const parts = [["energy", e.energy_pct], ["water", e.water_pct], ["CO₂e", e.food_co2e_pct]]
+      .filter(([,v]) => v).map(([l,v]) => `${l} ${v > 0 ? "+" : ""}${v}%`).join(" · ");
+    return `<div class="lever"><div class="lt">${esc(p.title)}</div><div class="lm">${parts || "no quantified effect"}</div></div>`;
+  }).join("");
 }
 
-// best-effort neighbourhood name from the basemap's own place labels (only what is loaded on screen)
-let PLACE_CACHE = null, PLACE_CACHE_AT = 0;
-function placeName(x, y) {
-  if (!mapReady) return null;
-  const now = Date.now();
-  if (!PLACE_CACHE || now - PLACE_CACHE_AT > 1500) {
-    const SKIP = new Set(["city","state","country","continent","ocean","sea","province","region"]);
-    try { PLACE_CACHE = map.querySourceFeatures("carto", { sourceLayer:"place" }).filter(f => f.properties && f.properties.name && f.geometry.type === "Point" && !SKIP.has(f.properties.class))
-      .map(f => ({ n:f.properties.name, x:f.geometry.coordinates[0], y:f.geometry.coordinates[1], cls:f.properties.class })); }
-    catch (e) { PLACE_CACHE = []; }
-    PLACE_CACHE_AT = now;
-  }
-  let best = null, bd = 2.5;   // km
-  for (const p of PLACE_CACHE) { const d = kmBetween(x, y, p.x, p.y); if (d < bd) { bd = d; best = p.n; } }
-  return best;
-}
-
-// high-churn districts
-function drawChurn() {
-  const box = document.getElementById("churn");
-  if (state.view !== "districts") { box.hidden = true; return; }
-  box.hidden = false;
-  const rows = [];
-  const cities = state.city === ALL ? CITIES : [state.city];
-  for (const c of cities) for (const k in (CHURN[c]||{})) { const d = CHURN[c][k]; if (d.mean >= 200 && d.months >= 24) rows.push({c, k, ...d}); }
-  rows.sort((a,b)=>b.churn-a.churn);
-  const top = rows.slice(0, 10);
-  box.innerHTML = `<div style="font-size:13px;margin:4px 0 2px"><b>Districts whose demand wobbles most</b></div>
-    <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px">Wobble is the typical month-to-month change in a square's customers, as a share of its average month. About 11% of any wobble is the noise the organisers added, so read the differences, not the levels. Squares averaging 200+ customers and trading 24+ months; ${rows.length} qualify in ${scopeName()}.</div>` +
-    (top.length ? `<table><thead><tr><th>District</th><th>City</th><th>Wobble</th><th>Avg customers / month</th><th>Months trading</th></tr></thead><tbody>` +
-    top.map(r => { const [x,y] = cellCentre(r.k); const nm = placeName(x,y) || (r.top && r.top.length ? "near " + r.top.join(" · ") : null);
-      return `<tr><td class="link" data-x="${x}" data-y="${y}" title="${x.toFixed(2)}, ${y.toFixed(2)}">⌖ ${nm ? esc(nm) : ""} <span class="coords">${x.toFixed(2)}, ${y.toFixed(2)}</span></td><td style="text-align:left">${esc(r.c)}</td>
-        <td>${pct(r.churn)}</td><td>${fmt(r.mean)}</td><td>${r.months}</td></tr>`; }).join("") + `</tbody></table>` : `<span style="color:var(--ink-muted)">no district large enough</span>`);
-  box.querySelectorAll("td.link").forEach(td => td.onclick = () => { if (mapReady) map.flyTo({center:[+td.dataset.x, +td.dataset.y], zoom:13, duration:700}); });
-}
-
-// ---------------------------------------------------------------------------
-// daily chart
-// ---------------------------------------------------------------------------
-const W=1000, H=290, M={t:14,r:20,b:26,l:52};
-let CHART = null;
-function drawDaily(month) {
-  const svg = document.getElementById("chart");
-  const active = activeLayers();
-  const inScope = d => (state.city === ALL || d.m===state.city) && layerOn(d.l);
-  const pad = (y, mo, d) => new Date(Date.UTC(y, mo, d)).toISOString().slice(0,10);
-  const Y = +month.slice(0,4), MO = +month.slice(5,7)-1;
-  const loS = pad(Y, MO, 1-3), hiS = pad(Y, MO+1, 3);
-  const rows = DATA.daily.filter(d => inScope(d) && (state.smooth ? (d.d >= loS && d.d <= hiS) : d.d.slice(0,7)===month));
-  const map_ = new Map();
-  for (const r of rows) { if (!map_.has(r.d)) map_.set(r.d, {d:r.d, v:{}}); const b = map_.get(r.d); b.v[r.l] = (b.v[r.l]||0) + r.c; }
-  let pts = [...map_.values()].sort((a,b)=>a.d<b.d?-1:1);
-  if (state.smooth) {
-    pts = pts.map((p,i) => { const w = pts.slice(Math.max(0,i-3), i+4); const v = {};
-      active.forEach(l => v[l.key] = w.reduce((a,q)=>a+(q.v[l.key]||0),0) / w.length); return {d:p.d, v}; }).filter(p => p.d.slice(0,7) === month);
-  }
-  if (state.scale === "idx") {   // each type indexed to its own month average = 100, so small types are visible
-    const mean = {}; active.forEach(l => mean[l.key] = pts.reduce((a,p)=>a+(p.v[l.key]||0),0) / (pts.length||1));
-    pts = pts.map(p => { const v = {}; active.forEach(l => v[l.key] = mean[l.key] ? (p.v[l.key]||0)/mean[l.key]*100 : 0); return {d:p.d, v}; });
-  }
-  if (!pts.length || !active.length) {
-    svg.innerHTML = `<text x="${W/2}" y="${H/2}" text-anchor="middle" class="glabel">${active.length ? "no daily data for this month" : "nothing selected"}</text>`;
-    document.getElementById("legend").innerHTML = ""; document.getElementById("tbl").innerHTML = ""; return;
-  }
-  let ymax = 0; pts.forEach(p => active.forEach(l => ymax = Math.max(ymax, p.v[l.key]||0))); ymax = niceMax(ymax);
-  const x = i => M.l + (W-M.l-M.r) * (pts.length===1 ? .5 : i/(pts.length-1)), y = v => H - M.b - (H-M.t-M.b) * (v/ymax);
-  let s = "";
-  for (let t=0; t<=4; t++) { const v = ymax*t/4, yy = y(v);
-    s += `<line class="gline" x1="${M.l}" y1="${yy}" x2="${W-M.r}" y2="${yy}"/><text class="glabel" x="${M.l-8}" y="${yy+4}" text-anchor="end">${state.scale==="idx" ? v.toFixed(0) : fmt(v)}</text>`; }
-  s += `<line class="axis" x1="${M.l}" y1="${H-M.b}" x2="${W-M.r}" y2="${H-M.b}"/>`;
-  const step_ = Math.max(1, Math.ceil(pts.length/10));
-  pts.forEach((p,i) => { if (i % step_) return; s += `<text class="glabel" x="${x(i)}" y="${H-M.b+16}" text-anchor="middle">${+p.d.slice(8)}</text>`; });
-  active.forEach(l => { const d = pts.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(p.v[l.key]||0).toFixed(1)}`).join(" "); s += `<path class="serie" d="${d}" stroke="var(${l.css})"/>`; });
-  s += `<line id="cross" class="axis" x1="0" y1="${M.t}" x2="0" y2="${H-M.b}" opacity="0"/>`;
-  svg.innerHTML = s;
-  CHART = {pts, active, x, y};
-  hookHover(svg);
-  document.getElementById("legend").innerHTML = active.map(l=>`<span><i style="background:var(${l.css})"></i>${l.label}</span>`).join("") +
-    `<span style="color:var(--ink-muted)">${state.scale==="idx" ? "each type indexed to its month average = 100" : "customers per day"}${state.smooth ? ", 7-day average" : ""}</span>`;
-  drawTable(pts, active, month);
-}
-function hookHover(svg) {
-  const tip = document.getElementById("tip"), cross = svg.querySelector("#cross");
-  svg.onmousemove = ev => { const r = svg.getBoundingClientRect(); const sx = (ev.clientX - r.left)/r.width*W; const {pts, active, x, y} = CHART;
-    let bi=0, bd=Infinity; pts.forEach((p,i)=>{ const d=Math.abs(x(i)-sx); if(d<bd){bd=d;bi=i;} }); const p = pts[bi];
-    cross.setAttribute("x1",x(bi)); cross.setAttribute("x2",x(bi)); cross.setAttribute("opacity","1");
-    tip.innerHTML = `<b>${p.d}</b>` + active.map(l => `<div><span><i style="background:var(${l.css})"></i>${l.label}</span><span>${state.scale==="idx" ? (p.v[l.key]||0).toFixed(0) : fmt(p.v[l.key]||0)}</span></div>`).join("");
-    tip.style.left = (x(bi)/W*r.width)+"px"; tip.style.top = (y(Math.max(...active.map(l=>p.v[l.key]||0)))/H*r.height - 8)+"px"; tip.style.opacity = 1; };
-  svg.onmouseleave = () => { document.getElementById("tip").style.opacity = 0; svg.querySelector("#cross").setAttribute("opacity","0"); };
-}
-function drawTable(pts, active, month) {
-  if (state.scale === "idx") { document.getElementById("tbl").innerHTML = ""; return; }
-  const tot = {}; pts.forEach(p => active.forEach(l => tot[l.key] = (tot[l.key]||0) + (p.v[l.key]||0)));
-  const rows = active.map(l => { const c = tot[l.key]||0, f = FACTORS[l.key];
-    return `<tr><td>${l.label}</td><td>${full(c)}</td><td>${full(c*f.kwh)}</td><td>${full(c*f.water)}</td><td>${full(c*f.co2)}</td></tr>`; }).join("");
-  const all = Object.values(tot).reduce((a,b)=>a+b,0);
-  document.getElementById("tbl").innerHTML = `<thead><tr><th>Type</th><th>Customers</th><th>Energy kWh</th><th>Water L</th><th>kg CO₂e</th></tr></thead><tbody>${rows}</tbody>
-     <tfoot><tr><th>${pretty(month)}, ${pts.length} days</th><th>${full(all)}</th><th colspan="3"></th></tr></tfoot>`;
+function drawSurge() {
+  document.getElementById("surgeval").textContent = state.surge.toFixed(2) + "×";
+  document.getElementById("surgetitle").textContent = `Baseline vs surge — ${cityName()}`;
+  const a = absolutes(), k = state.surge;
+  const rows = [["e","energy_kwh"], ["w","water_liters"], ["co2","kg_co2e"], ["v","visits"]].map(([mk, key]) => {
+    const m = METRICS[mk], base = a[key] || 0, out = base * k;
+    return `<tr><td>${m.label}</td><td>${fmt(base)}</td><td>${fmt(out)}</td>
+      <td style="color:${k > 1 ? cssv("--s-energy") : "var(--ink-muted)"}">${k > 1 ? "+" : ""}${fmt(out - base)} ${esc(m.unit)}</td></tr>`;
+  }).join("");
+  document.getElementById("surgetbl").innerHTML =
+    `<tr><th>Resource</th><th>Baseline summer</th><th>At ${k.toFixed(2)}×</th><th>Δ</th></tr>${rows}`;
+  document.getElementById("surgenote").innerHTML =
+    `Baseline is the ${SUMMER_IDX.length}-month June–July total for ${esc(cityName())}.
+     Illustrative linear scaling — no cross-resource coupling, no capacity ceilings, no price response.
+     The real lever engine arrives with the intervention lab.`;
 }
 </script>
 </body>
