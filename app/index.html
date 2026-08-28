@@ -982,6 +982,7 @@ function drawLevers() {
         <details><summary>evidence, dials, source</summary>
           <div style="margin-top:4px">${esc(l.evidence_plain)}</div>
           <div style="margin-top:4px"><b>What an organiser can turn:</b> ${l.dials.map(esc).join("; ")}.</div>
+          ${l.cost ? `<div style="margin-top:4px"><b>What it costs:</b> ${esc(l.cost)}</div>` : ""}
           <div style="margin-top:4px"><b>Best source:</b> <a href="${esc(l.best_source.u)}" target="_blank" rel="noopener">${esc(l.best_source.t)}</a>
             · card <code>${esc(l.card)}</code> · ${esc(l.placeholder)}</div>
         </details>
