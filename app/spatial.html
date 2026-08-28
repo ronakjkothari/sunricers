@@ -62,6 +62,8 @@
           padding:8px 10px; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .1s; z-index:20; }
   .info:hover::after, .info:focus::after { opacity:1; }
   .info { outline:none; }
+  /* icons in a panel header: the panel clips overflow, so open downward and hug the right edge instead of popping up into the panel above */
+  .panel h2 .info::after { bottom:auto; top:calc(100% + 8px); left:auto; right:-6px; transform:none; }
 
   /* control panel: what to look at | how to draw it */
   .controls { display:grid; grid-template-columns:1fr 1.4fr; gap:14px; margin:18px 0 12px; }
@@ -83,6 +85,42 @@
   .inline label { display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
   @media (max-width:900px) { .controls { grid-template-columns:1fr; } }
 
+  /* lever panel, floating on the map: tick levers where you are looking, results right under them */
+  .leverpanel { position:absolute; left:12px; top:12px; width:260px; max-width:calc(100% - 70px); }
+  .leverpanel.closed { width:auto; }
+  .leverpanel.closed .hd { box-shadow:0 0 0 3px var(--surface-1), 0 0 0 4px var(--ink-1); }
+  .leverpanel { background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
+    box-shadow:var(--shadow); font-size:12px; color:var(--ink-1); z-index:2; }
+  .leverpanel .hd { display:flex; align-items:center; gap:10px; padding:9px 12px; cursor:pointer; user-select:none; background:var(--ink-1); color:var(--plane); border-radius:7px; font-size:13px; }
+  .leverpanel:not(.closed) .hd { border-radius:7px 7px 0 0; }
+  .leverpanel .hd b { font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--plane); font-weight:700; }
+  .leverpanel .hd b::before { content:"⚙ "; }
+  .leverpanel .hd .cnt { margin-left:auto; color:var(--plane); opacity:.9; }
+  .leverpanel .hd:hover { opacity:.92; }
+  .leverpanel .bd { padding:0 10px 10px; display:grid; gap:4px; }
+  .leverpanel.closed .bd { display:none; }
+  .leverpanel .bk { font-size:10px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; margin-top:6px; }
+  .leverpanel label { display:flex; gap:7px; align-items:center; cursor:pointer; color:var(--ink-1); }
+  .leverpanel .res { margin-top:8px; border-top:1px solid var(--grid); padding-top:8px; display:grid; gap:4px; }
+  .leverpanel .res .r { display:grid; grid-template-columns:46px 1fr auto; gap:6px; align-items:center; font-variant-numeric:tabular-nums; }
+  .leverpanel .res .r i { display:block; height:6px; border-radius:3px; background:var(--grid); position:relative; overflow:hidden; }
+  .leverpanel .res .r i::after { content:""; position:absolute; left:0; top:0; bottom:0; width:var(--w); background:var(--c); border-radius:3px; }
+  .leverpanel .res .r span:last-child { color:var(--ink-1); }
+  .leverpanel .res small, .leverpanel .more { color:var(--ink-2); font-size:12px; }
+  .leverpanel .more a { color:var(--ink-1); }
+  .row .hint { font-size:12px; color:var(--ink-2); padding-top:7px; }
+  .matchflash { animation:flash 1.4s ease-out 1; }
+  @keyframes flash { 0% { box-shadow:0 0 0 3px var(--ink-1); } 100% { box-shadow:0 0 0 0 transparent; } }
+  /* lever impact strip (levers come from the A shell or ?levers=) */
+  #leverimpact { margin:10px 16px 12px; border:1px solid var(--hairline); border-radius:8px; padding:10px 12px; background:var(--surface-1); }
+  #leverimpact .hl { font-size:13px; color:var(--ink-1); line-height:1.45; }
+  #leverimpact .cutrow { display:grid; grid-template-columns:56px 1fr 150px; gap:10px; align-items:center; margin-top:6px; font-size:12px; }
+  #leverimpact .lab { color:var(--ink-2); font-weight:600; }
+  #leverimpact .val { text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-1); }
+  #leverimpact .val small { display:block; color:var(--ink-2); }
+  #leverimpact svg { display:block; width:100%; height:18px; overflow:visible; }
+  #leverimpact .note { font-size:12px; color:var(--ink-2); margin-top:6px; }
+  #leverimpact .why { font-size:12px; color:var(--ink-2); margin-bottom:6px; }
   /* active filter chips */
   .active { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0 0 14px; font-size:12px; color:var(--ink-muted); }
   .achip { display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px; background:var(--surface-1);
@@ -161,7 +199,7 @@
   .maplibregl-popup-content td:last-child { text-align:right; font-variant-numeric:tabular-nums; }
   .maplibregl-popup-tip { display:none; }
   .legendcard { position:absolute; left:12px; bottom:28px; background:var(--surface-1); border:1px solid var(--hairline);
-    border-radius:8px; padding:9px 11px; font-size:11px; color:var(--ink-2); box-shadow:var(--shadow); max-width:230px; }
+    border-radius:8px; padding:9px 11px; font-size:12px; color:var(--ink-2); box-shadow:var(--shadow); max-width:250px; }
   .legendcard .blk { margin-bottom:7px; } .legendcard .blk:last-child { margin-bottom:0; }
   .legendcard .h { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-muted); margin-bottom:3px; }
   .legendcard .rowl { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
@@ -213,6 +251,7 @@
   body.embed #theme { display:none; }
   body.embed header .how { margin-top:0; }
   body.embed #scorepanel { display:none !important; }
+  body.embed #cityrow { display:none; }   /* the shell's HOST CITY box drives the city here */
 </style>
 </head>
 <body>
@@ -230,9 +269,10 @@
   <div class="controls">
     <div class="group">
       <h3>What to look at</h3>
-      <div class="row"><label class="k" for="city">City</label><select id="city"></select></div>
+      <div class="row" id="cityrow"><label class="k" for="city">City</label><select id="city"></select></div>
       <div class="row"><label class="k" for="match">2026 match</label><select id="match"></select></div>
       <div class="row"><label class="k" for="q">Shop name</label><input type="search" id="q" placeholder="e.g. Starbucks" autocomplete="off"></div>
+      <div class="row" id="standin"><div class="k"></div><div class="hint">Picking a match shows that month of 2024 as a stand-in. We don't forecast 2026; the +30% match-day effect is measured.</div></div>
     </div>
     <div class="group">
       <h3>How to draw it</h3>
@@ -296,9 +336,11 @@
     <h2>Where the demand sits <span class="pill" id="maptitle"></span></h2>
     <div class="mapwrap">
       <div id="map"></div>
+      <div class="leverpanel" id="leverpanel" hidden></div>
       <div class="legendcard" id="legendcard"></div>
       <div class="emptymap" id="emptymap" hidden><div>No shops match these filters. <a id="emptyreset" style="cursor:pointer;text-decoration:underline">Reset filters</a></div></div>
     </div>
+    <div id="leverimpact" hidden></div>
     <div class="churn" id="churn" hidden></div>
   </section>
 
@@ -381,7 +423,8 @@ const kmBetween = (x1,y1,x2,y2) => Math.sqrt(((y1-y2)*111)**2 + ((x1-x2)*111*Mat
 let DATA=null, MONTHS=[], CITIES=[], SM={}, MATCHES=[], STADIUMS={}, SCORES=null, VIS=null;
 let map=null, mapReady=false, timer=null, HEATIDX={}, CHURN={}, hoverPopup=null;
 const state = { city:null, mi:0, on:null, q:"", heat:false, theme:"light", view:"shops",
-                match:null, matchday:false, colour:"type", smooth:false, scale:"abs", speed:600 };
+                match:null, matchday:false, colour:"type", smooth:false, scale:"abs", speed:600, levers:new Set() };
+let LEV = null, GRO_RE = null;   // data/levers.json (sourced intervention levers) and its grocery name test
 
 const opt = url => fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
 Promise.all([
@@ -389,13 +432,14 @@ Promise.all([
   fetch("data/heat.json").then(r=>r.json()),
   fetch("data/daily.json").then(r=>r.json()),
   fetch("data/months.json").then(r=>r.json()),
-  opt("data/matches.json"), opt("data/stadiums.json"), opt("data/scorecards.json"), opt("data/visitors.json"),
-]).then(([places,heat,daily,months,matches,stadiums,scores,vis]) => {
+  opt("data/matches.json"), opt("data/stadiums.json"), opt("data/scorecards.json"), opt("data/visitors.json"), opt("data/levers.json"),
+]).then(([places,heat,daily,months,matches,stadiums,scores,vis,lev]) => {
   DATA={places,heat,daily}; MONTHS=months;
-  MATCHES = matches || []; STADIUMS = stadiums || {}; SCORES = scores;
+  MATCHES = matches || []; STADIUMS = stadiums || {}; SCORES = scores; LEV = lev;
+  if (LEV) { try { GRO_RE = new RegExp(LEV.grocery_regex, "i"); } catch (_) { GRO_RE = null; } }
   if (vis) { VIS = {}; vis.forEach(v => VIS[v.k] = v); }
   DATA.places.forEach(p => { p.nl = (p.n||"").toLowerCase(); p.cell = cellKey(p.x, p.y);
-                             p.vs = VIS && VIS[p.k] ? VIS[p.k].v : null; });
+                             p.vs = VIS && VIS[p.k] ? VIS[p.k].v : null; p.seg = segOf(p); });
   heat.forEach(h => { (HEATIDX[h.m] ||= {})[cellKey(h.x, h.y)] = h.u; });
   boot();
 }).catch(err => {
@@ -412,13 +456,16 @@ async function boot() {
   CITIES = [...new Set(DATA.places.map(p=>p.m))].sort();
   // land on the biggest city so the first thing on screen is a populated map
   const counts = {}; DATA.places.forEach(p => counts[p.m] = (counts[p.m]||0)+1);
-  state.city = CITIES.reduce((a,b) => counts[a] >= counts[b] ? a : b);
+  state.city = ALL;   // open on all 11 host cities; click a bubble or pick a city to zoom in
 
   // the A shell embeds this page: ?embed=1 hides our header, ?city / ?theme seed the view
   const qs = new URLSearchParams(location.search);
   if (qs.get("embed") === "1") document.body.classList.add("embed");
   const wanted = qs.get("city");
   if (wanted && (wanted === ALL || CITIES.includes(wanted))) state.city = wanted;
+  // ?levers=a,b switches intervention levers on (ids from data/levers.json)
+  const lv = qs.get("levers");
+  if (lv && LEV) lv.split(",").forEach(id => { if (LEV.levers.some(l => l.id === id)) state.levers.add(id); });
   // seed the theme without setTheme(): initMap() below reads state.theme, and
   // render() is not safe to call until the rest of boot has run
   if (qs.get("theme") === "dark") {
@@ -473,6 +520,7 @@ async function boot() {
   });
 
   paintCbs();
+  drawLeverPicker();
   drawScores();
   initMap();
   await loadSM();
@@ -481,11 +529,18 @@ async function boot() {
   // `state` is a top-level const, so it is not a window property — expose it deliberately.
   window.__spatialState = state;
   window.__spatialReady = true;
+  // inside the A shell, report our height so the shell grows the frame and the page keeps one scrollbar
+  if (document.body.classList.contains("embed") && window.parent !== window && "ResizeObserver" in window) {
+    const tell = () => { try { if (typeof window.parent.__frameHeight === "function") window.parent.__frameHeight(document.documentElement.scrollHeight); } catch (_) {} };
+    new ResizeObserver(tell).observe(document.body); tell();
+  }
 }
 
+const tellShellCity = () => { try { if (window.parent !== window && typeof window.parent.__cityFromMap === "function") window.parent.__cityFromMap(state.city); } catch (_) {} };
 async function setCity(c, keepMatch) {
   stop(); if (!keepMatch) clearMatch(false);
   state.city = c; document.getElementById("city").value = c;
+  tellShellCity();
   await loadSM(); flyToCity(); render();
 }
 function setView(v) {
@@ -539,6 +594,7 @@ function paintActive() {
   if (state.colour === "visitor") chip(state.view === "districts" ? "Squares coloured by visitor share" : "Dots coloured by visitor share", () => setColour("type"));
   if (state.heat) chip("Heat overlay", () => { state.heat = false; document.getElementById("heaton").checked = false; applyHeatVisibility(); paintLegend(); paintActive(); });
   if (state.matchday) chip("Match-day halo, +30% within 2 km", () => { state.matchday = false; document.getElementById("matchday").checked = false; render(); });
+  if (leversOn().length) chip("Levers: " + leversOn().map(l => l.title).join(", "), () => setLevers([]));
   const box = document.getElementById("active");
   box.innerHTML = `<span>Showing</span>` + chips.map((c,i) => `<span class="achip">${esc(c.label)}${c.undo ? `<button data-i="${i}" title="remove">×</button>` : ""}</span>`).join("") +
     (chips.length > 2 ? `<a id="resetall">Reset</a>` : "");
@@ -586,7 +642,9 @@ function paintLegend() {
     blocks.push(`<div class="blk"><div class="h">Size: customers this month</div></div>`);
   }
   if (state.heat) blocks.push(`<div class="blk"><div class="h">Overlay: heat index</div><div class="rowl">cooler ${rampHtml(RAMP())} hotter</div></div>`);
-  if (state.match) blocks.push(`<div class="blk"><div class="h">Stadium</div><div class="rowl">● pin, dashed rings at 2 and 5 km${state.matchday ? ", orange halo = +30%" : ""}</div></div>`);
+  const dotsShown = !zoomedOut && state.view === "shops";
+  if (state.match) blocks.push(`<div class="blk"><div class="h">Stadium</div><div class="rowl">● pin, dashed rings at 2 and 5 km${state.matchday && dotsShown ? ", orange halo = +30%" : ""}</div></div>`);
+  if (leversOn().some(l => !l.offmap) && dotsShown) blocks.push(`<div class="blk"><div class="h">Levers on</div><div class="rowl">dark ring = a shop the levers touch</div></div>`);
   document.getElementById("legendcard").innerHTML = blocks.join("");
 }
 
@@ -627,6 +685,112 @@ function computeChurn(c) {
 }
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// intervention levers (data/levers.json, built from interventions/ by scripts/build_levers.py)
+// ---------------------------------------------------------------------------
+const SEG_OF_LAYER = { Water:"hotel", Venue:"venue", Energy:"gas", Other_EFW:"other" };
+function segOf(p) {
+  if (p.l === "Food") return (GRO_RE && p.n && GRO_RE.test(p.n)) ? "grocery" : "restaurant";
+  return SEG_OF_LAYER[p.l] || "other";
+}
+const leverById = id => LEV && LEV.levers.find(l => l.id === id);
+const leversOn = () => LEV ? [...state.levers].map(leverById).filter(Boolean) : [];
+/** fraction of each resource KEPT per shop type, [low, mid, high]; several levers on one type compound */
+let KEEP = {};
+function computeKeep() {
+  KEEP = {};
+  for (const l of leversOn()) { if (l.offmap) continue;
+    for (const [seg, cuts] of Object.entries(l.cuts)) for (const [r, v] of Object.entries(cuts)) {
+      const ov = l.overlap && Object.entries(l.overlap).some(([oid, rs]) => rs.includes(r) && state.levers.has(oid));
+      if (ov) continue;
+      (KEEP[seg] ||= {})[r] ||= [1,1,1];
+      for (let i = 0; i < 3; i++) KEEP[seg][r][i] *= (1 - v[i]);
+    } }
+}
+const keepOf = (seg, r, i) => (KEEP[seg] && KEEP[seg][r]) ? KEEP[seg][r][i] : 1;
+const touched = p => !!KEEP[p.seg];
+/** before/after (low, mid, high) footprints for a list of places at month mi */
+function footprint(pl, mi = state.mi, raw = false) {
+  const b = { kwh:0, water:0, co2:0 }, a = { kwh:[0,0,0], water:[0,0,0], co2:[0,0,0] };
+  for (const p of pl) { const c = raw ? monthOf(p, mi) : shown(p, mi); if (!c) continue; const f = FACTORS[p.l]||FACTORS.Other_EFW;
+    for (const r of ["kwh","water","co2"]) { const v = c * f[r]; b[r] += v; for (let i = 0; i < 3; i++) a[r][i] += v * keepOf(p.seg, r, i); } }
+  return { b, a };
+}
+const RES_CSS = { kwh:"--s-energy", water:"--s-water", co2:"--s-other" };
+const EQUIV = { kwh: v => `${full(v/900)} homes' electricity for a month`, water: v => `${full(v/9000)} people's water for a month`, co2: v => `${full(v/4600)} cars driven for a year` };
+/** the visible answer on the map page: a sentence plus one bar per resource, same design as the shell's Scenarios tab */
+function drawLeverImpact(x) {
+  const box = document.getElementById("leverimpact");
+  if (!x) { box.hidden = true; box.innerHTML = ""; return; }
+  const on = leversOn(), shopL = on.filter(l => !l.offmap);
+  const R = [["kwh","Energy","kWh",x.kwh,x.fp.a.kwh], ["water","Water","L",x.water,x.fp.a.water], ["co2","CO₂e","kg CO₂e",x.co2,x.fp.a.co2]];
+  const cut = R.map(([r,l,u,b,a]) => ({ r, l, u, b, lo: b ? 1-a[0]/b : 0, mid: b ? 1-a[1]/b : 0, hi: b ? 1-a[2]/b : 0 }));
+  const axisMax = Math.max(0.05, niceMax(Math.max(...cut.map(c => c.hi))));
+  const moved = cut.filter(c => c.mid > 1e-6);
+  const who = shopL.length === 1 ? shopL[0].title : `${shopL.length} levers`;
+  const hl = !shopL.length ? `Only match-day levers are on (${on.map(l => l.title.toLowerCase()).join(", ")}): pick a 2026 match to see their numbers on the match card.`
+    : moved.length ? `${esc(who)} in ${esc(scopeName())}, ${pretty(MONTHS[state.mi])}: ` + moved.map(c => `<b>${c.r === "co2" ? c.l : c.l.toLowerCase()} down ${(c.mid*100).toFixed(1)}%</b> (${(c.lo*100).toFixed(1)} to ${(c.hi*100).toFixed(1)}), ${fmt(c.mid*c.b)} ${c.u}, or ${EQUIV[c.r](c.mid*c.b)}`).join("; ") + "."
+    : `${esc(who)} touch shop types with almost no card customers in ${esc(scopeName())}, so nothing moves here.`;
+  const W = 100;
+  const rows = cut.map(c => { const lo = c.lo/axisMax*W, mid = c.mid/axisMax*W, hi = c.hi/axisMax*W;
+    return `<div class="cutrow"><div class="lab">${c.l}</div><div><svg viewBox="0 0 ${W} 18" preserveAspectRatio="none">
+      <rect x="0" y="4" width="${W}" height="10" rx="2" fill="var(--grid)"/>
+      <rect x="0" y="4" width="${Math.max(0,mid).toFixed(2)}" height="10" rx="2" fill="var(${RES_CSS[c.r]})"><title>${c.l}: −${(c.mid*100).toFixed(1)}% middle, range ${(c.lo*100).toFixed(1)}–${(c.hi*100).toFixed(1)}%</title></rect>
+      ${c.hi > 1e-6 ? `<line x1="${lo.toFixed(2)}" x2="${hi.toFixed(2)}" y1="9" y2="9" stroke="var(--ink-1)" stroke-width="1.2" vector-effect="non-scaling-stroke"/><line x1="${lo.toFixed(2)}" x2="${lo.toFixed(2)}" y1="5" y2="13" stroke="var(--ink-1)" stroke-width="1.2" vector-effect="non-scaling-stroke"/><line x1="${hi.toFixed(2)}" x2="${hi.toFixed(2)}" y1="5" y2="13" stroke="var(--ink-1)" stroke-width="1.2" vector-effect="non-scaling-stroke"/>` : ""}
+      </svg></div><div class="val">${c.mid > 1e-6 ? `−${(c.mid*100).toFixed(1)}%<small>${fmt(c.mid*c.b)} ${esc(c.u)} · range ${(c.lo*100).toFixed(1)}–${(c.hi*100).toFixed(1)}%</small>` : `0%<small>no measured effect</small>`}</div></div>`; }).join("");
+  const why = window.parent !== window ? `<div class="why">These map numbers are smaller than the Scenarios tab's: the map counts card customers, which barely see hotels, while the Scenarios tab uses store visits. The percent cut per shop is identical in both.</div>` : "";
+  box.innerHTML = `${why}<div class="hl">${hl}</div>${shopL.length ? rows : ""}
+    <div class="note">${shopL.length ? "Cuts are a share of this month's shops × factors on the map; the black whisker is the low–high range. Shops the levers touch wear a dark ring. " : ""}What each lever is and where its numbers come from: the Scenarios tab.</div>`;
+  box.hidden = false;
+}
+function setLevers(ids, fromShell) {
+  state.levers = new Set((ids || []).filter(id => leverById(id)));
+  paintLeverPicker();
+  render();
+  // keep the A shell's Scenarios tab in step when the user ticks a lever here
+  if (!fromShell) { try { if (window.parent !== window && typeof window.parent.__leversFromMap === "function") window.parent.__leversFromMap([...state.levers]); } catch (_) {} }
+}
+window.setLevers = setLevers;
+function drawLeverPicker() {
+  if (!LEV) return;
+  const pan = document.getElementById("leverpanel"); pan.hidden = false; pan.classList.add("closed");   // starts folded so it never hides the west coast
+  const BK = [["before","Before the tournament"], ["during","During the tournament"], ["match day","Match day (match card)"]];
+  pan.innerHTML = `<div class="hd" title="tick interventions here and see the cut on what you are looking at"><b>Levers</b><span class="cnt" id="levercnt"></span><span id="levertog">▸</span></div><div class="bd">` +
+    BK.map(([b, lab]) => `<div class="bk">${lab}</div>` + LEV.levers.filter(l => l.bucket === b).map(l =>
+      `<label><input type="checkbox" data-id="${esc(l.id)}">${esc(l.title)}</label>`).join("")).join("") +
+    `<div class="res" id="leverres"></div><div class="more">What each lever is, its evidence and range: <a href="#" id="tolab">Scenarios tab</a>.</div></div>`;
+  pan.querySelectorAll("input").forEach(cb => cb.onchange = () => {
+    const s = new Set(state.levers); if (cb.checked) s.add(cb.dataset.id); else s.delete(cb.dataset.id); setLevers([...s]);
+  });
+  pan.querySelector(".hd").onclick = () => { pan.classList.toggle("closed"); document.getElementById("levertog").textContent = pan.classList.contains("closed") ? "▸" : "▾"; paintLeverPicker(); };
+  pan.querySelector(".hd").setAttribute("role", "button");
+  document.getElementById("tolab").onclick = e => { e.preventDefault();
+    try { if (window.parent !== window && typeof window.parent.setTab === "function") { window.parent.setTab("scenarios"); return; } } catch (_) {}
+    location.href = "index.html#scenarios/" + encodeURIComponent(state.city) + (state.levers.size ? "?levers=" + [...state.levers].join(",") : ""); };
+  paintLeverPicker();
+}
+function paintLeverPicker() {
+  const pan = document.getElementById("leverpanel"); if (!pan || pan.hidden) return;
+  pan.querySelectorAll("input").forEach(cb => cb.checked = state.levers.has(cb.dataset.id));
+  const n = state.levers.size;
+  const folded = pan.classList.contains("closed");
+  document.getElementById("levercnt").textContent = folded && n && pan.dataset.sum ? pan.dataset.sum : (n ? `${n} on` : "none on · click to pick");
+}
+/** compact results inside the floating panel: one bar per resource, low–high in text */
+function paintLeverResults(x) {
+  const box = document.getElementById("leverres"); if (!box) return;
+  const pan0 = document.getElementById("leverpanel"); if (pan0) { delete pan0.dataset.sum; paintLeverPicker(); }
+  if (!x) { box.innerHTML = state.levers.size ? `<small>Only match-day levers are on: pick a 2026 match and read the match card.</small>` : `<small>Tick a lever to see its cut on what you are looking at.</small>`; return; }
+  const R = [["kwh","Energy",x.kwh,x.fp.a.kwh], ["water","Water",x.water,x.fp.a.water], ["co2","CO₂e",x.co2,x.fp.a.co2]];
+  const cut = R.map(([r,l,b,a]) => ({ r, l, lo: b ? 1-a[0]/b : 0, mid: b ? 1-a[1]/b : 0, hi: b ? 1-a[2]/b : 0 }));
+  const mx = Math.max(0.05, niceMax(Math.max(...cut.map(c => c.hi))));
+  const pan = document.getElementById("leverpanel");
+  if (pan) { pan.dataset.sum = `${state.levers.size} on · ` + cut.filter(c => c.mid > 1e-6).map(c => `${c.l} −${(c.mid*100).toFixed(1)}%`).join(" · "); paintLeverPicker(); }
+  box.innerHTML = cut.map(c => `<div class="r"><span>${c.l}</span><i style="--w:${(c.mid/mx*100).toFixed(1)}%;--c:var(${RES_CSS[c.r]})"></i><span>${c.mid > 1e-6 ? `−${(c.mid*100).toFixed(1)}% <small>(${(c.lo*100).toFixed(1)}–${(c.hi*100).toFixed(1)})</small>` : "0%"}</span></div>`).join("") +
+    `<small>Cut on ${esc(scopeName())}, ${pretty(MONTHS[state.mi])}${state.match ? " · match card below has the per-match lines" : ""}.</small>`;
+}
+const cutLine = (b, a) => b ? `−${((1 - a[1]/b)*100).toFixed(1)}% (${((1 - a[0]/b)*100).toFixed(1)}–${((1 - a[2]/b)*100).toFixed(1)})` : "—";
+
 const inCity = p => state.city === ALL || p.m === state.city;
 const matchesQ = p => !state.q || p.nl.includes(state.q);
 const cityPlaces = () => DATA.places.filter(p => inCity(p) && layerOn(p.l) && matchesQ(p));
@@ -645,6 +809,8 @@ function render() {
     if (p.vs != null && c > 0) { visW += p.vs * c; visN += c; } }
   let kwh=0, water=0, co2=0;
   for (const k in byLayer) { const f = FACTORS[k]||FACTORS.Other_EFW; kwh += byLayer[k]*f.kwh; water += byLayer[k]*f.water; co2 += byLayer[k]*f.co2; }
+  computeKeep();
+  const lev = leversOn().length > 0, fp = lev ? footprint(pl) : null;
 
   // last 24 months for the sparklines, and the year-earlier comparison
   const series = []; for (let i = Math.max(0, state.mi-23); i <= state.mi; i++) series.push(totalAt(pl, i));
@@ -655,13 +821,18 @@ function render() {
 
   const tiles = [
     kpi(`Customers in ${pretty(month)}`, fmt(customers) + delta, prev ? `vs ${fmt(prev)} in ${pretty(MONTHS[yi])}` : "no year-earlier month to compare", series),
-    kpi("Energy", fmt(kwh)+" kWh", `≈ ${full(kwh/900)} homes for a month`, series.map(v => v * kwh / (customers||1))),
-    kpi("Water", fmt(water)+" L", `≈ ${full(water/9000)} people's use for a month`, series.map(v => v * water / (customers||1))),
-    kpi("Carbon", fmt(co2)+" kg CO₂e", `≈ ${full(co2/4600)} cars driven for a year`, series.map(v => v * co2 / (customers||1))),
+    lev ? kpi("Energy with levers", fmt(fp.a.kwh[1])+" kWh", `was ${fmt(kwh)} · ${cutLine(kwh, fp.a.kwh)}`, series.map(v => v * kwh / (customers||1)))
+        : kpi("Energy", fmt(kwh)+" kWh", `≈ ${full(kwh/900)} homes for a month`, series.map(v => v * kwh / (customers||1))),
+    lev ? kpi("Water with levers", fmt(fp.a.water[1])+" L", `was ${fmt(water)} · ${cutLine(water, fp.a.water)}`, series.map(v => v * water / (customers||1)))
+        : kpi("Water", fmt(water)+" L", `≈ ${full(water/9000)} people's use for a month`, series.map(v => v * water / (customers||1))),
+    lev ? kpi("Carbon with levers", fmt(fp.a.co2[1])+" kg CO₂e", `was ${fmt(co2)} · ${cutLine(co2, fp.a.co2)}`, series.map(v => v * co2 / (customers||1)))
+        : kpi("Carbon", fmt(co2)+" kg CO₂e", `≈ ${full(co2/4600)} cars driven for a year`, series.map(v => v * co2 / (customers||1))),
     kpi("Shops trading", full(trading), `${pct(pl.length ? trading/pl.length : 0)} of ${full(pl.length)} shops here`, null),
   ];
   if (VIS) tiles.push(kpi("Visitors", visN ? pct(visW/visN) : "—", "share of card customers from outside the metro", null));
   document.getElementById("kpis").innerHTML = tiles.join("");
+  drawLeverImpact(lev ? { kwh, water, co2, fp } : null);
+  paintLeverResults(lev ? { kwh, water, co2, fp } : null);
 
   const where = state.city === ALL ? "All 11 cities" : state.city;
   document.getElementById("now").textContent = pretty(month);
@@ -703,13 +874,15 @@ async function pickMatch(m) {
   state.match = m; state.matchday = false; document.getElementById("matchday").checked = false;
   document.getElementById("mdwrap").hidden = false;
   document.getElementById("match").value = m.id;
-  state.city = m.m; document.getElementById("city").value = m.m;
+  state.city = m.m; document.getElementById("city").value = m.m; tellShellCity();
   const mi = MONTHS.indexOf("2024-" + m.d.slice(5,7)); if (mi >= 0) state.mi = mi;
   await loadSM();
   const st = STADIUMS[m.s];
   if (mapReady) map.flyTo({ center:[st.x, st.y], zoom:11.6, duration:900 });
   render();
-  document.getElementById("map").scrollIntoView({ behavior:"smooth", block:"center" });
+  const panel = document.getElementById("matchpanel");
+  panel.scrollIntoView({ behavior:"smooth", block:"start" });
+  panel.classList.remove("matchflash"); void panel.offsetWidth; panel.classList.add("matchflash");
 }
 function clearMatch(rerender) {
   state.match = null; state.matchday = false;
@@ -756,11 +929,33 @@ function drawMatch(pl, month) {
       <div class="v">+${(MATCH_LIFT*100).toFixed(0)}%</div>
       <div class="u">extra card spend at shops within 2 km on match day and the day after — about <b>${fmt(s2.perDay*MATCH_LIFT)}</b> more customers a day here, mostly food and venues. Beyond 5 km nothing measurable. From 566 NFL home games at these stadiums and 19 Copa América 2024 matches.</div>
     </div>
+    ${leverBoxHtml(m, rings, dim)}
     <div class="box">
       <div class="k">Citywide visitor lift</div>
       <div class="v" style="font-size:15px">too small to measure</div>
       <div class="u">Out-of-town visitors spread across the whole city for weeks. In Copa América 2024 that lift was under the ±8% noise of the method, in line with the Club World Cup's published +7%. It's real but too small and too spread out to show on this map.</div>
     </div>`;
+}
+
+/** match-card box for the levers that are on: ring cuts for shop levers, attendance × per-fan for off-map ones */
+function leverBoxHtml(m, rings, dim) {
+  const on = leversOn(); if (!on.length) return "";
+  const seats = m.a || m.cap || 0;
+  const shopLevers = on.filter(l => !l.offmap), offLevers = on.filter(l => l.offmap);
+  let rows = "";
+  if (shopLevers.length) {
+    const f2 = footprint(rings[0], state.mi, true), f5 = footprint(rings[1], state.mi, true);   // same basis as the table above (no halo)
+    const cell = (fb, fa) => fb ? `${fmt(fa[1]/dim)} <small>(was ${fmt(fb/dim)}, ${cutLine(fb, fa)})</small>` : "—";
+    rows += `<tr><th></th><th>within 2 km</th><th>within 5 km</th></tr>
+      <tr><td>kWh a day with levers</td><td>${cell(f2.b.kwh, f2.a.kwh)}</td><td>${cell(f5.b.kwh, f5.a.kwh)}</td></tr>
+      <tr><td>water a day with levers</td><td>${cell(f2.b.water, f2.a.water)}</td><td>${cell(f5.b.water, f5.a.water)}</td></tr>`;
+  }
+  const off = offLevers.map(l => `<div style="margin-top:6px"><b>${esc(l.title)}</b>: ` + Object.entries(l.offmap.per_fan).filter(([k]) => k !== "gal").map(([k, v]) => {
+      const u = {kwh:"kWh", water:"L", co2:"kg CO₂e"}[k]; return `${fmt(v[1]*seats)} ${u} <small>(${fmt(v[0]*seats)}–${fmt(v[2]*seats)})</small>`; }).join(" · ") +
+    ` <small>for ${seats.toLocaleString()} fans · not in the shop data, attendance × per-fan</small></div>`).join("");
+  return `<div class="box"><div class="k">Levers on this match</div>
+    <div class="u">${shopLevers.length ? `<table>${rows}</table>` : ""}${off}
+    <div style="margin-top:6px">${shopLevers.length ? "Ring numbers are the stand-in month's shops × factors with each lever's middle cut; low–high in brackets. " : ""}Lever ranges and sources: Scenarios tab, or <code>interventions/</code>.</div></div></div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -780,12 +975,13 @@ function drawScores() {
     </div>`).join("");
   document.querySelectorAll(".card").forEach(el => el.onclick = () => setCity(el.dataset.city));
 }
+// one line per play from D's scorecards.json, with the cut taken from our sourced cards (interventions/), not D's placeholders
 const PLAY_WHY = {
-  "Plant-forward concessions & catering defaults": (c, r, top) => `Cuts food CO₂ 25%. ${c}'s shops produce ${fmt(r.kg_co2e)} kg CO₂e per shop-month${top ? ", among the highest of the hosts" : ""}.`,
-  "Hotel linen / laundry water-reuse program": (c, r, top) => `Cuts water 30%. ${c}'s shops use ${fmt(r.water_liters)} L per shop-month${top ? ", among the highest of the hosts" : ""}.`,
-  "Cool roofs + shade in high-UHI hospitality corridors": (c, r) => `Cuts energy 12%. ${c} sits at heat index ${(r.uhi||0).toFixed(1)} with ${fmt(r.cdd)} summer cooling-degree-days.`,
-  "Event-week HVAC setpoint & pre-cooling protocols": (c, r) => `Cuts energy 8%. ${c}'s summer cooling load is ${fmt(r.cdd)} degree-days.`,
-  "Commercial kitchen water-efficiency retrofit grants": (c, r) => `Cuts water 20% in kitchens. ${c}'s shops use ${fmt(r.water_liters)} L per shop-month.`,
+  "Plant-forward concessions & catering defaults": (c, r, top) => `About 0.3 kg CO₂e less per fan (0.15–0.49), shown on the match card. ${c}'s shops produce ${fmt(r.kg_co2e)} kg CO₂e per shop-month${top ? ", among the highest of the hosts" : ""}.`,
+  "Hotel linen / laundry water-reuse program": (c, r, top) => `Hotel water programme: about 14% of hotel water (11–17%). ${c}'s shops use ${fmt(r.water_liters)} L per shop-month${top ? ", among the highest of the hosts" : ""}.`,
+  "Cool roofs + shade in high-UHI hospitality corridors": (c, r) => `About 1% of electricity, and only years after the roofs change — a legacy play. ${c} sits at heat index ${(r.uhi||0).toFixed(1)} with ${fmt(r.cdd)} summer cooling-degree-days.`,
+  "Event-week HVAC setpoint & pre-cooling protocols": (c, r) => `About 2–4% of electricity for the event week (1–5%). ${c}'s summer cooling load is ${fmt(r.cdd)} degree-days.`,
+  "Commercial kitchen water-efficiency retrofit grants": (c, r) => `About 3.5% of restaurant water (2–6.5%). ${c}'s shops use ${fmt(r.water_liters)} L per shop-month.`,
 };
 function drawCityFacts() {
   const box = document.getElementById("cityfacts");
@@ -885,11 +1081,13 @@ function drawScrub(pl) {
 
 // ---------------------------------------------------------------------------
 function initMap() {
-  map = new maplibregl.Map({ container:"map", style:BASEMAP[state.theme], center:[-96,38], zoom:3.4, attributionControl:{compact:true} });
+  // one copy of the world, and you cannot zoom out past the US (no second America)
+  map = new maplibregl.Map({ container:"map", style:BASEMAP[state.theme], center:[-96,38], zoom:3.4, attributionControl:{compact:true},
+                             renderWorldCopies:false, minZoom:3, maxBounds:[[-140,14],[-50,58]] });
   map.addControl(new maplibregl.NavigationControl({showCompass:false}), "top-right");
   hoverPopup = new maplibregl.Popup({ closeButton:false, closeOnClick:false, offset:10 });
   map.on("load", () => { addOurLayers(); mapReady = true; paintMap(); requestAnimationFrame(() => { map.resize(); flyToCity(true); }); });
-  map.on("zoomend", () => { if (state.city === ALL) { paintMap(); paintLegend(); } });
+  map.on("zoomend", () => { if (mapReady && state.city === ALL) { paintMap(); paintLegend(); } });
 
   const shopHtml = p => `<b>${esc(p.name)}</b><small>${esc(p.city)} · ${esc(p.layer)}${p.near==1 ? " · within 2 km of the stadium" : ""}</small>
     <table><tr><td>customers, ${pretty(MONTHS[state.mi])}</td><td>${fmt(+p.cust)}</td></tr><tr><td>heat index</td><td>${(+p.uhi).toFixed(1)}</td></tr>
@@ -919,6 +1117,8 @@ function addOurLayers() {
   map.addLayer({ id:"district-line", type:"line", source:"districts", paint:{ "line-color":cssv("--plane"), "line-width":0.6, "line-opacity":0.7 } });
   map.addLayer({ id:"shop-near", type:"circle", source:"shops", filter:["==",["get","near"],1],
     paint:{ "circle-radius":nearRadius(false), "circle-color":cssv("--s-energy"), "circle-opacity":0, "circle-stroke-width":1.6, "circle-stroke-color":cssv("--ink-1") } });
+  map.addLayer({ id:"shop-lever", type:"circle", source:"shops", filter:["==",["get","lev"],1],
+    paint:{ "circle-radius":nearRadius(true), "circle-color":cssv("--ink-1"), "circle-opacity":0.06, "circle-stroke-width":["interpolate",["linear"],["zoom"],8,0.6,12,1.3], "circle-stroke-color":cssv("--ink-1"), "circle-stroke-opacity":0.55 } });
   map.addLayer({ id:"shop-dots", type:"circle", source:"shops",
     paint:{
       "circle-radius":["interpolate",["linear"],["zoom"],
@@ -986,7 +1186,7 @@ function paintMap() {
   const dots = state.view === "shops" && !zoomedOut;
   const max = Math.max(1, ...pl.map(o=>o.c));
   map.getSource("shops").setData({ type:"FeatureCollection", features: dots ? pl.map(({p,c}) => ({ type:"Feature",
-    properties:{ name:p.n, city:p.m, layer:p.l, uhi:p.u??0, cust:c, r:Math.sqrt(c/max), vs: p.vs==null ? -1 : p.vs, near: nearStadium(p) ? 1 : 0 },
+    properties:{ name:p.n, city:p.m, layer:p.l, uhi:p.u??0, cust:c, r:Math.sqrt(c/max), vs: p.vs==null ? -1 : p.vs, near: nearStadium(p) ? 1 : 0, lev: touched(p) ? 1 : 0 },
     geometry:{type:"Point", coordinates:[p.x,p.y]} })) : [] });
   map.getSource("districts").setData(state.view === "districts" && !zoomedOut ? districtsGeo(pl) : empty());
 
@@ -1001,6 +1201,7 @@ function paintMap() {
   map.setPaintProperty("shop-near","circle-color", cssv("--s-energy"));
   map.setPaintProperty("shop-near","circle-opacity", state.matchday ? 0.45 : 0);
   map.setPaintProperty("shop-near","circle-radius", nearRadius(state.matchday));
+  map.setPaintProperty("shop-lever","circle-color", cssv("--ink-1")); map.setPaintProperty("shop-lever","circle-stroke-color", cssv("--ink-1"));
   map.setPaintProperty("city-bubbles","circle-color", cssv("--dot")); map.setPaintProperty("city-bubbles","circle-stroke-color", cssv("--dot"));
   map.setPaintProperty("city-labels","text-color", cssv("--ink-1")); map.setPaintProperty("city-labels","text-halo-color", cssv("--plane"));
   map.setPaintProperty("ring-line","line-color", cssv("--ink-1"));
@@ -1013,9 +1214,10 @@ function paintMap() {
 function districtsGeo(pl) {
   const cells = {};
   for (const {p,c} of pl) {
-    const d = cells[p.cell] ||= { c:0, n:0, by:{}, kwh:0, water:0, co2:0, vW:0, vN:0, top:[], m:p.m };
+    const d = cells[p.cell] ||= { c:0, n:0, by:{}, kwh:0, water:0, co2:0, kwhA:0, waterA:0, co2A:0, nLev:0, vW:0, vN:0, top:[], m:p.m };
     d.c += c; d.n++; d.by[p.l] = (d.by[p.l]||0) + c;
     const f = FACTORS[p.l]||FACTORS.Other_EFW; d.kwh += c*f.kwh; d.water += c*f.water; d.co2 += c*f.co2;
+    d.kwhA += c*f.kwh*keepOf(p.seg,"kwh",1); d.waterA += c*f.water*keepOf(p.seg,"water",1); d.co2A += c*f.co2*keepOf(p.seg,"co2",1); if (touched(p)) d.nLev++;
     if (p.vs != null) { d.vW += p.vs*c; d.vN += c; }      // customer-weighted: Σ visitor customers / Σ customers
     d.top.push([c, p.n]);
   }
@@ -1035,6 +1237,7 @@ function districtsGeo(pl) {
     const html = `<b>${esc(placeName(x,y) || ("near " + d.top.slice(0,2).map(t=>t[1]).join(" · ")))} · ${esc(d.m)}</b><small>${d.n} shops · ${month} · mostly ${topL.label.toLowerCase()}</small>
       <table><tr><td>customers</td><td>${fmt(d.c)}</td></tr><tr><td>energy</td><td>${fmt(d.kwh)} kWh</td></tr>
       <tr><td>water</td><td>${fmt(d.water)} L</td></tr><tr><td>CO₂e</td><td>${fmt(d.co2)} kg</td></tr>
+      ${leversOn().length ? `<tr><td>with levers (${d.nLev} of ${d.n} shops touched)</td><td>${fmt(d.kwhA)} kWh · ${fmt(d.waterA)} L · ${fmt(d.co2A)} kg</td></tr>` : ""}
       <tr><td>heat index</td><td>${heat==null?"—":heat.toFixed(1)}</td></tr>
       <tr><td>month-to-month wobble</td><td>${ch ? pct(ch.churn) : "—"}</td></tr>
       ${VIS ? `<tr><td>visitor share</td><td>${d.vN >= VIS_MIN_CUST ? pct(d.vW/d.vN) : "n/a"}</td></tr>` : ""}</table>

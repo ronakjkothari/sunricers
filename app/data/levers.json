@@ -1,0 +1,376 @@
+{
+ "built": "2026-08-19",
+ "note": "Cuts are 10th/50th/90th percentiles from interventions/<id>_mc.py (100,000 draws, middle 80% kept). They are % of the per-visit factor in data/curated/intensity_factors.csv for that shop type, averaged over all shops of the type in a city. The percent is the trustworthy part; absolute totals inherit whichever pile they are applied to.",
+ "segments": {
+  "restaurant": {
+   "layer": "Food",
+   "label": "restaurants",
+   "factor": {
+    "kwh": 2.8,
+    "water": 25.0,
+    "co2": 3.5
+   }
+  },
+  "grocery": {
+   "layer": "Food",
+   "label": "grocery & convenience",
+   "factor": {
+    "kwh": 1.2,
+    "water": 8.0,
+    "co2": 6.0
+   }
+  },
+  "hotel": {
+   "layer": "Water",
+   "label": "hotels",
+   "factor": {
+    "kwh": 28.0,
+    "water": 300.0,
+    "co2": 2.0
+   }
+  },
+  "venue": {
+   "layer": "Venue",
+   "label": "venues",
+   "factor": {
+    "kwh": 4.0,
+    "water": 15.0,
+    "co2": 2.5
+   }
+  },
+  "gas": {
+   "layer": "Energy",
+   "label": "gas stations",
+   "factor": {
+    "kwh": 45.0,
+    "water": 1.5,
+    "co2": 12.0
+   }
+  },
+  "other": {
+   "layer": "Other_EFW",
+   "label": "other",
+   "factor": {
+    "kwh": 3.0,
+    "water": 12.0,
+    "co2": 1.8
+   }
+  }
+ },
+ "grocery_regex": "market|grocer|supermarket|deli\\b|foods\\b|liquor|wine|spirits|7-eleven|circle k|wawa|bodega|mart\\b|convenience|bakery|meat|seafood|produce|aldi|safeway|publix|kroger|h-e-b|trader joe|whole foods|shoprite|key food|c town|costco|walmart|target|sprouts|smart & final|dollar",
+ "food_split": {
+  "San Francisco Bay Area": {
+   "restaurant": 0.6449,
+   "grocery": 0.3551
+  },
+  "Dallas": {
+   "restaurant": 0.8026,
+   "grocery": 0.1974
+  },
+  "Miami": {
+   "restaurant": 0.5939,
+   "grocery": 0.4061
+  },
+  "Seattle": {
+   "restaurant": 0.8159,
+   "grocery": 0.1841
+  },
+  "Philadelphia": {
+   "restaurant": 0.5502,
+   "grocery": 0.4498
+  },
+  "Atlanta": {
+   "restaurant": 0.8253,
+   "grocery": 0.1747
+  },
+  "Kansas City": {
+   "restaurant": 0.9173,
+   "grocery": 0.0827
+  },
+  "Boston": {
+   "restaurant": 0.7474,
+   "grocery": 0.2526
+  },
+  "New York/New Jersey": {
+   "restaurant": 0.6951,
+   "grocery": 0.3049
+  },
+  "Los Angeles": {
+   "restaurant": 0.8144,
+   "grocery": 0.1856
+  },
+  "Houston": {
+   "restaurant": 0.783,
+   "grocery": 0.217
+  }
+ },
+ "levers": [
+  {
+   "id": "hotel_water_programme",
+   "title": "Hotel water programme",
+   "bucket": "before",
+   "plain": "Hotels put the “hang up your towel” card in rooms, and grants pay for low-flow showerheads, tap aerators and low-flush toilets.",
+   "owner": "Hotel association + water utility",
+   "touches": [
+    "hotel"
+   ],
+   "cuts": {
+    "hotel": {
+     "water": [
+      0.109,
+      0.13699999999999998,
+      0.17
+     ],
+     "kwh": [
+      0.062,
+      0.086,
+      0.11800000000000001
+     ]
+    }
+   },
+   "evidence": "formula from measured pieces",
+   "evidence_plain": "Laundry formula from the EU JRC hotel guide with measured guest participation (35–49%); bathroom fixtures from logged US hotel rooms and two metered San Antonio retrofits. The share of rooms still on old fittings is unmeasured.",
+   "best_source": {
+    "t": "JRC, Best Environmental Management Practice in the Tourism Sector, ch. 5",
+    "u": "https://green-forum.ec.europa.eu/document/download/31ee1841-92ff-4eb9-b37e-9fc1f4d66bb7_en?filename=2_PDFsam_BEMP-5-FINAL.pdf"
+   },
+   "dials": [
+    "opt-out vs opt-in towel card (roughly doubles participation)",
+    "laundry efficiency (5 to 20 L per kg)",
+    "share of rooms still on pre-1994 fittings"
+   ],
+   "placeholder": "Ronak: water −30%, energy −3%",
+   "card": "interventions/hotel_water_programme.md"
+  },
+  {
+   "id": "kitchen_water_efficiency",
+   "title": "Kitchen water retrofits",
+   "bucket": "before",
+   "plain": "City pays part of new spray valves, dishwashers and ice machines for restaurants.",
+   "owner": "Economic development + water utility",
+   "touches": [
+    "restaurant"
+   ],
+   "cuts": {
+    "restaurant": {
+     "water": [
+      0.019,
+      0.035,
+      0.065
+     ],
+     "kwh": [
+      0.009000000000000001,
+      0.017,
+      0.031
+     ]
+    }
+   },
+   "evidence": "partly untested",
+   "evidence_plain": "Per-device savings are metered (39 Massachusetts kitchens, 30 days each). How many kitchens still hold old kit has never been surveyed, and since 2019 every valve sold is already efficient.",
+   "best_source": {
+    "t": "DNV GL 2014, Massachusetts pre-rinse spray valve impact evaluation",
+    "u": "https://ma-eeac.org/wp-content/uploads/Prescriptive-Gas-Pre-Rinse-Spray-Valve-Measure-Impact-Evaluation.pdf"
+   },
+   "dials": [
+    "share of kitchens with old kit",
+    "which devices the grant covers"
+   ],
+   "placeholder": "Ronak: water −15%, energy −2%, food CO₂e −5%",
+   "card": "interventions/kitchen_water_efficiency.md"
+  },
+  {
+   "id": "kitchen_energy_retrofits",
+   "title": "Kitchen energy retrofits",
+   "bucket": "before",
+   "plain": "City pays part of efficient fryers, ovens, fridges and smart exhaust hoods for restaurants.",
+   "owner": "Economic development + utility",
+   "touches": [
+    "restaurant"
+   ],
+   "cuts": {
+    "restaurant": {
+     "kwh": [
+      0.037000000000000005,
+      0.057999999999999996,
+      0.087
+     ],
+     "water": [
+      0.0022,
+      0.0045000000000000005,
+      0.0091
+     ]
+    }
+   },
+   "overlap": {
+    "kitchen_water_efficiency": [
+     "water"
+    ]
+   },
+   "evidence": "formula from measured pieces",
+   "evidence_plain": "Six sub-metered California kitchens: cookline gas −19 to −68%, exhaust fans −45 to −49%. A shop that takes the grant saves 12–21%; spread over every restaurant it is 4–9%.",
+   "best_source": {
+    "t": "Frontier Energy 2021, CEC-500-2021-021",
+    "u": "https://www.energy.ca.gov/sites/default/files/2021-05/CEC-500-2021-021.pdf"
+   },
+   "dials": [
+    "share of kitchens with old kit",
+    "grant limited to the biggest energy hogs vs any ENERGY STAR item"
+   ],
+   "placeholder": "no placeholder",
+   "card": "interventions/kitchen_energy_retrofits.md"
+  },
+  {
+   "id": "grocery_fridge_doors",
+   "title": "Grocery fridge doors",
+   "bucket": "before",
+   "plain": "Grants to put glass doors on open fridge cases in grocery and convenience stores.",
+   "owner": "Utility + city",
+   "touches": [
+    "grocery"
+   ],
+   "cuts": {
+    "grocery": {
+     "kwh": [
+      0.036000000000000004,
+      0.055999999999999994,
+      0.084
+     ]
+    }
+   },
+   "evidence": "formula from measured pieces",
+   "evidence_plain": "42 days of metering in two Kansas supermarkets: doored cases use 23% less, no sales loss. A store that signs up saves 7–13%; spread over all grocery shops 4–8%.",
+   "best_source": {
+    "t": "Fricke & Becker 2010, ASHRAE RP-1402 display case doors",
+    "u": "https://www.producefoodsafety.org/files/inline-files/displaycasedoors.pdf"
+   },
+   "dials": [
+    "share of stores still running open cases",
+    "heated glass vs no-heat glass + LED"
+   ],
+   "placeholder": "no placeholder",
+   "card": "interventions/grocery_fridge_doors.md"
+  },
+  {
+   "id": "peak_cooling_setpoints",
+   "title": "Event-week cooling setpoints",
+   "bucket": "during",
+   "plain": "Hotels, restaurants and venues set the air conditioning 1–2 °C warmer for the event week.",
+   "owner": "Hotel engineering + venue facilities",
+   "touches": [
+    "restaurant",
+    "hotel",
+    "venue"
+   ],
+   "cuts": {
+    "restaurant": {
+     "kwh": [
+      0.009000000000000001,
+      0.018000000000000002,
+      0.028999999999999998
+     ]
+    },
+    "hotel": {
+     "kwh": [
+      0.023,
+      0.036000000000000004,
+      0.053
+     ],
+     "water": [
+      0.009000000000000001,
+      0.013000000000000001,
+      0.019
+     ]
+    },
+    "venue": {
+     "kwh": [
+      0.015,
+      0.03,
+      0.05
+     ]
+    }
+   },
+   "evidence": "formula from measured pieces",
+   "evidence_plain": "1 °C saves 7–8% of cooling energy in Houston/Miami simulations; cooling is 15–35% of July electricity. Pre-cooling only moves power to the morning, it does not cut kWh.",
+   "best_source": {
+    "t": "Ghahramani et al. 2016, Applied Energy (setpoints in hot US cities)",
+    "u": "https://escholarship.org/uc/item/2c58r8qm"
+   },
+   "dials": [
+    "+1 or +2 °C",
+    "event week only vs whole summer"
+   ],
+   "placeholder": "Ronak: energy −8%, water −1%",
+   "card": "interventions/peak_cooling_setpoints.md"
+  },
+  {
+   "id": "plant_forward_concessions",
+   "title": "Plant-forward concessions",
+   "bucket": "match day",
+   "plain": "Stadium food contracts make the plant-based option the default or the first thing you see.",
+   "owner": "Venue concessions + host committee",
+   "touches": [],
+   "offmap": {
+    "per_fan": {
+     "co2": [
+      0.15,
+      0.29,
+      0.49
+     ]
+    },
+    "unit_note": "kg CO₂e per attending fan"
+   },
+   "evidence": "partly untested",
+   "evidence_plain": "Three US randomised trials at catered events: plant default +47 points of uptake. Not tested in a stadium; the concession menu mix is assumed. The shop data never sees stadium concessions, so this is attendance × per-fan, not a shop cut.",
+   "best_source": {
+    "t": "Boronowsky et al. 2022, Frontiers in Sustainable Food Systems",
+    "u": "https://www.frontiersin.org/articles/10.3389/fsufs.2022.1001157/full"
+   },
+   "dials": [
+    "default vs merely available",
+    "share of concession points that comply"
+   ],
+   "placeholder": "Ronak: food CO₂e −25%, water −8%, energy −5%",
+   "card": "interventions/plant_forward_concessions.md"
+  },
+  {
+   "id": "free_transit_with_ticket",
+   "title": "Free transit with the match ticket",
+   "bucket": "match day",
+   "plain": "Your match ticket is also a free bus and train pass, with extra service and park-and-ride.",
+   "owner": "Host committee + transit agency",
+   "touches": [],
+   "offmap": {
+    "per_fan": {
+     "kwh": [
+      1.4,
+      2.9,
+      5.3
+     ],
+     "co2": [
+      0.37,
+      0.76,
+      1.4
+     ],
+     "gal": [
+      0.04,
+      0.09,
+      0.16
+     ]
+    },
+    "unit_note": "per attending fan, region-wide tailpipe"
+   },
+   "evidence": "partly untested",
+   "evidence_plain": "Measured at the 2006 World Cup (public transport 40% → 57%), London 2012 and Super Bowl XLVIII, but every big shift also had a parking cap. Not in the shop data: attendance × per-fan.",
+   "best_source": {
+    "t": "Öko-Institut, Green Goal Legacy Report (2006 World Cup)",
+    "u": "https://www.oeko.de/oekodoc/292/2006-011-en.pdf"
+   },
+   "dials": [
+    "with or without a parking cap",
+    "free vs paid (the 2026 hosts charged $80–150)"
+   ],
+   "placeholder": "no placeholder (replaces gasoline_visit_shift, energy −10%)",
+   "card": "interventions/free_transit_with_ticket.md"
+  }
+ ]
+}

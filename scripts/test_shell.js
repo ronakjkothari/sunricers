@@ -153,7 +153,9 @@ function run() {
   check(worst <= 0.005, `Overview summer totals match ops_scale.absolute (worst ${(worst * 100).toFixed(4)}% at ${worstAt || "—"})`);
 
   section("First paint");
+  // the shell now opens on all 11 hosts; the per-city panels below are checked after selecting one
   drew("kpis", "Energy", "Water", "CO₂e", "Visits", "summer total", "per trading shop-month");
+  setCity(cities[0]);
   drew("presschips", "chip");
   drew("chart", "polyline", "rect");
   drew("serielegend", "Cooling degree days");

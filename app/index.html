@@ -181,21 +181,62 @@
   .frameplaceholder[hidden] { display:none; }
 
   /* scenarios */
-  .lab { display:grid; grid-template-columns:1fr 1.1fr; gap:18px; padding:12px 16px 14px; }
+  .lab { display:grid; grid-template-columns:1fr 1.1fr; gap:18px; padding:12px 16px 14px; align-items:start; }
+  .lab > div:last-child { position:sticky; top:12px; }
   @media (max-width:900px) { .lab { grid-template-columns:1fr; } }
   .slider { display:flex; align-items:center; gap:12px; margin-top:10px; }
   .slider input[type=range] { flex:1; cursor:pointer; padding:0; }
   .slider .val { font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; min-width:56px; }
   .levers { display:grid; gap:8px; margin-top:10px; }
-  .lever { border:1px dashed var(--hairline); border-radius:8px; padding:9px 12px; opacity:.62; }
+  .lever { border:1px solid var(--hairline); border-radius:8px; padding:9px 12px; display:grid; grid-template-columns:auto 1fr; gap:4px 10px; align-items:start; }
+  .lever input { margin-top:3px; cursor:pointer; }
+  .lever.on { border-color:var(--ink-2); background:var(--surface-1); }
   .lever .lt { font-size:13px; font-weight:600; }
-  .lever .lm { font-size:11px; color:var(--ink-muted); margin-top:2px; }
+  .lever .lp { font-size:12px; color:var(--ink-2); margin-top:2px; }
+  .lever .lm { font-size:12px; color:var(--ink-2); margin-top:3px; }
+  .lever .here { font-size:12px; color:var(--ink-1); margin-top:3px; }
+  .lever .here:empty { display:none; }
+  .lever .lm b { color:var(--ink-2); font-weight:600; }
+  .lever .ev { display:inline-block; font-size:10px; padding:1px 6px; border-radius:999px; border:1px solid var(--hairline); color:var(--ink-muted); margin-left:6px; vertical-align:1px; }
+  .lever a { color:var(--ink-2); }
+  .lever details { grid-column:2; font-size:12px; color:var(--ink-2); }
+  .lever details summary { cursor:pointer; }
+  .bucket { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; margin:14px 0 4px; }
+  .bucket:first-child { margin-top:0; }
+  .lowhigh { font-size:12px; color:var(--ink-2); }
+  td.cut { color:var(--ink-1); }
+  .impact { border:1px solid var(--hairline); border-radius:8px; padding:12px 14px; }
+  .impact .hl { font-size:15px; line-height:1.45; color:var(--ink-1); }
+  .impact .hl b { font-weight:600; }
+  .impact .empty { font-size:13px; color:var(--ink-muted); padding:18px 0; text-align:center; }
+  .cutrow { display:grid; grid-template-columns:64px 1fr 150px; gap:10px; align-items:center; margin-top:10px; font-size:12px; }
+  .cutrow .lab { color:var(--ink-2); font-weight:600; }
+  .cutrow .val { color:var(--ink-1); font-variant-numeric:tabular-nums; text-align:right; }
+  .cutrow .val small { display:block; color:var(--ink-2); font-weight:400; }
+  .cutbar svg { display:block; width:100%; height:22px; overflow:visible; }
+  .axis { display:grid; grid-template-columns:64px 1fr 150px; gap:10px; font-size:11px; color:var(--ink-2); margin-top:6px; }
+  .axis .ticks { display:flex; justify-content:space-between; border-top:1px solid var(--grid); padding-top:2px; }
+  .bylever { margin-top:14px; }
+  .bylever h5 { margin:0 0 6px; font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; font-weight:500; }
+  .lvrow { display:grid; grid-template-columns:1fr 160px; gap:10px; align-items:center; font-size:12px; padding:5px 0; border-top:1px solid var(--grid); }
+  .lvrow .n { color:var(--ink-2); }
+  .lvrow .n small { color:var(--ink-muted); }
+  .lvrow .bars { display:grid; gap:3px; }
+  .lvrow .b { display:grid; grid-template-columns:40px 1fr 56px; gap:6px; align-items:center; font-size:11px; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+  .lvrow .b i { display:block; height:6px; border-radius:3px; background:var(--grid); position:relative; overflow:hidden; }
+  .lvrow .b i::after { content:""; position:absolute; left:0; top:0; bottom:0; width:var(--w); background:var(--c); border-radius:3px; }
+  .numbers { margin-top:12px; font-size:12px; color:var(--ink-muted); }
+  .numbers summary { cursor:pointer; }
+  .offbox { border:1px solid var(--hairline); border-radius:8px; padding:10px 12px; margin-top:12px; }
+  .offbox .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
+  .offbox .v { font-size:15px; font-weight:600; margin-top:2px; }
+  .offbox .u { font-size:11px; color:var(--ink-muted); margin-top:2px; }
 
   table { border-collapse:collapse; width:100%; font-size:13px; }
   th, td { text-align:right; padding:7px 0; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums; }
   th:first-child, td:first-child { text-align:left; font-variant-numeric:normal; }
   th { color:var(--ink-muted); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
-  .note { font-size:11px; color:var(--ink-muted); margin-top:8px; }
+  .note { font-size:12px; color:var(--ink-2); margin-top:8px; }
 </style>
 </head>
 <body>
@@ -314,30 +355,37 @@
   <!-- 04 ------------------------------------------------------------------ -->
   <section class="pane" id="pane-scenarios" hidden>
     <section class="panel">
-      <h2>Intervention lab <span class="pill">preview</span></h2>
-      <div class="lead">Toggle strategies and watch ΔkWh / ΔL / ΔCO₂e move against the baseline. The full lever set —
-        with cross-resource coupling and a cost-vs-abatement frontier — lands in the next iteration.
-        One lever is live today.</div>
+      <h2>Intervention lab</h2>
+      <div class="lead">Switch levers on and watch energy, water and CO₂e move against the summer baseline. Every cut is a
+        <b>range</b> (low / middle / high) built from measured studies, never one number; the percent is the trustworthy part.
+        Each lever card says what a person actually does, what it touches, and where its numbers come from.</div>
       <div class="lab">
         <div>
-          <h4 style="margin:0 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Live lever · visitor surge</h4>
-          <div style="font-size:13px;color:var(--ink-2)">Scale tournament-window visitors against the summer baseline.</div>
+          <h4 style="margin:0 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Visitor surge</h4>
+          <div style="font-size:13px;color:var(--ink-2)">Scale tournament-window visitors against the summer baseline. Levers apply on top of it.</div>
           <div class="slider">
             <input type="range" id="surge" min="1" max="2" step="0.05" value="1">
             <span class="val" id="surgeval">1.00×</span>
           </div>
-          <div class="note">Footprints here are visits × intensity factors, so a visitor surge scales them linearly.
-            Climate amplifiers (CDD, urban heat) are <b>not</b> scaled — they do not depend on visitor counts.
-            Illustrative only.</div>
+          <div class="note" id="surgehint">More visitors means bigger totals; the <b>percent</b> each lever saves stays the same, so the bars on the right do not move — the kWh and litres under them do.</div>
 
-          <h4 style="margin:18px 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Landing next iteration</h4>
-          <div class="levers" id="levers"></div>
+          <h4 style="margin:18px 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Levers</h4>
+          <div class="levers" id="levers"><div class="note">Loading <code>data/levers.json</code>…</div></div>
         </div>
         <div>
           <h4 style="margin:0 0 8px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em"
-              id="surgetitle">Baseline vs surge</h4>
-          <table id="surgetbl"></table>
-          <div class="note" id="surgenote"></div>
+              id="surgetitle">What changes</h4>
+          <div class="impact" id="impact"></div>
+          <div id="offmap"></div>
+          <details class="numbers"><summary>The numbers behind the bars</summary>
+            <table id="surgetbl" style="margin-top:8px"></table>
+            <div class="note" id="surgenote"></div>
+          </details>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn small" id="showonmap">Show these levers on the map ↗</button>
+            <button class="btn small" id="clearlevers">Clear levers</button>
+          </div>
+          <div class="note" id="leversnote"></div>
         </div>
       </div>
     </section>
@@ -381,7 +429,8 @@ const niceMax = v => { if(v<=0) return 1; const p=Math.pow(10,Math.floor(Math.lo
 const scoreColour = s => s >= 66 ? cssv("--s-water") : s >= 33 ? cssv("--s-venue") : cssv("--s-energy");
 
 let C = null, S = null, BY = {}, CITIES = [], SUMMER_IDX = [];
-const state = { city:null, tab:"overview", theme:"light", metric:"e", surge:1, filter:null };
+const state = { city:null, tab:"overview", theme:"light", metric:"e", surge:1, filter:null, levers:new Set() };
+let LEV = null, MATCHES = [];   // levers.json and matches.json (optional files)
 
 Promise.all([
   fetch("data/a_integration.json").then(r => r.json()),
@@ -392,6 +441,11 @@ Promise.all([
   CITIES = C.scorecards.map(c => c.host_city).sort();
   SUMMER_IDX = S.months.map((m,i) => isSummer(m) ? i : -1).filter(i => i >= 0);
   boot();
+  const opt = url => fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
+  Promise.all([opt("data/levers.json"), opt("data/matches.json")]).then(([lev, mt]) => {
+    LEV = lev; MATCHES = mt || [];
+    readLeversHash(); drawLevers(); drawSurge(); pushToFrame();
+  });
 }).catch(err => {
   document.getElementById("kpis").innerHTML =
     `<div class="kpi"><div class="k">No data</div><div class="v" style="font-size:15px">Contract missing</div>
@@ -423,9 +477,18 @@ function boot() {
 
   document.getElementById("discbody").innerHTML = methodHtml();
   drawFilter();
-  drawLevers();
+  document.getElementById("showonmap").onclick = () => { setTab("spatial"); scrollToMap(); };
+  // the embedded map calls this when someone ticks a lever there, so both views stay in step
+  if (typeof window !== "undefined") {
+    window.__leversFromMap = ids => { if (!LEV) return; state.levers = new Set(ids.filter(id => leverById(id))); drawLevers(); drawSurge(); writeHash(); };
+    // the embedded map changed city (match picked, bubble clicked): follow it so the HOST CITY box never disagrees with the map
+    window.__cityFromMap = c => { if (c && c !== state.city && (c === ALL || BY[c])) { state.city = c; writeHash(); renderAll(); } };
+    // the embedded map reports its height so the page keeps a single scrollbar
+    window.__frameHeight = h => { const f = document.getElementById("frame"); if (f && h > 200) f.style.height = Math.ceil(h) + "px"; };
+  }
+  document.getElementById("clearlevers").onclick = () => { state.levers.clear(); drawLevers(); drawSurge(); pushToFrame(); writeHash(); };
 
-  addEventListener("hashchange", () => { readHash(); renderAll(); });
+  addEventListener("hashchange", () => { readHash(); drawLevers(); renderAll(); pushToFrame(); });
   readHash();
   renderAll();
 }
@@ -433,17 +496,30 @@ function boot() {
 // hash is #tab or #tab/City so any view in the demo is linkable.
 // Split on the first "/" *before* decoding — "New York/New Jersey" is percent-encoded,
 // so the raw fragment holds exactly one literal separator.
+let PENDING_LEVERS = "";   // ?levers= seen in the hash before levers.json had loaded
+function readLeversHash() {
+  if (!LEV || !PENDING_LEVERS) return;
+  PENDING_LEVERS.split(",").forEach(id => { if (LEV.levers.some(l => l.id === id)) state.levers.add(id); });
+  PENDING_LEVERS = "";
+}
 function readHash() {
-  const raw = location.hash.replace(/^#/, "");
+  const raw0 = location.hash.replace(/^#/, "");
+  const raw = raw0.split("?")[0];
+  const q = raw0.indexOf("?");
+  if (q >= 0) { const ids = new URLSearchParams(raw0.slice(q + 1)).get("levers") || "";
+    if (LEV) { state.levers = new Set(ids.split(",").filter(id => LEV.levers.some(l => l.id === id))); }
+    else PENDING_LEVERS = ids; }
   const cut = raw.indexOf("/");
   const tab = cut < 0 ? raw : raw.slice(0, cut);
   const city = cut < 0 ? "" : decodeURIComponent(raw.slice(cut + 1));
   state.tab = TABS.includes(tab) ? tab : "overview";
   if (city && (city === ALL || BY[city])) state.city = city;
-  else if (!state.city) state.city = C.scorecards.find(c => c.rank === C.scorecards.length).host_city;
+  else if (!state.city) state.city = ALL;   // land on all 11 hosts; the selector narrows from there
 }
 function writeHash() {
-  const want = `#${state.tab}/${encodeURIComponent(state.city)}`;
+  const ids = LEV ? [...state.levers].join(",") : PENDING_LEVERS;
+  const lv = ids ? `?levers=${ids}` : "";
+  const want = `#${state.tab}/${encodeURIComponent(state.city)}${lv}`;
   if (location.hash !== want) history.replaceState(null, "", want);
 }
 function setCity(c) { state.city = c; writeHash(); renderAll(); }
@@ -812,8 +888,9 @@ function playCard(p) {
 function drawSpatial() {
   document.getElementById("spatialtitle").textContent = cityName();
   // the pop-out must open on the same city, or the two views disagree
+  const lv = state.levers.size ? `&levers=${[...state.levers].join(",")}` : "";
   document.getElementById("popout").href =
-    `spatial.html?city=${encodeURIComponent(state.city)}&theme=${state.theme}`;
+    `spatial.html?city=${encodeURIComponent(state.city)}&theme=${state.theme}${lv}`;
 }
 
 function mountFrame() {
@@ -821,7 +898,8 @@ function mountFrame() {
   if (f.dataset.loaded) { pushToFrame(); return; }
   f.dataset.loaded = "1";
   f.classList.add("on");   // give it height before src, so the map measures itself correctly
-  f.src = `spatial.html?embed=1&city=${encodeURIComponent(state.city)}&theme=${state.theme}`;
+  const lv0 = state.levers.size ? `&levers=${[...state.levers].join(",")}` : "";
+  f.src = `spatial.html?embed=1&city=${encodeURIComponent(state.city)}&theme=${state.theme}${lv0}`;
   f.onload = () => {
     // the map finishes booting asynchronously; wait for its flag before steering it
     const t = setInterval(() => {
@@ -836,6 +914,19 @@ function mountFrame() {
     setTimeout(() => { clearInterval(t); document.getElementById("frameph").hidden = true; }, 20000);
   };
 }
+/** after "show on map": scroll the page so the map itself (not the tiles above it) is in view */
+function scrollToMap(tries = 0) {
+  const f = document.getElementById("frame");
+  try {
+    const w = f && f.contentWindow;
+    if (w && w.__spatialReady) {
+      const m = w.document.getElementById("map");
+      const y = f.getBoundingClientRect().top + window.scrollY + m.getBoundingClientRect().top - 70;
+      window.scrollTo(0, Math.max(0, y)); return;   // instant: this follows a tab switch, nothing to animate from
+    }
+  } catch (_) {}
+  if (tries < 40) setTimeout(() => scrollToMap(tries + 1), 250);
+}
 /** Steer the already-loaded map instead of reloading its ~16 MB of data. */
 function pushToFrame() {
   const f = document.getElementById("frame");
@@ -846,38 +937,237 @@ function pushToFrame() {
     const st = w.__spatialState;              // `state` there is a const, not a window property
     if (st.city !== state.city) w.setCity(state.city);
     if (st.theme !== state.theme) w.setTheme(state.theme);
+    if (typeof w.setLevers === "function") { const mine = [...state.levers].sort().join(","), theirs = [...(st.levers || [])].sort().join(","); if (mine !== theirs) w.setLevers([...state.levers], true); }
   } catch (_) { /* frame not ready yet — mountFrame's poll will catch up */ }
 }
 
 // --- Scenarios -------------------------------------------------------------
+// Levers come from data/levers.json (built by scripts/build_levers.py from the sourced cards in
+// interventions/). Each cut is [low, mid, high] = 10th / 50th / 90th percentile, as a fraction of the
+// per-visit factor for one shop type. Several levers on the same shop type compound (1-a)(1-b), never add.
+const RES = [["kwh","Energy","kWh"], ["water","Water","L"], ["co2","CO₂e","kg CO₂e"]];
+const BUCKETS = [["before","Before the tournament · contracts, grants, rules months ahead"],
+                 ["during","During the tournament · event-week protocols, citywide"],
+                 ["match day","Match day · stadium and fans, shown on the match card"]];
+const leverById = id => LEV && LEV.levers.find(l => l.id === id);
+
+/** one line on a ticked card: what this lever alone does to the selected city's totals */
+function hereLine(l) {
+  if (!C || !state.city) return "";
+  const { seg, tot } = segmentPiles(); const k = state.surge; const parts = [];
+  for (const [r, label] of RES) { const base = tot[r] * k; if (!base) continue; let s = 0;
+    for (const [sg, cuts] of Object.entries(l.cuts)) if (cuts[r] && seg[sg]) s += seg[sg][r] * k * cuts[r][1];
+    if (s > 1e-6) parts.push(`${label} −${(s/base*100).toFixed(1)}%`); }
+  return parts.length ? `In ${esc(cityName())}: ${parts.join(" · ")}` : `Touches shop types with almost no data in ${esc(cityName())}`;
+}
 function drawLevers() {
-  // titles + effects come from D's play catalogue so the preview cannot drift from the engine
-  const seen = new Map();
-  C.scorecards.forEach(c => [...(c.recommended_plays||[]), ...(c.general_options||[])]
-    .forEach(p => { if (!seen.has(p.id)) seen.set(p.id, p); }));
-  document.getElementById("levers").innerHTML = [...seen.values()].map(p => {
-    const e = p.expected_effects || {};
-    const parts = [["energy", e.energy_pct], ["water", e.water_pct], ["CO₂e", e.food_co2e_pct]]
-      .filter(([,v]) => v).map(([l,v]) => `${l} ${v > 0 ? "+" : ""}${v}%`).join(" · ");
-    return `<div class="lever"><div class="lt">${esc(p.title)}</div><div class="lm">${parts || "no quantified effect"}</div></div>`;
+  const box = document.getElementById("levers");
+  if (!LEV) { box.innerHTML = `<div class="note">No <code>data/levers.json</code>. Run <code>python3 scripts/build_levers.py</code>.</div>`; return; }
+  box.innerHTML = BUCKETS.map(([b, label]) => {
+    const ls = LEV.levers.filter(l => l.bucket === b);
+    return `<div class="bucket">${esc(label)}</div>` + ls.map(l => {
+      const on = state.levers.has(l.id);
+      const eff = l.offmap
+        ? Object.entries(l.offmap.per_fan).filter(([k]) => k !== "gal").map(([k, v]) => `${RES.find(r => r[0]===k)[1]} <b>${v[1]}</b> ${RES.find(r => r[0]===k)[2]} per fan (${v[0]}–${v[2]})`).join(" · ")
+        : Object.entries(l.cuts).map(([seg, cuts]) => `${LEV.segments[seg].label}: ` + Object.entries(cuts).map(([k, v]) =>
+            `${RES.find(r => r[0]===k)[1]} <b>−${(v[1]*100).toFixed(1)}%</b> <span class="lowhigh">(${(v[0]*100).toFixed(1)}–${(v[2]*100).toFixed(1)})</span>`).join(", ")).join(" · ");
+      return `<label class="lever ${on ? "on" : ""}">
+        <input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""}>
+        <div>
+          <div class="lt">${esc(l.title)}<span class="ev" title="evidence grade">${esc(l.evidence)}</span></div>
+          <div class="lp">${esc(l.plain)}</div>
+          <div class="lm">${eff}</div>
+          <div class="here">${on && !l.offmap ? hereLine(l) : ""}</div>
+        </div>
+        <details><summary>evidence, dials, source</summary>
+          <div style="margin-top:4px">${esc(l.evidence_plain)}</div>
+          <div style="margin-top:4px"><b>What an organiser can turn:</b> ${l.dials.map(esc).join("; ")}.</div>
+          <div style="margin-top:4px"><b>Best source:</b> <a href="${esc(l.best_source.u)}" target="_blank" rel="noopener">${esc(l.best_source.t)}</a>
+            · card <code>${esc(l.card)}</code> · ${esc(l.placeholder)}</div>
+        </details>
+      </label>`;
+    }).join("");
   }).join("");
+  box.querySelectorAll("input[type=checkbox]").forEach(cb => cb.onchange = () => {
+    if (cb.checked) state.levers.add(cb.dataset.id); else state.levers.delete(cb.dataset.id);
+    // update in place: rebuilding the list would destroy the box under the cursor and make the page jump
+    box.querySelectorAll(".lever").forEach(card => {
+      const id = card.querySelector("input").dataset.id, l = leverById(id), on = state.levers.has(id);
+      card.classList.toggle("on", on);
+      const h = card.querySelector(".here"); if (h) h.textContent = on && l && !l.offmap ? hereLine(l).replace(/<[^>]+>/g, "") : "";
+    });
+    drawSurge(); pushToFrame(); writeHash();
+  });
+}
+
+/** Split the city's summer absolutes into shop types, so a lever can cut only the type it touches.
+ *  Visits per layer come from D's visit_mix; the Food layer is split restaurants/grocery with our
+ *  card-customer shares; each type's footprint is visits × its intensity factor, then rescaled so the
+ *  types add up exactly to D's city totals (so this table agrees with the Overview tab). */
+function segmentPiles() {
+  const cards = isAll() ? C.scorecards : [BY[state.city]];
+  const out = {}; const tot = { kwh:0, water:0, co2:0 };
+  const KEY = { kwh:"energy_kwh", water:"water_liters", co2:"kg_co2e" };
+  cards.forEach(c => {
+    const a = c.ops_scale.absolute, mix = c.ops_scale.visit_mix || {};
+    const fs = (LEV.food_split || {})[c.host_city] || { restaurant:0.73, grocery:0.27 };
+    const visits = {};
+    for (const [seg, s] of Object.entries(LEV.segments)) {
+      const lv = (a.visits || 0) * (mix[s.layer] || 0);
+      visits[seg] = s.layer === "Food" ? lv * (fs[seg] ?? 0) : lv;
+    }
+    for (const r of ["kwh","water","co2"]) {
+      let raw = 0; for (const seg in visits) raw += visits[seg] * LEV.segments[seg].factor[r];
+      const scale = raw ? (a[KEY[r]] || 0) / raw : 0;
+      for (const seg in visits) { out[seg] ||= { kwh:0, water:0, co2:0 }; out[seg][r] += visits[seg] * LEV.segments[seg].factor[r] * scale; }
+      tot[r] += a[KEY[r]] || 0;
+    }
+  });
+  return { seg:out, tot };
+}
+
+/** Combined cut per shop type and resource, [low, mid, high], for the levers that are on. */
+function combinedCuts() {
+  const keep = {};   // seg -> res -> [f_low, f_mid, f_high] (fraction kept)
+  const on = [...state.levers].map(leverById).filter(l => l && !l.offmap);
+  on.forEach(l => {
+    for (const [seg, cuts] of Object.entries(l.cuts)) for (const [r, v] of Object.entries(cuts)) {
+      // an overlapping lever's piece is dropped when the lever it overlaps with is also on
+      const ov = l.overlap && Object.entries(l.overlap).some(([oid, rs]) => rs.includes(r) && state.levers.has(oid));
+      if (ov) continue;
+      keep[seg] ||= {}; keep[seg][r] ||= [1,1,1];
+      for (let i = 0; i < 3; i++) keep[seg][r][i] *= (1 - v[i]);
+    }
+  });
+  return keep;
+}
+
+function offmapHtml() {
+  const on = [...state.levers].map(leverById).filter(l => l && l.offmap);
+  if (!on.length) return "";
+  const ms = MATCHES.filter(m => isAll() || m.m === state.city);
+  const seats = ms.reduce((s, m) => s + (m.a || m.cap || 0), 0);
+  if (!ms.length) return `<div class="offbox"><div class="k">Match-day levers</div><div class="u">No 2026 fixtures for ${esc(cityName())} in <code>data/matches.json</code>.</div></div>`;
+  return on.map(l => {
+    const rows = Object.entries(l.offmap.per_fan).filter(([k]) => k !== "gal").map(([k, v]) => {
+      const u = RES.find(r => r[0] === k)[2], lab = RES.find(r => r[0] === k)[1];
+      return `<tr><td>${lab}</td><td>${fmt(v[1]*seats/ms.length)} <span class="lowhigh">(${fmt(v[0]*seats/ms.length)}–${fmt(v[2]*seats/ms.length)})</span></td>
+        <td>${fmt(v[1]*seats)} <span class="lowhigh">(${fmt(v[0]*seats)}–${fmt(v[2]*seats)})</span> ${u}</td></tr>`; }).join("");
+    return `<div class="offbox"><div class="k">Match card · ${esc(l.title)}</div>
+      <div class="v">${ms.length} fixture${ms.length>1?"s":""} · ${full(seats)} seats</div>
+      <table><tr><th></th><th>per match</th><th>all fixtures here</th></tr>${rows}</table>
+      <div class="u">Attendance × a per-fan saving (${esc(l.offmap.unit_note)}). ${esc(l.evidence_plain)}</div></div>`;
+  }).join("");
+}
+
+// plain-words equivalents, same constants as the map page's KPI tiles
+const EQUIV = { kwh: v => `${full(v/900)} homes' electricity for a month`, water: v => `${full(v/9000)} people's water for a month`, co2: v => `${full(v/4600)} cars driven for a year` };
+const RES_CSS = { kwh:"--s-energy", water:"--s-water", co2:"--s-other" };
+
+/** The visible answer: a sentence, one bar per resource showing the % cut (whisker = low–high), and who does what. */
+function drawImpact(seg, tot, keep, k) {
+  const box = document.getElementById("impact");
+  const on = [...state.levers].map(leverById).filter(l => l && !l.offmap);
+  const onOff = [...state.levers].map(leverById).filter(l => l && l.offmap);
+  if (!on.length) {
+    box.innerHTML = `<div class="empty">${onOff.length ? "Only match-day levers are on — their numbers are in the match card below." : "Switch a lever on at the left. The bars here will show how much it cuts, and the range."}</div>`;
+    return;
+  }
+  // per resource: [low, mid, high] saving as fraction of baseline
+  const cut = {};
+  for (const [r] of RES) {
+    const base = tot[r] * k; if (!base) { cut[r] = [0,0,0]; continue; }
+    cut[r] = [0,1,2].map(i => { let s = 0; for (const sg in seg) s += seg[sg][r] * k * (1 - ((keep[sg] && keep[sg][r]) ? keep[sg][r][i] : 1)); return s / base; });
+  }
+  const axisMax = Math.max(0.05, niceMax(Math.max(...RES.map(([r]) => cut[r][2]))));
+  const moved = RES.filter(([r]) => cut[r][1] > 1e-6);
+  // headline sentence
+  const parts = moved.map(([r, label, unit]) => `<b>${r === "co2" ? label : label.toLowerCase()} down ${(cut[r][1]*100).toFixed(1)}%</b> (${(cut[r][0]*100).toFixed(1)} to ${(cut[r][2]*100).toFixed(1)}), about ${fmt(cut[r][1]*tot[r]*k)} ${unit}, or ${EQUIV[r](cut[r][1]*tot[r]*k)}`);
+  const who = (on.length === 1 ? on[0].title : `${on.length} levers`) + (onOff.length ? ` (plus ${onOff.length} match-day lever${onOff.length>1?"s":""}, counted on the match card below)` : "");
+  const hl = moved.length
+    ? `${esc(who)} in ${esc(cityName())} over the summer: ${parts.join("; ")}. ${RES.filter(([r]) => !(cut[r][1] > 1e-6)).map(([,l]) => l).join(" and ") ? "No measured effect on " + RES.filter(([r]) => !(cut[r][1] > 1e-6)).map(([r,l]) => r === "co2" ? l : l.toLowerCase()).join(" or ") + "." : ""}`
+    : `${esc(who)} touch shop types that barely exist in ${esc(cityName())}'s data, so nothing moves here.`;
+  // bars
+  const W = 100;
+  const rows = RES.map(([r, label, unit]) => {
+    const [lo, mid, hi] = cut[r].map(v => v / axisMax * W);
+    const col = `var(${RES_CSS[r]})`;
+    return `<div class="cutrow">
+      <div class="lab">${label}</div>
+      <div class="cutbar"><svg viewBox="0 0 ${W} 22" preserveAspectRatio="none">
+        <rect x="0" y="5" width="${W}" height="12" rx="2" fill="var(--grid)"/>
+        <rect x="0" y="5" width="${Math.max(0, mid).toFixed(2)}" height="12" rx="2" fill="${col}"><title>${label}: −${(cut[r][1]*100).toFixed(1)}% middle; range ${(cut[r][0]*100).toFixed(1)}–${(cut[r][2]*100).toFixed(1)}%</title></rect>
+        ${cut[r][2] > 1e-6 ? `<line x1="${lo.toFixed(2)}" x2="${hi.toFixed(2)}" y1="11" y2="11" stroke="var(--ink-1)" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+        <line x1="${lo.toFixed(2)}" x2="${lo.toFixed(2)}" y1="7" y2="15" stroke="var(--ink-1)" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+        <line x1="${hi.toFixed(2)}" x2="${hi.toFixed(2)}" y1="7" y2="15" stroke="var(--ink-1)" stroke-width="1.2" vector-effect="non-scaling-stroke"/>` : ""}
+      </svg></div>
+      <div class="val">${cut[r][1] > 1e-6 ? `−${(cut[r][1]*100).toFixed(1)}%<small>${fmt(cut[r][1]*tot[r]*k)} ${esc(unit)} · range ${(cut[r][0]*100).toFixed(1)}–${(cut[r][2]*100).toFixed(1)}%</small>` : `0%<small>no measured effect</small>`}</div>
+    </div>`;
+  }).join("");
+  const ticks = [0, 0.2, 0.4, 0.6, 0.8, 1].map(f => `<span>${f ? "−" + (f*axisMax*100).toFixed(axisMax < 0.1 ? 1 : 0) + "%" : "0"}</span>`).join("");
+  // who does what: each lever alone, on the same city pile
+  const alone = on.map(l => {
+    const out = {};
+    for (const [r] of RES) {
+      const base = tot[r] * k; if (!base) continue;
+      let s = 0;
+      for (const [sg, cuts] of Object.entries(l.cuts)) if (cuts[r] && seg[sg]) s += seg[sg][r] * k * cuts[r][1];
+      if (s > 1e-6) out[r] = s / base;
+    }
+    return { l, out, max: Math.max(0, ...Object.values(out)) };
+  }).sort((a, b) => b.max - a.max);
+  const byl = alone.map(({l, out}) => `<div class="lvrow">
+      <div class="n">${esc(l.title)}<br><small>${Object.keys(l.cuts).map(sg => LEV.segments[sg].label).join(", ")}</small></div>
+      <div class="bars">${RES.filter(([r]) => out[r]).map(([r, label]) => `<div class="b"><span>${label}</span><i style="--w:${Math.min(100, out[r]/axisMax*100).toFixed(1)}%;--c:var(${RES_CSS[r]})"></i><span>−${(out[r]*100).toFixed(1)}%</span></div>`).join("") || `<div class="b"><span></span><span style="grid-column:2/4">nothing measurable here</span></div>`}</div>
+    </div>`).join("");
+  box.innerHTML = `<div class="hl">${hl}</div>${rows}
+    <div class="axis"><span></span><div class="ticks">${ticks}</div><span></span></div>
+    <div class="bylever"><h5>Who does what (each lever on its own, middle value)</h5>${byl}</div>
+    <div class="note">Bars are the cut as a share of ${esc(cityName())}'s June–July total; the black whisker is the low–high range (8 in 10 chance the truth is inside). Levers on the same shop type compound, so the top bars can be a little less than the sum of the rows below.</div>`;
 }
 
 function drawSurge() {
   document.getElementById("surgeval").textContent = state.surge.toFixed(2) + "×";
-  document.getElementById("surgetitle").textContent = `Baseline vs surge — ${cityName()}`;
-  const a = absolutes(), k = state.surge;
-  const rows = [["e","energy_kwh"], ["w","water_liters"], ["co2","kg_co2e"], ["v","visits"]].map(([mk, key]) => {
-    const m = METRICS[mk], base = a[key] || 0, out = base * k;
-    return `<tr><td>${m.label}</td><td>${fmt(base)}</td><td>${fmt(out)}</td>
-      <td style="color:${k > 1 ? cssv("--s-energy") : "var(--ink-muted)"}">${k > 1 ? "+" : ""}${fmt(out - base)} ${esc(m.unit)}</td></tr>`;
+  document.getElementById("surgetitle").textContent = `What changes — ${cityName()}`;
+  const k = state.surge;
+  const nOn = [...state.levers].filter(id => leverById(id)).length;
+  if (!LEV) {   // levers file missing: fall back to the plain surge table
+    const a = absolutes();
+    const rows = [["e","energy_kwh"], ["w","water_liters"], ["co2","kg_co2e"], ["v","visits"]].map(([mk, key]) => {
+      const m = METRICS[mk], base = a[key] || 0, out = base * k;
+      return `<tr><td>${m.label}</td><td>${fmt(base)}</td><td>${fmt(out)}</td><td>${k > 1 ? "+" : ""}${fmt(out - base)} ${esc(m.unit)}</td></tr>`; }).join("");
+    document.getElementById("surgetbl").innerHTML = `<tr><th>Resource</th><th>Baseline summer</th><th>At ${k.toFixed(2)}×</th><th>Δ</th></tr>${rows}`;
+    document.getElementById("surgenote").textContent = "Linear scaling only.";
+    document.getElementById("impact").innerHTML = `<div class="empty">Run <code>python3 scripts/build_levers.py</code> to enable the levers.</div>`;
+    return;
+  }
+  const { seg, tot } = segmentPiles();
+  const keep = combinedCuts();
+  drawImpact(seg, tot, keep, k);
+  const rows = RES.map(([r, label, unit]) => {
+    const base = tot[r] * k;
+    const after = [0,1,2].map(i => { let s = 0; for (const sg in seg) s += seg[sg][r] * k * ((keep[sg] && keep[sg][r]) ? keep[sg][r][i] : 1); return s; });
+    const d = after.map(v => v - base);   // low cut = index 0 → smallest saving
+    const pcts = d.map(v => base ? v / base * 100 : 0);
+    const col = d[1] < -1e-9 ? cssv("--s-water") : "var(--ink-muted)";
+    return `<tr><td>${label}</td><td>${fmt(base)}</td>
+      <td>${fmt(after[1])}</td>
+      <td class="cut" style="color:${col}">${d[1] <= 0 ? "" : "+"}${fmt(d[1])} ${esc(unit)}<br><span class="lowhigh">${pcts[1].toFixed(1)}% (${pcts[0].toFixed(1)} to ${pcts[2].toFixed(1)})</span></td></tr>`;
   }).join("");
+  const visits = absolutes().visits || 0;
   document.getElementById("surgetbl").innerHTML =
-    `<tr><th>Resource</th><th>Baseline summer</th><th>At ${k.toFixed(2)}×</th><th>Δ</th></tr>${rows}`;
-  document.getElementById("surgenote").innerHTML =
-    `Baseline is the ${SUMMER_IDX.length}-month June–July total for ${esc(cityName())}.
-     Illustrative linear scaling — no cross-resource coupling, no capacity ceilings, no price response.
-     The real lever engine arrives with the intervention lab.`;
+    `<tr><th>Resource</th><th>Baseline summer${k > 1 ? ` × ${k.toFixed(2)}` : ""}</th><th>With levers (middle)</th><th>Δ middle (low to high)</th></tr>${rows}
+     <tr><td>Visits</td><td>${fmt(visits)}</td><td>${fmt(visits * k)}</td><td style="color:var(--ink-muted)">${k > 1 ? "+" + fmt(visits*(k-1)) : "—"}</td></tr>`;
+  document.getElementById("surgenote").innerHTML = nOn
+    ? `Baseline is the June–July total for ${esc(cityName())} (store-visits × intensity factors, the same numbers as the Overview tab), split into shop types by visit mix.
+       Each lever cuts only the shop types it touches; levers on the same type compound. Low and high are the 10th and 90th percentiles of each lever's
+       simulation, combined end to end. The percent is what to trust; the absolute kWh and litres inherit the baseline's noise.`
+    : `Switch a lever on to see its cut. Baseline is the June–July total for ${esc(cityName())}; a ${k.toFixed(2)}× surge scales it linearly.`;
+  document.getElementById("offmap").innerHTML = offmapHtml();
+  const nShop = [...state.levers].filter(id => leverById(id) && !leverById(id).offmap).length, nOff = nOn - nShop;
+  document.getElementById("leversnote").textContent = nOn
+    ? `${nShop ? `${nShop} shop lever${nShop>1?"s":""}` : ""}${nShop && nOff ? " and " : ""}${nOff ? `${nOff} match-day lever${nOff>1?"s":""}` : ""} on. On the map the touched shops get a dark ring and the tiles show the after-numbers; match-day levers appear on the match card.`
+    : "";
 }
 </script>
 </body>
