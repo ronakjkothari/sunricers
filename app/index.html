@@ -4,205 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nexus Pulse · FIFA 2026 EFW Command</title>
+<link rel="stylesheet" href="pulse.css">
+<script src="pulse-fx.js" defer></script>
 <style>
-  /* tokens are shared with spatial.html so the shell and the embedded map read as one product */
-  :root {
-    color-scheme: light;
-    --surface-1:#fcfcfb; --plane:#f9f9f7;
-    --ink-1:#0b0b0b; --ink-2:#52514e; --ink-muted:#898781;
-    --grid:#e1e0d9; --axis:#c3c2b7; --hairline:rgba(11,11,11,0.10);
-    --s-food:#2a78d6; --s-energy:#eb6834; --s-water:#1baf7a;
-    --s-venue:#eda100; --s-other:#e87ba4;
-    --bar:#b7d3f6; --bar-sel:#2a78d6;
-    --shadow:0 4px 14px rgba(0,0,0,.10);
-  }
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-    --surface-1:#1a1a19; --plane:#0d0d0d;
-    --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-muted:#898781;
-    --grid:#2c2c2a; --axis:#383835; --hairline:rgba(255,255,255,0.10);
-    --s-food:#3987e5; --s-energy:#d95926; --s-water:#199e70;
-    --s-venue:#c98500; --s-other:#d55181;
-    --bar:#184f95; --bar-sel:#3987e5;
-    --shadow:0 4px 14px rgba(0,0,0,.45);
-  }
-
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--plane); color:var(--ink-1);
-         font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
-  .wrap { max-width:1280px; margin:0 auto; padding:22px 20px 64px; }
-
-  header { display:flex; align-items:flex-start; gap:16px; }
-  header .t { flex:1; }
-  header h1 { font-size:22px; margin:0 0 3px; letter-spacing:-0.01em; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-  header p { margin:0; color:var(--ink-2); font-size:13px; }
-  .loop { color:var(--ink-2); font-size:12px; margin-top:5px; }
-  .loop b { color:var(--ink-1); font-weight:600; }
-
-  select, input, .btn { font:inherit; color:var(--ink-1); background:var(--plane);
-                 border:1px solid var(--hairline); border-radius:7px; padding:7px 11px; cursor:pointer; }
-  .btn:hover { border-color:var(--ink-muted); }
-  .btn.small { padding:4px 9px; font-size:12px; }
-  .btn.primary { background:var(--ink-1); color:var(--plane); border-color:var(--ink-1); }
-  .seg { display:inline-flex; border:1px solid var(--hairline); border-radius:7px; overflow:hidden; }
-  .seg button { font:inherit; padding:6px 12px; border:0; background:var(--plane); color:var(--ink-2); cursor:pointer; }
-  .seg button.on { background:var(--ink-1); color:var(--plane); }
-  .pill { display:inline-block; font-weight:500; font-size:12px; color:var(--ink-2); background:var(--plane);
-          border:1px solid var(--hairline); border-radius:999px; padding:2px 9px; }
-
-  /* global control bar — one city for every tab */
-  .globals { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:16px 0 0;
-             background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; padding:10px 14px; }
-  .globals .lbl { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
-  .globals .grow { flex:1; }
-  .globals .rank { font-size:12px; color:var(--ink-2); font-variant-numeric:tabular-nums; position:relative; }
-  .globals .rank b { color:var(--ink-1); }
-  .globals .rank .tiphost { cursor:help; border-bottom:1px dotted var(--ink-muted); }
-  .globals .rank .tiphost:hover .ranktip,
-  .globals .rank .tiphost:focus .ranktip { opacity:1; visibility:visible; }
-  .ranktip { position:absolute; right:0; top:calc(100% + 8px); width:min(360px, 78vw); z-index:30;
-             background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
-             padding:10px 12px; font-size:12px; line-height:1.45; color:var(--ink-2);
-             box-shadow:var(--shadow); opacity:0; visibility:hidden; pointer-events:none; text-align:left; }
-  .ranktip b { color:var(--ink-1); display:inline; }
-  .ranktip code { font-size:11px; background:var(--plane); padding:1px 5px; border-radius:4px; }
-
-  /* tabs */
-  .tabs { display:flex; gap:4px; margin:14px 0 0; border-bottom:1px solid var(--hairline); flex-wrap:wrap; }
-  .tabs button { font:inherit; font-size:13px; padding:9px 15px; border:0; background:none; cursor:pointer;
-                 color:var(--ink-2); border-bottom:2px solid transparent; margin-bottom:-1px; }
-  .tabs button:hover { color:var(--ink-1); }
-  .tabs button.on { color:var(--ink-1); font-weight:600; border-bottom-color:var(--ink-1); }
-  .tabs .num { font-size:10px; color:var(--ink-muted); margin-right:5px; }
-  .pane[hidden] { display:none; }
-
-  .panel { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; margin-top:16px; overflow:hidden; }
-  .panel h2 { font-size:13px; margin:0; padding:12px 16px; font-weight:600;
-              border-bottom:1px solid var(--hairline); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-  .panel h2 .spacer { flex:1; }
-  .lead { padding:10px 16px 0; font-size:13px; color:var(--ink-2); }
-  .lead b { color:var(--ink-1); }
-  .pad { padding:12px 16px 14px; }
-
-  /* absolute footprint KPI cards */
-  .kpiline { margin:16px 0 8px; font-size:13px; color:var(--ink-2); }
-  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(212px,1fr)); gap:12px; }
-  .kpi { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; padding:13px 15px 11px; }
-  .kpi .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
-  .kpi .v { font-size:25px; font-weight:600; margin-top:3px; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
-  .kpi .v .un { font-size:14px; font-weight:500; color:var(--ink-2); letter-spacing:0; }
-  .kpi .u { font-size:12px; color:var(--ink-2); margin-top:1px; min-height:18px; }
-
-  /* chips (interactive filters) */
-  .chips { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
-  .chip { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px;
-          background:var(--plane); border:1px solid var(--hairline); color:var(--ink-1); font-size:12px; cursor:pointer; }
-  .chip:hover { border-color:var(--ink-muted); }
-  .chip.on { background:var(--ink-1); color:var(--plane); border-color:var(--ink-1); }
-
-  /* pressure profile: data readouts, not buttons */
-  .datarow { display:flex; flex-wrap:wrap; gap:10px 18px; align-items:baseline; }
-  .datum { font-size:13px; color:var(--ink-1); font-variant-numeric:tabular-nums; }
-  .datum .dl { color:var(--ink-muted); margin-right:6px; }
-  .datum .dv { font-weight:600; }
-  .datum.hot .dv { color:var(--s-energy); }
-  .datum.cool .dv { color:var(--ink-muted); font-weight:500; }
-
-  /* chart */
-  .chartbox { padding:8px 8px 4px; position:relative; }
-  svg { display:block; width:100%; height:auto; }
-  .glabel { fill:var(--ink-muted); font-size:11px; }
-  .gline { stroke:var(--grid); stroke-width:1; }
-  .axis { stroke:var(--axis); stroke-width:1; }
-  .serie { fill:none; stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
-  .legend { display:flex; gap:16px; flex-wrap:wrap; padding:2px 16px 14px; font-size:12px; color:var(--ink-2); }
-  .legend span { display:inline-flex; align-items:center; gap:6px; }
-  .legend i { width:12px; height:3px; border-radius:2px; display:block; }
-  .tip { position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-100%);
-         background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
-         padding:8px 10px; font-size:12px; white-space:nowrap; z-index:5; box-shadow:var(--shadow); }
-  .tip b { display:block; margin-bottom:4px; color:var(--ink-1); }
-  .tip div { color:var(--ink-2); display:flex; gap:14px; justify-content:space-between; }
-
-  /* structure row */
-  .struct { display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:16px; padding:12px 16px 14px; font-size:13px; }
-  .struct h4 { margin:0 0 7px; font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
-  .mixbar { display:flex; height:12px; border-radius:6px; overflow:hidden; background:var(--grid); }
-  .mixbar i { display:block; height:100%; }
-  .mixkey { display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:7px; font-size:12px; color:var(--ink-2); }
-  .mixkey span { display:inline-flex; align-items:center; gap:5px; }
-  .mixkey em { width:9px; height:9px; border-radius:2px; font-style:normal; }
-  .struct ol { margin:0; padding-left:18px; font-size:12px; }
-  .struct ol li { margin:3px 0; }
-  .struct ol small { color:var(--ink-muted); }
-  @media (max-width:900px) { .struct { grid-template-columns:1fr; } }
-
-  .cta { display:flex; gap:10px; flex-wrap:wrap; padding:0 16px 14px; }
-
-  /* compare strip */
-  .strip { display:grid; grid-template-columns:repeat(11, minmax(0,1fr)); gap:6px; padding:12px 16px 6px; }
-  .card { border:1px solid var(--hairline); border-radius:8px; padding:8px 8px 7px; cursor:pointer; background:var(--plane); }
-  .card:hover { border-color:var(--ink-muted); }
-  .card.sel { border-color:var(--ink-1); box-shadow:inset 0 0 0 1px var(--ink-1); }
-  .card .r { font-size:10px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
-  .card .n { font-size:12px; font-weight:600; line-height:1.25; min-height:30px; }
-  .card .s { font-size:18px; font-weight:600; margin-top:2px; font-variant-numeric:tabular-nums; }
-  .card .bar { height:5px; background:var(--grid); border-radius:3px; margin-top:5px; position:relative; overflow:hidden; }
-  .card .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:3px; }
-  .card .bar em { position:absolute; top:0; bottom:0; background:var(--ink-1); opacity:.18; }
-  .card .tag { font-size:10px; color:var(--ink-muted); margin-top:3px; min-height:15px; }
-  @media (max-width:900px) { .strip { grid-template-columns:repeat(4,1fr); } }
-
-  .cmpgrid { display:grid; grid-template-columns:0.85fr 1.15fr; gap:16px; padding:6px 16px 14px; }
-  @media (max-width:900px) { .cmpgrid { grid-template-columns:1fr; } }
-  .zbars { display:grid; grid-template-columns:auto 1fr auto; gap:5px 10px; align-items:center; font-size:12px; margin-top:8px; }
-  .zbars .zb { height:9px; background:var(--grid); border-radius:5px; position:relative; }
-  .zbars .zb i { position:absolute; top:0; bottom:0; border-radius:5px; }
-  .zbars .zn { color:var(--ink-muted); font-variant-numeric:tabular-nums; }
-  dl.facts { display:grid; grid-template-columns:auto 1fr; gap:3px 14px; margin:10px 0 0; font-size:12px; }
-  dl.facts dt { color:var(--ink-muted); } dl.facts dd { margin:0; font-variant-numeric:tabular-nums; }
-
-  /* steal-this-play cards */
-  .playcard { border:1px solid var(--hairline); border-radius:9px; padding:11px 13px; background:var(--plane); margin-bottom:10px; }
-  .playcard .pt { font-size:14px; font-weight:600; letter-spacing:-0.01em; }
-  .playcard .meta { font-size:11px; color:var(--ink-muted); margin-top:3px; display:flex; flex-wrap:wrap; gap:4px 10px; }
-  .playcard .eff { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
-  .playcard .eff span { font-size:12px; padding:2px 8px; border-radius:6px; background:var(--surface-1);
-                        border:1px solid var(--hairline); font-variant-numeric:tabular-nums; }
-  .playcard .why { font-size:12px; color:var(--ink-2); margin-top:8px; }
-  .playcard .steal { font-size:12px; margin-top:8px; color:var(--ink-2); }
-  .lnk { color:var(--s-food); cursor:pointer; text-decoration:underline dotted; background:none; border:0; font:inherit; padding:0; }
-  .effort { text-transform:capitalize; }
-  .empty { color:var(--ink-muted); font-size:13px; }
-
-  /* spatial */
-  /* the iframe must have real size *before* its src is set, or MapLibre boots at 0x0 */
-  .frameshell { position:relative; }
-  .frameshell iframe { width:100%; height:0; border:0; display:block; background:var(--plane); }
-  .frameshell iframe.on { height:1500px; }
-  .frameplaceholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-                      background:var(--surface-1); color:var(--ink-muted); font-size:13px; text-align:center; padding:0 16px; }
-  .frameplaceholder[hidden] { display:none; }
-
-  /* scenarios */
-  .lab { display:grid; grid-template-columns:1fr 1.1fr; gap:18px; padding:12px 16px 14px; }
-  @media (max-width:900px) { .lab { grid-template-columns:1fr; } }
-  .slider { display:flex; align-items:center; gap:12px; margin-top:10px; }
-  .slider input[type=range] { flex:1; cursor:pointer; padding:0; }
-  .slider .val { font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; min-width:56px; }
-  .levers { display:grid; gap:8px; margin-top:10px; }
-  .lever { border:1px dashed var(--hairline); border-radius:8px; padding:9px 12px; opacity:.62; }
-  .lever .lt { font-size:13px; font-weight:600; }
-  .lever .lm { font-size:11px; color:var(--ink-muted); margin-top:2px; }
-
-  table { border-collapse:collapse; width:100%; font-size:13px; }
-  th, td { text-align:right; padding:7px 0; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums; }
-  th:first-child, td:first-child { text-align:left; font-variant-numeric:normal; }
-  th { color:var(--ink-muted); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
-  .note { font-size:11px; color:var(--ink-muted); margin-top:8px; }
+  /* shell-only scraps that sit on top of pulse.css */
+  .tip { white-space: nowrap; }
 </style>
 </head>
 <body>
+<canvas id="fx" aria-hidden="true"></canvas>
 <div class="wrap">
 
   <header>
@@ -214,7 +24,7 @@
     <button class="btn" id="theme" title="Switch between light and dark">☾ Dark</button>
   </header>
 
-  <div class="globals">
+  <div class="globals glass">
     <span class="lbl">Host city</span>
     <select id="city"></select>
     <span class="grow"></span>
@@ -233,7 +43,7 @@
     <p class="kpiline" id="kpiline"></p>
     <div class="kpis" id="kpis"></div>
 
-    <section class="panel">
+    <section class="panel glass">
       <h2>Pressure profile <span class="pill" id="presstitle"></span></h2>
       <div class="pad">
         <div class="datarow" id="presschips"></div>
@@ -241,12 +51,12 @@
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel glass">
       <h2>What this footprint is made of</h2>
       <div class="struct" id="struct"></div>
     </section>
 
-    <section class="panel">
+    <section class="panel glass">
       <h2>Footprint through the year <span class="pill" id="serietitle"></span>
         <span class="spacer"></span>
         <span class="seg" id="metricseg">
@@ -262,7 +72,7 @@
       <div class="legend" id="serielegend"></div>
     </section>
 
-    <section class="panel">
+    <section class="panel glass">
       <h2>Next step</h2>
       <div class="lead" id="ctalead"></div>
       <div class="cta" style="padding-top:10px">
@@ -274,7 +84,7 @@
 
   <!-- 02 ------------------------------------------------------------------ -->
   <section class="pane" id="pane-compare" hidden>
-    <section class="panel">
+    <section class="panel glass">
       <h2>Readiness across the 11 hosts <span class="pill">0-100. Higher means less summer pressure relative to the other hosts.</span>
         <span class="spacer"></span>
         <span style="font-size:12px;color:var(--ink-muted)">Pressure filter</span>
@@ -284,7 +94,7 @@
       <div class="note" style="padding:0 16px 12px" id="stripnote"></div>
     </section>
 
-    <section class="panel">
+    <section class="panel glass">
       <h2 id="cmptitle">Select a host</h2>
       <div class="cmpgrid">
         <div id="cmpleft"></div>
@@ -295,7 +105,7 @@
 
   <!-- 03 ------------------------------------------------------------------ -->
   <section class="pane" id="pane-spatial" hidden>
-    <section class="panel">
+    <section class="panel glass">
       <h2>Where demand sits on the map <span class="pill" id="spatialtitle"></span>
         <span class="spacer"></span>
         <a class="btn small" id="popout" href="spatial.html" target="_blank" rel="noopener">Open full map</a>
@@ -311,7 +121,7 @@
 
   <!-- 04 ------------------------------------------------------------------ -->
   <section class="pane" id="pane-scenarios" hidden>
-    <section class="panel">
+    <section class="panel glass">
       <h2>Intervention lab <span class="pill">preview</span></h2>
       <div class="lead">Scale visitor demand and watch energy, water, and CO₂e change against the summer baseline.
         The full lever set (cross-resource coupling and cost versus abatement) ships in the next iteration.
@@ -541,12 +351,13 @@ function drawKpis() {
   };
   const tiles = ["e","w","co2","v"].map(key => {
     const m = METRICS[key], v = a[m.abs] || 0;
-    return `<div class="kpi">
+    return `<div class="kpi glass">
       <div class="k">${m.label}</div>
-      <div class="v">${fmt(v)} <span class="un">${m.unit}</span></div>
+      <div class="v"><span class="num" data-val="${v}">0</span> <span class="un">${m.unit}</span></div>
       <div class="u">summer total, ${n} months · ${human[m.abs](v)}</div></div>`;
   });
   document.getElementById("kpis").innerHTML = tiles.join("");
+  if (typeof animateKpis === "function") animateKpis(document.getElementById("kpis"), fmt);
 }
 
 function driverPct(d) {
@@ -615,7 +426,7 @@ function drawSeries() {
   months.forEach((mo, k) => { if (mo.endsWith("-01"))
     s += `<text class="glabel" x="${X(k).toFixed(1)}" y="${H-10}" text-anchor="middle">${mo.slice(0,4)}</text>`; });
 
-  s += `<polyline class="serie" stroke="${col}"
+  s += `<polyline class="serie draw" stroke="${col}"
           points="${vals.map((v,k) => `${X(k).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")}"/>`;
   s += `<line id="cross" class="axis" x1="0" y1="${pad.t}" x2="0" y2="${pad.t+ih}" opacity="0"/>`;
   s += `<circle id="dot" r="3.5" fill="${col}" opacity="0"/>`;
@@ -623,6 +434,7 @@ function drawSeries() {
 
   const svg = document.getElementById("chart");
   svg.innerHTML = s;
+  if (typeof armSerieDraw === "function") armSerieDraw(svg);
   document.getElementById("serielegend").innerHTML =
     `<span><i style="background:${col}"></i>${esc(m.label)} · ${esc(m.unit)} / month (left axis)</span>
      <span><i style="background:${cssv("--s-venue")};opacity:.5"></i>June-July scoring window</span>`;
@@ -721,7 +533,7 @@ function drawStrip() {
       <div class="s">${c.readiness_score.toFixed(1)}</div>
       <div class="bar">
         <em style="left:${c.readiness_band[0]}%;width:${Math.max(0, c.readiness_band[1] - c.readiness_band[0])}%"></em>
-        <i style="width:${Math.max(2, c.readiness_score)}%;background:${scoreColour(c.readiness_score)}"></i></div>
+        <i style="--w:${Math.max(2, c.readiness_score)}%;background:${scoreColour(c.readiness_score)}"></i></div>
       <div class="tag">${c.rank === 1 ? "least pressure" : c.rank === n ? "most pressure" : "&nbsp;"}</div>
     </div>`).join("") : `<div class="empty" style="grid-column:1/-1">No host is elevated on that driver.</div>`;
   document.querySelectorAll("#strip .card").forEach(el => el.onclick = () => setCity(el.dataset.city));
