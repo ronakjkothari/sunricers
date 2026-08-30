@@ -189,7 +189,7 @@
 
   .tip { position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-100%);
          background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
-         padding:8px 10px; font-size:12px; white-space:nowrap; z-index:5; box-shadow:var(--shadow); }
+         padding:8px 10px; font-size:12px; white-space:normal; min-width:180px; max-width:340px; z-index:5; box-shadow:var(--shadow); }
   .tip b { display:block; margin-bottom:4px; color:var(--ink-1); }
   .tip div { color:var(--ink-2); display:flex; gap:10px; justify-content:space-between; }
   .tip i { width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:5px; }
@@ -307,7 +307,7 @@
       <span class="spacer"></span>
       <label class="toggle"><input type="checkbox" id="smooth"> Smooth the weekly card-settlement spikes
         <span class="info" tabindex="0" data-tip="Card payments are recorded on the day they settle, so raw days show Monday about 2.5× a weekday and tiny weekends. This averages each day with the 3 days either side.">i</span></label>
-      <span class="seg" id="scaleseg"><button data-sc="abs" class="on">Customers</button><button data-sc="idx">Indexed (month avg = 100)</button></span>
+      <span class="seg" id="scaleseg"><button data-sc="abs" class="on">Customers</button><button data-sc="idx">Ratio (month avg = 1×)</button></span>
     </h2>
     <div class="chartbox">
       <svg id="chart" viewBox="0 0 1000 290" preserveAspectRatio="none" role="img" aria-label="Daily customers by resource type"></svg>
@@ -1099,9 +1099,11 @@ function drawDaily(month) {
     pts = pts.map((p,i) => { const w = pts.slice(Math.max(0,i-3), i+4); const v = {};
       active.forEach(l => v[l.key] = w.reduce((a,q)=>a+(q.v[l.key]||0),0) / w.length); return {d:p.d, v}; }).filter(p => p.d.slice(0,7) === month);
   }
-  if (state.scale === "idx") {   // each type indexed to its own month average = 100, so small types are visible
+  // keep raw customer counts for unit tooltips even after ratio transform
+  const rawPts = pts.map(p => ({ d:p.d, v:{ ...p.v } }));
+  if (state.scale === "idx") {   // each type as a ratio of its own month average (1×)
     const mean = {}; active.forEach(l => mean[l.key] = pts.reduce((a,p)=>a+(p.v[l.key]||0),0) / (pts.length||1));
-    pts = pts.map(p => { const v = {}; active.forEach(l => v[l.key] = mean[l.key] ? (p.v[l.key]||0)/mean[l.key]*100 : 0); return {d:p.d, v}; });
+    pts = pts.map(p => { const v = {}; active.forEach(l => v[l.key] = mean[l.key] ? (p.v[l.key]||0)/mean[l.key] : 0); return {d:p.d, v}; });
   }
   if (!pts.length || !active.length) {
     svg.innerHTML = `<text x="${W/2}" y="${H/2}" text-anchor="middle" class="glabel">${active.length ? "no daily data for this month" : "nothing selected"}</text>`;
@@ -1109,27 +1111,44 @@ function drawDaily(month) {
   }
   let ymax = 0; pts.forEach(p => active.forEach(l => ymax = Math.max(ymax, p.v[l.key]||0))); ymax = niceMax(ymax);
   const x = i => M.l + (W-M.l-M.r) * (pts.length===1 ? .5 : i/(pts.length-1)), y = v => H - M.b - (H-M.t-M.b) * (v/ymax);
+  const axisLabel = v => state.scale === "idx"
+    ? (Math.abs(v - 1) < 1e-9 ? "1×" : `${v.toFixed(v >= 10 ? 0 : 1)}×`)
+    : fmt(v);
   let s = "";
   for (let t=0; t<=4; t++) { const v = ymax*t/4, yy = y(v);
-    s += `<line class="gline" x1="${M.l}" y1="${yy}" x2="${W-M.r}" y2="${yy}"/><text class="glabel" x="${M.l-8}" y="${yy+4}" text-anchor="end">${state.scale==="idx" ? v.toFixed(0) : fmt(v)}</text>`; }
+    s += `<line class="gline" x1="${M.l}" y1="${yy}" x2="${W-M.r}" y2="${yy}"/><text class="glabel" x="${M.l-8}" y="${yy+4}" text-anchor="end">${axisLabel(v)}</text>`; }
   s += `<line class="axis" x1="${M.l}" y1="${H-M.b}" x2="${W-M.r}" y2="${H-M.b}"/>`;
   const step_ = Math.max(1, Math.ceil(pts.length/10));
   pts.forEach((p,i) => { if (i % step_) return; s += `<text class="glabel" x="${x(i)}" y="${H-M.b+16}" text-anchor="middle">${+p.d.slice(8)}</text>`; });
   active.forEach(l => { const d = pts.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(p.v[l.key]||0).toFixed(1)}`).join(" "); s += `<path class="serie" d="${d}" stroke="var(${l.css})"/>`; });
   s += `<line id="cross" class="axis" x1="0" y1="${M.t}" x2="0" y2="${H-M.b}" opacity="0"/>`;
   svg.innerHTML = s;
-  CHART = {pts, active, x, y};
+  CHART = {pts, rawPts, active, x, y};
   hookHover(svg);
-  document.getElementById("legend").innerHTML = active.map(l=>`<span><i style="background:var(${l.css})"></i>${l.label}</span>`).join("") +
-    `<span style="color:var(--ink-muted)">${state.scale==="idx" ? "each type indexed to its month average = 100" : "customers per day"}${state.smooth ? ", 7-day average" : ""}</span>`;
-  drawTable(pts, active, month);
+  const unitNote = state.scale === "idx"
+    ? "ratio to each type's month average (1×)"
+    : "customers / day · hover for kWh, L, kg CO₂e";
+  document.getElementById("legend").innerHTML = active.map(l => {
+    const f = FACTORS[l.key] || FACTORS.Other_EFW;
+    const u = state.scale === "idx" ? "×" : "cust";
+    return `<span><i style="background:var(${l.css})"></i>${l.label} <span style="color:var(--ink-muted)">(${u} · ${f.kwh} kWh / ${f.water} L / ${f.co2} kg per cust)</span></span>`;
+  }).join("") +
+    `<span style="color:var(--ink-muted)">${unitNote}${state.smooth ? ", 7-day average" : ""}</span>`;
+  drawTable(rawPts, active, month);
 }
 function hookHover(svg) {
   const tip = document.getElementById("tip"), cross = svg.querySelector("#cross");
-  svg.onmousemove = ev => { const r = svg.getBoundingClientRect(); const sx = (ev.clientX - r.left)/r.width*W; const {pts, active, x, y} = CHART;
-    let bi=0, bd=Infinity; pts.forEach((p,i)=>{ const d=Math.abs(x(i)-sx); if(d<bd){bd=d;bi=i;} }); const p = pts[bi];
+  svg.onmousemove = ev => { const r = svg.getBoundingClientRect(); const sx = (ev.clientX - r.left)/r.width*W; const {pts, rawPts, active, x, y} = CHART;
+    let bi=0, bd=Infinity; pts.forEach((p,i)=>{ const d=Math.abs(x(i)-sx); if(d<bd){bd=d;bi=i;} }); const p = pts[bi], raw = rawPts[bi];
     cross.setAttribute("x1",x(bi)); cross.setAttribute("x2",x(bi)); cross.setAttribute("opacity","1");
-    tip.innerHTML = `<b>${p.d}</b>` + active.map(l => `<div><span><i style="background:var(${l.css})"></i>${l.label}</span><span>${state.scale==="idx" ? (p.v[l.key]||0).toFixed(0) : fmt(p.v[l.key]||0)}</span></div>`).join("");
+    tip.innerHTML = `<b>${p.d}</b>` + active.map(l => {
+      const f = FACTORS[l.key] || FACTORS.Other_EFW;
+      const cust = raw.v[l.key] || 0;
+      if (state.scale === "idx") {
+        return `<div><span><i style="background:var(${l.css})"></i>${l.label}</span><span>${(p.v[l.key]||0).toFixed(2)}× · ${fmt(cust)} cust</span></div>`;
+      }
+      return `<div><span><i style="background:var(${l.css})"></i>${l.label}</span><span>${fmt(cust)} cust · ${fmt(cust*f.kwh)} kWh · ${fmt(cust*f.water)} L · ${fmt(cust*f.co2)} kg</span></div>`;
+    }).join("");
     tip.style.left = (x(bi)/W*r.width)+"px"; tip.style.top = (y(Math.max(...active.map(l=>p.v[l.key]||0)))/H*r.height - 8)+"px"; tip.style.opacity = 1; };
   svg.onmouseleave = () => { document.getElementById("tip").style.opacity = 0; svg.querySelector("#cross").setAttribute("opacity","0"); };
 }
