@@ -153,10 +153,11 @@ function run() {
   check(worst <= 0.005, `Overview summer totals match ops_scale.absolute (worst ${(worst * 100).toFixed(4)}% at ${worstAt || "—"})`);
 
   section("First paint");
-  drew("kpis", "Energy", "Water", "CO₂e", "Visits", "summer total", "per trading shop-month");
-  drew("presschips", "chip");
+  drew("kpis", "Energy", "Water", "CO₂e", "Visits", "summer total");
+  drew("kpiline", "absolute footprint");
+  drew("presschips", "datum");
   drew("chart", "polyline", "rect");
-  drew("serielegend", "Cooling degree days");
+  drew("serielegend", "month");
   drew("struct", "Visit mix", "Busiest brands", "mixbar");
   drew("strip", "readiness", "card");
   drew("cmpleft", "Pressure drivers", "city_cards/", "per shop-month");
@@ -164,7 +165,7 @@ function run() {
   drew("surgetbl", "Baseline summer");
   drew("levers", "lever");
   drew("drvfilter", "All hosts");
-  drew("discbody", "z(energy)", "Two grains", "Contract");
+  drew("rankline", "Readiness", "±");
 
   section("Render sweep — every city × metric × surge × tab");
   const errors = [];

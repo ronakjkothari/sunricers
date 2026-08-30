@@ -3,238 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nexus Pulse — EFW map</title>
+<title>Pulse · EFW map</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="pulse.css">
+<script src="pulse-fx.js" defer></script>
 <style>
-  :root {
-    color-scheme: light;
-    --surface-1:#fcfcfb; --plane:#f9f9f7;
-    --ink-1:#0b0b0b; --ink-2:#52514e; --ink-muted:#898781;
-    --grid:#e1e0d9; --axis:#c3c2b7; --hairline:rgba(11,11,11,0.10);
-    --s-food:#2a78d6; --s-energy:#eb6834; --s-water:#1baf7a;
-    --s-venue:#eda100; --s-other:#e87ba4;
-    --dot:#2a78d6; --dot-ring:#fcfcfb;
-    --bar:#b7d3f6; --bar-sel:#2a78d6;
-    --h1:#fde7d9; --h2:#fbc9a8; --h3:#f7a877; --h4:#f08b4e; --h5:#eb6834; --h6:#c8501f; --h7:#9c3c15; --h8:#6e2a0e;
-    --d1:#e3eefb; --d2:#b7d3f6; --d3:#86b3ec; --d4:#559ae4; --d5:#2a78d6; --d6:#184f95;
-    --shadow:0 4px 14px rgba(0,0,0,.10);
-  }
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-    --surface-1:#1a1a19; --plane:#0d0d0d;
-    --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-muted:#898781;
-    --grid:#2c2c2a; --axis:#383835; --hairline:rgba(255,255,255,0.10);
-    --s-food:#3987e5; --s-energy:#d95926; --s-water:#199e70;
-    --s-venue:#c98500; --s-other:#d55181;
-    --dot:#3987e5; --dot-ring:#1a1a19;
-    --bar:#184f95; --bar-sel:#3987e5;
-    --d1:#12294a; --d2:#184f95; --d3:#1f63bd; --d4:#3987e5; --d5:#6aa6ec; --d6:#a9caf3;
-    --shadow:0 4px 14px rgba(0,0,0,.45);
-  }
-
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--plane); color:var(--ink-1);
-         font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
-  .wrap { max-width:1280px; margin:0 auto; padding:22px 20px 64px; }
-  header { display:flex; align-items:flex-start; gap:16px; }
-  header .t { flex:1; }
-  header h1 { font-size:22px; margin:0 0 3px; letter-spacing:-0.01em; }
-  header p { margin:0; color:var(--ink-2); font-size:13px; }
-  header p.how { margin-top:6px; color:var(--ink-1); }
-
-  select, input[type=search], .btn { font:inherit; color:var(--ink-1); background:var(--plane);
-                 border:1px solid var(--hairline); border-radius:7px; padding:7px 11px; cursor:pointer; }
-  select { max-width:100%; }
-  input[type=search] { cursor:text; width:100%; }
-  input[type=search]::placeholder { color:var(--ink-muted); }
-  .btn:hover { border-color:var(--ink-muted); }
-  .btn.small { padding:4px 9px; font-size:12px; }
-  .seg { display:inline-flex; border:1px solid var(--hairline); border-radius:7px; overflow:hidden; }
-  .seg button { font:inherit; padding:6px 12px; border:0; background:var(--plane); color:var(--ink-2); cursor:pointer; }
-  .seg button.on { background:var(--ink-1); color:var(--plane); }
-  .info { display:inline-flex; width:15px; height:15px; border-radius:50%; border:1px solid var(--ink-muted);
-          color:var(--ink-muted); font-size:10px; align-items:center; justify-content:center; cursor:help; margin-left:4px;
-          position:relative; vertical-align:middle; }
-  .info:hover { border-color:var(--ink-1); color:var(--ink-1); }
-  .info::after { content:attr(data-tip); position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%);
-          width:max-content; max-width:280px; white-space:normal; text-align:left; font-size:12px; line-height:1.45;
-          color:var(--ink-1); background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
-          padding:8px 10px; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .1s; z-index:20; }
-  .info:hover::after, .info:focus::after { opacity:1; }
-  .info { outline:none; }
-
-  /* control panel: what to look at | how to draw it */
-  .controls { display:grid; grid-template-columns:1fr 1.4fr; gap:14px; margin:18px 0 12px; }
-  .group { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; padding:12px 16px 14px; }
-  .group h3 { margin:0 0 10px; font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
-  .row { display:grid; grid-template-columns:96px 1fr; gap:10px; align-items:start; margin-bottom:9px; }
-  .row:last-child { margin-bottom:0; }
-  .row label.k, .row .k { font-size:12px; color:var(--ink-2); padding-top:7px; }
-  .cbs { display:flex; flex-wrap:wrap; gap:4px 14px; padding-top:6px; }
-  .cb { display:inline-flex; align-items:center; gap:6px; font-size:13px; cursor:pointer; position:relative; padding-right:34px; }
-  .cb input { margin:0; accent-color:var(--ink-1); }
-  .cb .sw { width:10px; height:10px; border-radius:50%; background:var(--c); }
-  .cb .n { color:var(--ink-muted); font-size:12px; }
-  .cb .only { position:absolute; right:0; font-size:11px; color:var(--s-food); opacity:0; text-decoration:underline dotted; }
-  .cb:hover .only { opacity:1; }
-  .cb.off { color:var(--ink-muted); }
-  .cb.off .sw { background:var(--grid); }
-  .inline { display:flex; flex-wrap:wrap; gap:6px 16px; align-items:center; padding-top:6px; font-size:13px; }
-  .inline label { display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
-  @media (max-width:900px) { .controls { grid-template-columns:1fr; } }
-
-  /* active filter chips */
-  .active { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0 0 14px; font-size:12px; color:var(--ink-muted); }
-  .achip { display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px; background:var(--surface-1);
-           border:1px solid var(--hairline); color:var(--ink-1); font-size:12px; }
-  .achip button { border:0; background:none; color:var(--ink-muted); cursor:pointer; font-size:13px; padding:0 0 0 2px; line-height:1; }
-  .achip button:hover { color:var(--ink-1); }
-  .active a { color:var(--s-food); cursor:pointer; text-decoration:underline dotted; }
-
-  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(178px,1fr)); gap:12px; }
-  .kpi { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; padding:13px 15px 11px; position:relative; }
-  .kpi .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
-  .kpi .v { font-size:25px; font-weight:600; margin-top:3px; letter-spacing:-0.02em; }
-  .kpi .u { font-size:12px; color:var(--ink-2); margin-top:1px; min-height:18px; }
-  .kpi svg { height:26px; width:100%; margin-top:6px; }
-  .kpi .delta { display:inline-block; font-size:11px; font-weight:600; padding:1px 7px; border-radius:999px; margin-left:6px; vertical-align:middle; }
-  .kpi .delta.up { background:var(--s-water); color:#fff; } .kpi .delta.down { background:var(--grid); color:var(--ink-1); }
-
-  .panel { background:var(--surface-1); border:1px solid var(--hairline); border-radius:10px; margin-top:16px; overflow:hidden; }
-  .panel h2 { font-size:13px; margin:0; padding:12px 16px; font-weight:600;
-              border-bottom:1px solid var(--hairline); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-  .panel h2 .spacer { flex:1; }
-  .pill { display:inline-block; font-weight:500; font-size:12px; color:var(--ink-2); background:var(--plane);
-          border:1px solid var(--hairline); border-radius:999px; padding:2px 9px; }
-  .panel h2 .toggle { display:inline-flex; align-items:center; gap:6px; font-weight:400; color:var(--ink-2); cursor:pointer; font-size:12px; }
-  .lead { padding:10px 16px 0; font-size:13px; color:var(--ink-2); }
-  .lead b { color:var(--ink-1); }
-
-  /* compare-hosts strip */
-  .strip { display:grid; grid-template-columns:repeat(11, minmax(0,1fr)); gap:6px; padding:12px 16px 6px; }
-  .card { border:1px solid var(--hairline); border-radius:8px; padding:8px 8px 7px; cursor:pointer; background:var(--plane); }
-  .card:hover { border-color:var(--ink-muted); }
-  .card.sel { border-color:var(--ink-1); box-shadow:inset 0 0 0 1px var(--ink-1); }
-  .card .r { font-size:10px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
-  .card .n { font-size:12px; font-weight:600; line-height:1.25; min-height:30px; }
-  .card .s { font-size:18px; font-weight:600; margin-top:2px; font-variant-numeric:tabular-nums; }
-  .card .bar { height:5px; background:var(--grid); border-radius:3px; margin-top:5px; position:relative; overflow:hidden; }
-  .card .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:3px; }
-  .card .bar em { position:absolute; top:0; bottom:0; background:var(--ink-1); opacity:.18; }
-  .card .tag { font-size:10px; color:var(--ink-muted); margin-top:3px; }
-  .cityfacts { padding:4px 16px 14px; display:grid; grid-template-columns:1.1fr 1fr; gap:14px; font-size:13px; }
-  .cityfacts dl { display:grid; grid-template-columns:auto 1fr; gap:3px 14px; margin:6px 0 0; font-size:12px; }
-  .cityfacts dt { color:var(--ink-muted); } .cityfacts dd { margin:0; font-variant-numeric:tabular-nums; }
-  .cityfacts ul { margin:6px 0 0; padding-left:18px; }
-  .cityfacts li { margin:4px 0; }
-  .zbars { display:grid; grid-template-columns:auto 1fr auto; gap:3px 8px; align-items:center; font-size:12px; margin-top:6px; }
-  .zbars .zb { height:8px; background:var(--grid); border-radius:4px; position:relative; }
-  .zbars .zb i { position:absolute; top:0; bottom:0; border-radius:4px; }
-  @media (max-width:900px) { .strip { grid-template-columns:repeat(4,1fr); } .cityfacts { grid-template-columns:1fr; } }
-
-  /* match card */
-  .match { display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:14px; padding:12px 16px 14px; font-size:13px; }
-  .match .big { font-size:22px; font-weight:600; letter-spacing:-0.01em; }
-  .match .sub { color:var(--ink-2); font-size:12px; margin-top:2px; }
-  .match .box { border:1px solid var(--hairline); border-radius:8px; padding:10px 12px; background:var(--plane); }
-  .match .box .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
-  .match .box .v { font-size:20px; font-weight:600; margin-top:2px; }
-  .match .box .u { font-size:12px; color:var(--ink-2); }
-  .match table { font-size:12px; margin-top:6px; }
-  .match th, .match td { padding:3px 8px 3px 0; }
-  @media (max-width:900px) { .match { grid-template-columns:1fr; } }
-
-  /* the time scrubber */
-  .scrub { padding:8px 16px 4px; position:relative; }
-  .scrub svg { cursor:pointer; }
-  .transport { display:flex; align-items:center; gap:8px; padding:0 16px 12px; font-size:12px; color:var(--ink-2); flex-wrap:wrap; }
-  .transport .now { font-weight:600; color:var(--ink-1); font-size:15px; font-variant-numeric:tabular-nums; min-width:96px; }
-
-  .mapwrap { position:relative; }
-  #map { height:560px; }
-  .maplibregl-popup-content { background:var(--surface-1); color:var(--ink-1); font:inherit;
-    border-radius:8px; padding:9px 12px; border:1px solid var(--hairline); max-width:290px; box-shadow:var(--shadow); }
-  .maplibregl-popup-content b { display:block; margin-bottom:2px; }
-  .maplibregl-popup-content small { color:var(--ink-2); }
-  .maplibregl-popup-content table { font-size:12px; margin-top:4px; width:auto; }
-  .maplibregl-popup-content td { padding:1px 8px 1px 0; border:0; }
-  .maplibregl-popup-content td:last-child { text-align:right; font-variant-numeric:tabular-nums; }
-  .maplibregl-popup-tip { display:none; }
-  .legendcard { position:absolute; left:12px; bottom:28px; background:var(--surface-1); border:1px solid var(--hairline);
-    border-radius:8px; padding:9px 11px; font-size:11px; color:var(--ink-2); box-shadow:var(--shadow); max-width:230px; }
-  .legendcard .blk { margin-bottom:7px; } .legendcard .blk:last-child { margin-bottom:0; }
-  .legendcard .h { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-muted); margin-bottom:3px; }
-  .legendcard .rowl { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .legendcard .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
-  .ramp { display:flex; border-radius:3px; overflow:hidden; }
-  .ramp i { width:15px; height:9px; display:block; }
-  .emptymap { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
-  .emptymap[hidden] { display:none; }
-  .emptymap div { background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px; padding:10px 14px; font-size:13px; pointer-events:auto; }
-
-  .churn { padding:8px 16px 12px; }
-  .churn table { font-size:12px; }
-  td.link { cursor:pointer; color:var(--s-food); text-decoration:underline dotted; }
-  .coords { color:var(--ink-muted); font-size:11px; }
-
-  .chartbox { padding:8px 8px 4px; position:relative; }
-  svg { display:block; width:100%; height:auto; }
-  .glabel { fill:var(--ink-muted); font-size:11px; }
-  .gline { stroke:var(--grid); stroke-width:1; }
-  .axis { stroke:var(--axis); stroke-width:1; }
-  .serie { fill:none; stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
-  .legend { display:flex; gap:16px; flex-wrap:wrap; padding:4px 16px 14px; font-size:12px; color:var(--ink-2); }
-  .legend span { display:inline-flex; align-items:center; gap:6px; }
-  .legend i { width:12px; height:3px; border-radius:2px; display:block; }
-
-  .tip { position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-100%);
-         background:var(--surface-1); border:1px solid var(--hairline); border-radius:8px;
-         padding:8px 10px; font-size:12px; white-space:nowrap; z-index:5; box-shadow:var(--shadow); }
-  .tip b { display:block; margin-bottom:4px; color:var(--ink-1); }
-  .tip div { color:var(--ink-2); display:flex; gap:10px; justify-content:space-between; }
-  .tip i { width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:5px; }
-
-  table { border-collapse:collapse; width:100%; font-size:13px; }
-  th, td { text-align:right; padding:7px 16px; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums; }
-  th:first-child, td:first-child { text-align:left; font-variant-numeric:normal; }
-  th { color:var(--ink-muted); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
-  details summary { cursor:pointer; padding:12px 16px; font-size:13px; color:var(--ink-2); }
-  details .body { padding:0 16px 14px; font-size:13px; color:var(--ink-2); }
-  details .body p { margin:6px 0; }
-  .searchbox { padding:12px 16px 4px; font-size:13px; color:var(--ink-2); }
-  .searchbox b { color:var(--ink-1); }
-
-  /* ?embed=1 — the A shell supplies the title, the theme switch and the compare
-     strip. The "how to read this" line stays: setView() rewrites it, and it is
-     the only thing telling you what a dot means. */
-  body.embed .wrap { padding-top:6px; }
-  body.embed header h1,
-  body.embed header .t > p:not(.how),
-  body.embed #theme { display:none; }
-  body.embed header .how { margin-top:0; }
-  body.embed #scorepanel { display:none !important; }
+  /* spatial scraps on top of pulse.css */
+  .tip { white-space: normal; min-width: 180px; max-width: 340px; }
+  .tip i { width: 8px; height: 8px; border-radius: 0; display: inline-block; margin-right: 5px; }
+  th, td { padding: 7px 16px; }
+  input[type=search]::placeholder { color: var(--ink-muted); }
 </style>
 </head>
 <body>
+<canvas id="fx" aria-hidden="true"></canvas>
 <div class="wrap">
 
   <header>
     <div class="t">
-      <h1>Nexus Pulse — energy, food and water in the 11 World Cup host cities</h1>
-      <p>Where food, energy and water demand actually sits in the host cities, built from five years of anonymised card spend.</p>
-      <p class="how" id="how">Every dot is a shop. Bigger dots serve more customers. Colours show what kind of shop it is.</p>
+      <h1>Pulse · energy, food, and water in the 11 World Cup host cities</h1>
+      <p>Map of food, energy, and water demand in the host cities, built from five years of card spend data.</p>
+      <p class="how" id="how">Every dot is a shop. Bigger dots serve more customers. Colour shows the type of shop.</p>
     </div>
-    <button class="btn" id="theme" title="switch between light and dark">☾ Dark</button>
+    <button class="btn" id="theme" title="Switch between light and dark">☾ Dark</button>
   </header>
 
   <div class="controls">
-    <div class="group">
+    <div class="group glass">
       <h3>What to look at</h3>
       <div class="row"><label class="k" for="city">City</label><select id="city"></select></div>
       <div class="row"><label class="k" for="match">2026 match</label><select id="match"></select></div>
       <div class="row"><label class="k" for="q">Shop name</label><input type="search" id="q" placeholder="e.g. Starbucks" autocomplete="off"></div>
     </div>
-    <div class="group">
+    <div class="group glass">
       <h3>How to draw it</h3>
       <div class="row"><div class="k">View</div>
         <div><span class="seg" id="viewseg"><button data-v="shops" class="on">Shops</button><button data-v="districts">Districts</button></span>
@@ -242,7 +43,7 @@
       <div class="row"><div class="k">Show</div><div class="cbs" id="cbs"></div></div>
       <div class="row"><div class="k">Colour by</div>
         <div><span class="seg" id="colourseg"><button data-c="type" class="on">Type of shop</button><button data-c="visitor" id="visbtn" hidden>Visitor share</button></span>
-          <span class="info" tabindex="0" id="visinfo" hidden data-tip="Share of a shop's card customers whose home city is outside the metro's states. From CUSTOMER_HOME_CITY, 2022–2024.">i</span></div></div>
+          <span class="info" tabindex="0" id="visinfo" hidden data-tip="Share of a shop's card customers whose home city is outside the metro's states. From CUSTOMER_HOME_CITY, 2022-2024.">i</span></div></div>
       <div class="row"><div class="k">Overlay</div>
         <div class="inline">
           <label><input type="checkbox" id="heaton"> heat index
@@ -257,29 +58,30 @@
 
   <div class="kpis" id="kpis"></div>
 
-  <section class="panel" id="matchpanel" hidden>
+  <section class="panel glass" id="matchpanel" hidden>
     <h2>Match <span class="pill" id="matchtitle"></span><span class="spacer"></span><button class="btn small" id="clearmatch">clear match</button></h2>
     <div class="match" id="matchbody"></div>
   </section>
 
-  <section class="panel" id="scorepanel" hidden>
-    <h2>Compare hosts <span class="pill">readiness score, 0–100</span>
-      <span class="info" tabindex="0" data-tip="For each city: energy, water and CO₂ per trading shop in a summer month (June–July 2022–2024), plus cooling-degree-days and heat index. Each is turned into a z-score across the 11 cities, blended 0.35 / 0.25 / 0.20 / 0.10 / 0.10, then stretched so the leanest city is 100 and the most pressured is 0. Band is ±15.">i</span></h2>
-    <div class="lead">Higher means the city's shops already run lean on energy, water and carbon. The scale is stretched across these eleven, so 100 is the leanest of the group and 0 the most pressured — not "no data".</div>
+  <section class="panel glass" id="scorepanel" hidden>
+    <h2>Compare hosts <span class="pill">readiness score, 0-100</span>
+      <span class="info" tabindex="0" data-tip="For each city: energy, water, and CO₂ per trading shop in a summer month (June-July 2022-2024), plus cooling degree days and heat index. Each is turned into a z-score across the 11 cities, weighted 0.35 / 0.25 / 0.20 / 0.10 / 0.10, then scaled so the city with the least pressure is 100 and the city with the most pressure is 0. Band is ±15.">i</span></h2>
+    <div class="lead">A higher score means this city's shops run with less energy, water, and carbon intensity than the other hosts.
+      The scale is relative to these eleven cities only. 100 is least pressure in the group. 0 is most pressure.</div>
     <div class="strip" id="strip"></div>
     <div class="cityfacts" id="cityfacts"></div>
   </section>
 
-  <section class="panel" id="searchpanel" hidden>
+  <section class="panel glass" id="searchpanel" hidden>
     <h2>Search results <span class="pill" id="searchtitle"></span></h2>
     <div class="searchbox" id="searchsum"></div>
     <table id="searchtbl"></table>
   </section>
 
-  <section class="panel">
+  <section class="panel glass">
     <h2>Move through time <span class="pill" id="scrubtitle"></span></h2>
     <div class="scrub">
-      <svg id="scrubsvg" viewBox="0 0 1000 96" preserveAspectRatio="none" role="img" aria-label="Customers per month — click or drag to pick a month"></svg>
+      <svg id="scrubsvg" viewBox="0 0 1000 96" preserveAspectRatio="none" role="img" aria-label="Customers per month. Click or drag to pick a month."></svg>
       <div class="tip" id="stip"></div>
     </div>
     <div class="transport">
@@ -292,9 +94,9 @@
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel glass">
     <h2>Where the demand sits <span class="pill" id="maptitle"></span></h2>
-    <div class="mapwrap">
+    <div class="mapwrap" id="mapwrap">
       <div id="map"></div>
       <div class="legendcard" id="legendcard"></div>
       <div class="emptymap" id="emptymap" hidden><div>No shops match these filters. <a id="emptyreset" style="cursor:pointer;text-decoration:underline">Reset filters</a></div></div>
@@ -302,12 +104,12 @@
     <div class="churn" id="churn" hidden></div>
   </section>
 
-  <section class="panel">
+  <section class="panel glass">
     <h2>Day by day inside that month <span class="pill" id="charttitle"></span>
       <span class="spacer"></span>
       <label class="toggle"><input type="checkbox" id="smooth"> Smooth the weekly card-settlement spikes
         <span class="info" tabindex="0" data-tip="Card payments are recorded on the day they settle, so raw days show Monday about 2.5× a weekday and tiny weekends. This averages each day with the 3 days either side.">i</span></label>
-      <span class="seg" id="scaleseg"><button data-sc="abs" class="on">Customers</button><button data-sc="idx">Indexed (month avg = 100)</button></span>
+      <span class="seg" id="scaleseg"><button data-sc="abs" class="on">Customers</button><button data-sc="idx">Ratio (month avg = 1×)</button></span>
     </h2>
     <div class="chartbox">
       <svg id="chart" viewBox="0 0 1000 290" preserveAspectRatio="none" role="img" aria-label="Daily customers by resource type"></svg>
@@ -320,14 +122,14 @@
     </details>
   </section>
 
-  <section class="panel">
+  <section class="panel glass">
     <details>
       <summary>How this was built</summary>
       <div class="body">
-        <p>Demand comes from <code>spend-patterns-rice</code>: for each shop, monthly card customers (<code>RAW_NUM_CUSTOMERS</code>) and daily spend (<code>SPEND_BY_DAY</code>), 2019-12 to 2024-12, 20,569 energy / food / water / venue businesses within 75 km of the 11 host-city centres. Heat comes from <code>urban-heat-index-rice</code>, averaged into 0.01° squares. Fixtures and stadiums come from the published 2026 schedule.</p>
-        <p>Sample data were transformed by the organisers — multiplicative noise on magnitudes, spatial jitter on coordinates. Footprints are estimated by multiplying customer counts by the hand-set factors in <code>intensity_factors.csv</code> (food 2.8 kWh, 25 L, 3.5 kg CO₂e per customer; energy 45 / 1.5 / 12; lodging 28 / 300 / 2; venue 4 / 15 / 2.5). This demonstrates method, not real conditions in any city.</p>
-        <p>The match-day effect (+30% within 2 km) was measured as game week ÷ normal week on the same shops across 566 NFL home games at these stadiums (+33%) and 19 Copa América 2024 matches (+27%). A citywide visitor lift could not be separated from noise (Copa 2024 host cities vs Boston / Philadelphia / Seattle, ±8%). Nothing on this page is a forecast; a 2026 match is shown against the same month of 2024.</p>
-        <p>Visitor share uses <code>CUSTOMER_HOME_CITY</code>: the share of a shop's card customers whose home city is outside the metro's states, 2022–2024, shops with 20+ such customers. Readiness scores use the team's Plan D scoring on per-shop rates.</p>
+        <p>Demand comes from <code>spend-patterns-rice</code>: for each shop, monthly card customers (<code>RAW_NUM_CUSTOMERS</code>) and daily spend (<code>SPEND_BY_DAY</code>), December 2019 to December 2024, covering 20,569 energy, food, water, and venue businesses within 75 km of the 11 host-city centres. Heat comes from <code>urban-heat-index-rice</code>, averaged into 0.01° squares. Fixtures and stadiums come from the published 2026 schedule.</p>
+        <p>Footprints multiply customer counts by the factors in <code>intensity_factors.csv</code> (food 2.8 kWh, 25 L, 3.5 kg CO₂e per customer; energy 45 / 1.5 / 12; lodging 28 / 300 / 2; venue 4 / 15 / 2.5).</p>
+        <p>The match-day effect (+30% within 2 km) was measured as game week divided by a normal week on the same shops across 566 NFL home games at these stadiums (+33%) and 19 Copa América 2024 matches (+27%). A citywide visitor lift could not be separated from method noise (Copa 2024 host cities versus Boston, Philadelphia, and Seattle, ±8%). A 2026 match is shown against the same calendar month of 2024. This page is not a forecast.</p>
+        <p>Visitor share uses <code>CUSTOMER_HOME_CITY</code>: the share of a shop's card customers whose home city is outside the metro's states, 2022-2024, for shops with 20 or more such customers. Readiness scores use Plan D scoring on per-shop rates.</p>
       </div>
     </details>
   </section>
@@ -436,7 +238,7 @@ async function boot() {
 
   // match picker, grouped by round
   const ms = document.getElementById("match");
-  ms.innerHTML = `<option value="">— none —</option>` + ROUND_ORDER.map(r => {
+  ms.innerHTML = `<option value="">(none)</option>` + ROUND_ORDER.map(r => {
     const rows = MATCHES.filter(m => m.g === r);
     return rows.length ? `<optgroup label="${esc(r === "Group" ? "Group stage" : r)}">` + rows.map(m =>
       `<option value="${m.id}">${prettyD(m.d)} · ${esc(m.t1)} v ${esc(m.t2)} · ${esc(m.m)}</option>`).join("") + `</optgroup>` : "";
@@ -493,7 +295,7 @@ function setView(v) {
   document.querySelectorAll("#viewseg button").forEach(x => x.classList.toggle("on", x.dataset.v === v));
   document.getElementById("how").textContent = v === "districts"
     ? "Every square is 1.1 km across. Darker squares hold more customers this month. Click one to see its numbers."
-    : "Every dot is a shop. Bigger dots serve more customers. Colours show what kind of shop it is.";
+    : "Every dot is a shop. Bigger dots serve more customers. Colour shows the type of shop.";
   render();
 }
 function setColour(c) {
@@ -574,7 +376,7 @@ function paintLegend() {
   const rampHtml = cols => `<span class="ramp">${cols.map(c=>`<i style="background:${c}"></i>`).join("")}</span>`;
   const zoomedOut = mapReady && map.getZoom() < CITY_ZOOM && state.city === ALL;
   if (zoomedOut) {
-    blocks.push(`<div class="blk"><div class="h">Size: customers this month</div><div class="rowl">one bubble per city — click to open</div></div>`);
+    blocks.push(`<div class="blk"><div class="h">Size: customers this month</div><div class="rowl">one bubble per city (click to open)</div></div>`);
   } else if (state.view === "districts") {
     blocks.push(state.colour === "visitor"
       ? `<div class="blk"><div class="h">Colour: visitor share</div><div class="rowl">≤5% ${rampHtml(VRAMP())} ≥55%</div><div class="rowl">grey = under ${VIS_MIN_CUST} customers</div></div>`
@@ -690,7 +492,7 @@ function kpi(k, v, u, series) {
     const pts = series.map((s,i) => `${(i/(series.length-1)*100).toFixed(1)},${(24 - (s-mn)/((mx-mn)||1)*22).toFixed(1)}`).join(" ");
     spark = `<svg viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="var(--bar-sel)" stroke-width="1.5"/></svg>`;
   }
-  return `<div class="kpi"><div class="k">${k}</div><div class="v">${v}</div><div class="u">${u}</div>${spark}</div>`;
+  return `<div class="kpi glass"><div class="k">${k}</div><div class="v">${v}</div><div class="u">${u}</div>${spark}</div>`;
 }
 function median(a){ if(!a.length) return null; const s=[...a].sort((x,y)=>x-y); return s[Math.floor(s.length/2)]; }
 function niceMax(v){ if(v<=0) return 1; const p=Math.pow(10,Math.floor(Math.log10(v))); return Math.ceil(v/p*2)/2*p; }
@@ -707,7 +509,7 @@ async function pickMatch(m) {
   const mi = MONTHS.indexOf("2024-" + m.d.slice(5,7)); if (mi >= 0) state.mi = mi;
   await loadSM();
   const st = STADIUMS[m.s];
-  if (mapReady) map.flyTo({ center:[st.x, st.y], zoom:11.6, duration:900 });
+  if (mapReady) map.flyTo({ center:[st.x, st.y], zoom:11.6, duration:320 });
   render();
   document.getElementById("map").scrollIntoView({ behavior:"smooth", block:"center" });
 }
@@ -749,17 +551,17 @@ function drawMatch(pl, month) {
         <tr><td>water, litres a day</td><td>${fmt(s2.water)}</td><td>${fmt(s5.water)}</td></tr>
         ${VIS ? `<tr><td>visitor share</td><td>${pct(s2.vis)}</td><td>${pct(s5.vis)}</td></tr>` : ""}
       </table>
-      <div class="sub" style="margin-top:6px">${pretty(month)} is a stand-in month (we don't forecast 2026). Within 2 km: ${mix(s2.by)}.</div>
+      <div class="sub" style="margin-top:6px">${pretty(month)} stands in for the 2026 match month. Within 2 km: ${mix(s2.by)}.</div>
     </div>
     <div class="box">
       <div class="k">Measured match-day effect</div>
       <div class="v">+${(MATCH_LIFT*100).toFixed(0)}%</div>
-      <div class="u">extra card spend at shops within 2 km on match day and the day after — about <b>${fmt(s2.perDay*MATCH_LIFT)}</b> more customers a day here, mostly food and venues. Beyond 5 km nothing measurable. From 566 NFL home games at these stadiums and 19 Copa América 2024 matches.</div>
+      <div class="u">Extra card spend at shops within 2 km on match day and the day after. About <b>${fmt(s2.perDay*MATCH_LIFT)}</b> more customers a day here, mostly food and venues. Beyond 5 km nothing measurable. Based on 566 NFL home games at these stadiums and 19 Copa América 2024 matches.</div>
     </div>
     <div class="box">
       <div class="k">Citywide visitor lift</div>
       <div class="v" style="font-size:15px">too small to measure</div>
-      <div class="u">Out-of-town visitors spread across the whole city for weeks. In Copa América 2024 that lift was under the ±8% noise of the method, in line with the Club World Cup's published +7%. It's real but too small and too spread out to show on this map.</div>
+      <div class="u">Out-of-town visitors spread across the whole city for weeks. In Copa América 2024 that lift sat under the ±8% noise of the method, in line with the Club World Cup published +7%. It is real but too small and too spread out to show on this map.</div>
     </div>`;
 }
 
@@ -772,11 +574,11 @@ function drawScores() {
   document.getElementById("scorepanel").hidden = false;
   const cards = [...SCORES.cards].sort((a,b)=>a.rank-b.rank);
   document.getElementById("strip").innerHTML = cards.map(c => `
-    <div class="card" data-city="${esc(c.c)}" title="readiness ${c.score.toFixed(1)}, band ${c.band[0]}–${c.band[1]}">
+    <div class="card" data-city="${esc(c.c)}" title="readiness ${c.score.toFixed(1)} ± ${((c.band[1]-c.band[0])/2).toFixed(0)}">
       <div class="r">#${c.rank}</div><div class="n">${esc(c.c)}</div>
       <div class="s">${c.score.toFixed(1)}</div>
       <div class="bar"><em style="left:${c.band[0]}%;width:${Math.max(0,c.band[1]-c.band[0])}%"></em><i style="width:${Math.max(2,c.score)}%;background:${scoreColour(c.score)}"></i></div>
-      <div class="tag">${c.rank === 1 ? "leanest" : c.rank === cards.length ? "most pressure" : "&nbsp;"}</div>
+      <div class="tag">${c.rank === 1 ? "least pressure" : c.rank === cards.length ? "most pressure" : "&nbsp;"}</div>
     </div>`).join("");
   document.querySelectorAll(".card").forEach(el => el.onclick = () => setCity(el.dataset.city));
 }
@@ -791,21 +593,22 @@ function drawCityFacts() {
   const box = document.getElementById("cityfacts");
   if (!SCORES) return;
   const c = SCORES.cards.find(x => x.c === state.city);
-  if (!c) { box.innerHTML = `<div style="color:var(--ink-muted);font-size:12px">Pick a city to see its numbers, closest peers and suggested plays.</div>`; return; }
+  if (!c) { box.innerHTML = `<div style="color:var(--ink-muted);font-size:12px">Pick a city to see its numbers, closest peers, and suggested plays.</div>`; return; }
   const r = c.raw || {};
   const Z = [["energy_kwh","energy"],["kg_co2e","CO₂"],["water_liters","water"],["cdd","cooling days"],["uhi","heat index"]];
   const zb = Z.map(([k,l]) => { const z = c.z[k]||0, w = Math.min(50, Math.abs(z)*20);
     return `<span>${l}</span><div class="zb"><i style="left:${z<0?50-w:50}%;width:${w}%;background:${z>0?cssv("--s-energy"):cssv("--s-water")}"></i></div><span style="color:var(--ink-muted)">${z>0?"more":"less"} than average</span>`; }).join("");
+  const half = (c.band[1] - c.band[0]) / 2;
   box.innerHTML = `
     <div>
-      <b>${esc(c.c)}</b> — rank ${c.rank} of 11, readiness ${c.score.toFixed(1)} (band ${c.band[0]}–${c.band[1]}). Closest peers: ${c.peers.map(esc).join(", ")}.
+      <b>${esc(c.c)}</b> · rank ${c.rank} of 11, readiness ${c.score.toFixed(1)} ± ${half.toFixed(0)}. Closest peers: ${c.peers.map(esc).join(", ")}.
       <dl><dt>energy per shop-month</dt><dd>${fmt(r.energy_kwh)} kWh</dd><dt>water per shop-month</dt><dd>${fmt(r.water_liters)} L</dd>
-          <dt>CO₂e per shop-month</dt><dd>${fmt(r.kg_co2e)} kg</dd><dt>summer cooling-degree-days</dt><dd>${fmt(r.cdd)}</dd>
+          <dt>CO₂e per shop-month</dt><dd>${fmt(r.kg_co2e)} kg</dd><dt>summer cooling degree days</dt><dd>${fmt(r.cdd)}</dd>
           <dt>heat index</dt><dd>${(r.uhi||0).toFixed(1)}</dd><dt>shops in the panel</dt><dd>${full(r.shops||0)}</dd></dl>
-      <details><summary style="padding:6px 0 0;font-size:12px">show the maths</summary><div class="zbars">${zb}</div></details>
+      <details><summary style="padding:6px 0 0;font-size:12px">Show the maths</summary><div class="zbars">${zb}</div></details>
     </div>
     <div><b>Suggested plays</b><ul>${c.plays.map(p => { const f = PLAY_WHY[p.t]; const top = (c.z.water_liters > 0.5) || (c.z.kg_co2e > 0.5);
-      return `<li><b>${esc(p.t.split(" & ")[0].split(" + ")[0])}</b> — ${f ? f(c.c, r, top) : `energy ${p.e.energy_pct}%, water ${p.e.water_pct}%.`}</li>`; }).join("")}</ul></div>`;
+      return `<li><b>${esc(p.t.split(" & ")[0].split(" + ")[0])}</b>. ${f ? f(c.c, r, top) : `Energy ${p.e.energy_pct}%, water ${p.e.water_pct}%.`}</li>`; }).join("")}</ul></div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -841,7 +644,7 @@ function drawSearch(pl, month) {
         <td>${fmt(r.c*f.water)}</td><td>${r.p.u==null?"—":(+r.p.u).toFixed(1)}</td>${VIS?`<td>${pct(r.p.vs)}</td>`:""}<td>${fmt(r.t)}</td></tr>`; }).join("");
     document.getElementById("searchtbl").innerHTML = rows.length ? `<thead><tr><th>Location</th><th style="text-align:left">Type</th><th>Customers ${pretty(month)}</th><th>kWh</th><th>Water L</th><th>Heat idx</th>${VIS?"<th>Visitors</th>":""}<th>Customers, all months</th></tr></thead>
       <tbody>${body}</tbody>${rows.length>40 ? `<tfoot><tr><th colspan="8">showing the busiest 40 of ${rows.length}</th></tr></tfoot>` : ""}` : "";
-    document.querySelectorAll("#searchtbl td.link").forEach(td => td.onclick = () => { if (mapReady) map.flyTo({center:[+td.dataset.x, +td.dataset.y], zoom:14, duration:700}); });
+    document.querySelectorAll("#searchtbl td.link").forEach(td => td.onclick = () => { if (mapReady) map.flyTo({center:[+td.dataset.x, +td.dataset.y], zoom:14, duration:280}); });
   }
 }
 
@@ -888,7 +691,12 @@ function initMap() {
   map = new maplibregl.Map({ container:"map", style:BASEMAP[state.theme], center:[-96,38], zoom:3.4, attributionControl:{compact:true} });
   map.addControl(new maplibregl.NavigationControl({showCompass:false}), "top-right");
   hoverPopup = new maplibregl.Popup({ closeButton:false, closeOnClick:false, offset:10 });
-  map.on("load", () => { addOurLayers(); mapReady = true; paintMap(); requestAnimationFrame(() => { map.resize(); flyToCity(true); }); });
+  map.on("load", () => {
+    addOurLayers();
+    mapReady = true;
+    paintMap();
+    requestAnimationFrame(() => { map.resize(); flyToCity(true); pulseMapChrome(); });
+  });
   map.on("zoomend", () => { if (state.city === ALL) { paintMap(); paintLegend(); } });
 
   const shopHtml = p => `<b>${esc(p.name)}</b><small>${esc(p.city)} · ${esc(p.layer)}${p.near==1 ? " · within 2 km of the stadium" : ""}</small>
@@ -960,7 +768,7 @@ function flyToCity(instant) {
   if (!mapReady) return;
   const pl = DATA.places.filter(inCity); if (!pl.length) return;
   const b = new maplibregl.LngLatBounds(); pl.forEach(p => b.extend([p.x,p.y]));
-  map.fitBounds(b, {padding:46, duration:instant?0:700, maxZoom:12});
+  map.fitBounds(b, {padding:46, duration:instant?0:280, maxZoom:12, essential:true});
 }
 const square = (x, y, half) => ({ type:"Polygon", coordinates:[[[x-half,y-half],[x+half,y-half],[x+half,y+half],[x-half,y+half],[x-half,y-half]]] });
 function circlePoly(x, y, km, n=72) { const pts = []; for (let i = 0; i <= n; i++) { const a = i/n*2*Math.PI;
@@ -1009,6 +817,44 @@ function paintMap() {
   applyHeatVisibility();
 }
 
+let _mapPulseTimer = 0;
+function pulseMapChrome() {
+  const wrap = document.getElementById("mapwrap");
+  if (!wrap) return;
+  wrap.classList.remove("pulse");
+  // force reflow so the scan restarts
+  void wrap.offsetWidth;
+  try {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  } catch (_) { return; }
+  wrap.classList.add("pulse");
+  clearTimeout(_mapPulseTimer);
+  _mapPulseTimer = setTimeout(() => wrap.classList.remove("pulse"), 950);
+  if (!mapReady || !map.getLayer("shop-dots")) return;
+  // stepped opacity stutter on dots / bubbles — not a smooth ease
+  const steps = [0.15, 0.45, 0.25, 0.7, 0.55, 0.85];
+  let i = 0;
+  const tick = () => {
+    if (!mapReady) return;
+    const o = steps[i];
+    try {
+      if (map.getLayer("shop-dots")) {
+        map.setPaintProperty("shop-dots", "circle-opacity",
+          ["interpolate", ["linear"], ["zoom"], 8, o * 0.7, 12, o]);
+      }
+      if (map.getLayer("city-bubbles")) {
+        map.setPaintProperty("city-bubbles", "circle-opacity", o * 0.65);
+      }
+      if (map.getLayer("district-fill")) {
+        map.setPaintProperty("district-fill", "fill-opacity", 0.35 + o * 0.5);
+      }
+    } catch (_) {}
+    i++;
+    if (i < steps.length) setTimeout(tick, 70);
+  };
+  tick();
+}
+
 // districts: this month's customers summed into 1.1 km squares
 function districtsGeo(pl) {
   const cells = {};
@@ -1036,7 +882,7 @@ function districtsGeo(pl) {
       <table><tr><td>customers</td><td>${fmt(d.c)}</td></tr><tr><td>energy</td><td>${fmt(d.kwh)} kWh</td></tr>
       <tr><td>water</td><td>${fmt(d.water)} L</td></tr><tr><td>CO₂e</td><td>${fmt(d.co2)} kg</td></tr>
       <tr><td>heat index</td><td>${heat==null?"—":heat.toFixed(1)}</td></tr>
-      <tr><td>month-to-month wobble</td><td>${ch ? pct(ch.churn) : "—"}</td></tr>
+      <tr><td>month-to-month change</td><td>${ch ? pct(ch.churn) : "—"}</td></tr>
       ${VIS ? `<tr><td>visitor share</td><td>${d.vN >= VIS_MIN_CUST ? pct(d.vW/d.vN) : "n/a"}</td></tr>` : ""}</table>
       <small>${d.top.slice(0,3).map(t=>esc(t[1])).join(" · ")}</small><br><small class="coords">${x.toFixed(2)}, ${y.toFixed(2)}</small>`;
     return { type:"Feature", properties:{ col, html }, geometry:square(x, y, GRID/2) };
@@ -1070,13 +916,13 @@ function drawChurn() {
   for (const c of cities) for (const k in (CHURN[c]||{})) { const d = CHURN[c][k]; if (d.mean >= 200 && d.months >= 24) rows.push({c, k, ...d}); }
   rows.sort((a,b)=>b.churn-a.churn);
   const top = rows.slice(0, 10);
-  box.innerHTML = `<div style="font-size:13px;margin:4px 0 2px"><b>Districts whose demand wobbles most</b></div>
-    <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px">Wobble is the typical month-to-month change in a square's customers, as a share of its average month. About 11% of any wobble is the noise the organisers added, so read the differences, not the levels. Squares averaging 200+ customers and trading 24+ months; ${rows.length} qualify in ${scopeName()}.</div>` +
-    (top.length ? `<table><thead><tr><th>District</th><th>City</th><th>Wobble</th><th>Avg customers / month</th><th>Months trading</th></tr></thead><tbody>` +
+  box.innerHTML = `<div style="font-size:13px;margin:4px 0 2px"><b>Districts with the most month-to-month change</b></div>
+    <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px">Change is the typical month-to-month shift in a square's customers, as a share of its average month. Squares averaging 200+ customers and trading 24+ months; ${rows.length} qualify in ${scopeName()}.</div>` +
+    (top.length ? `<table><thead><tr><th>District</th><th>City</th><th>Change</th><th>Avg customers / month</th><th>Months trading</th></tr></thead><tbody>` +
     top.map(r => { const [x,y] = cellCentre(r.k); const nm = placeName(x,y) || (r.top && r.top.length ? "near " + r.top.join(" · ") : null);
       return `<tr><td class="link" data-x="${x}" data-y="${y}" title="${x.toFixed(2)}, ${y.toFixed(2)}">⌖ ${nm ? esc(nm) : ""} <span class="coords">${x.toFixed(2)}, ${y.toFixed(2)}</span></td><td style="text-align:left">${esc(r.c)}</td>
         <td>${pct(r.churn)}</td><td>${fmt(r.mean)}</td><td>${r.months}</td></tr>`; }).join("") + `</tbody></table>` : `<span style="color:var(--ink-muted)">no district large enough</span>`);
-  box.querySelectorAll("td.link").forEach(td => td.onclick = () => { if (mapReady) map.flyTo({center:[+td.dataset.x, +td.dataset.y], zoom:13, duration:700}); });
+  box.querySelectorAll("td.link").forEach(td => td.onclick = () => { if (mapReady) map.flyTo({center:[+td.dataset.x, +td.dataset.y], zoom:13, duration:280}); });
 }
 
 // ---------------------------------------------------------------------------
@@ -1099,9 +945,11 @@ function drawDaily(month) {
     pts = pts.map((p,i) => { const w = pts.slice(Math.max(0,i-3), i+4); const v = {};
       active.forEach(l => v[l.key] = w.reduce((a,q)=>a+(q.v[l.key]||0),0) / w.length); return {d:p.d, v}; }).filter(p => p.d.slice(0,7) === month);
   }
-  if (state.scale === "idx") {   // each type indexed to its own month average = 100, so small types are visible
+  // keep raw customer counts for unit tooltips even after ratio transform
+  const rawPts = pts.map(p => ({ d:p.d, v:{ ...p.v } }));
+  if (state.scale === "idx") {   // each type as a ratio of its own month average (1×)
     const mean = {}; active.forEach(l => mean[l.key] = pts.reduce((a,p)=>a+(p.v[l.key]||0),0) / (pts.length||1));
-    pts = pts.map(p => { const v = {}; active.forEach(l => v[l.key] = mean[l.key] ? (p.v[l.key]||0)/mean[l.key]*100 : 0); return {d:p.d, v}; });
+    pts = pts.map(p => { const v = {}; active.forEach(l => v[l.key] = mean[l.key] ? (p.v[l.key]||0)/mean[l.key] : 0); return {d:p.d, v}; });
   }
   if (!pts.length || !active.length) {
     svg.innerHTML = `<text x="${W/2}" y="${H/2}" text-anchor="middle" class="glabel">${active.length ? "no daily data for this month" : "nothing selected"}</text>`;
@@ -1109,27 +957,44 @@ function drawDaily(month) {
   }
   let ymax = 0; pts.forEach(p => active.forEach(l => ymax = Math.max(ymax, p.v[l.key]||0))); ymax = niceMax(ymax);
   const x = i => M.l + (W-M.l-M.r) * (pts.length===1 ? .5 : i/(pts.length-1)), y = v => H - M.b - (H-M.t-M.b) * (v/ymax);
+  const axisLabel = v => state.scale === "idx"
+    ? (Math.abs(v - 1) < 1e-9 ? "1×" : `${v.toFixed(v >= 10 ? 0 : 1)}×`)
+    : fmt(v);
   let s = "";
   for (let t=0; t<=4; t++) { const v = ymax*t/4, yy = y(v);
-    s += `<line class="gline" x1="${M.l}" y1="${yy}" x2="${W-M.r}" y2="${yy}"/><text class="glabel" x="${M.l-8}" y="${yy+4}" text-anchor="end">${state.scale==="idx" ? v.toFixed(0) : fmt(v)}</text>`; }
+    s += `<line class="gline" x1="${M.l}" y1="${yy}" x2="${W-M.r}" y2="${yy}"/><text class="glabel" x="${M.l-8}" y="${yy+4}" text-anchor="end">${axisLabel(v)}</text>`; }
   s += `<line class="axis" x1="${M.l}" y1="${H-M.b}" x2="${W-M.r}" y2="${H-M.b}"/>`;
   const step_ = Math.max(1, Math.ceil(pts.length/10));
   pts.forEach((p,i) => { if (i % step_) return; s += `<text class="glabel" x="${x(i)}" y="${H-M.b+16}" text-anchor="middle">${+p.d.slice(8)}</text>`; });
   active.forEach(l => { const d = pts.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(p.v[l.key]||0).toFixed(1)}`).join(" "); s += `<path class="serie" d="${d}" stroke="var(${l.css})"/>`; });
   s += `<line id="cross" class="axis" x1="0" y1="${M.t}" x2="0" y2="${H-M.b}" opacity="0"/>`;
   svg.innerHTML = s;
-  CHART = {pts, active, x, y};
+  CHART = {pts, rawPts, active, x, y};
   hookHover(svg);
-  document.getElementById("legend").innerHTML = active.map(l=>`<span><i style="background:var(${l.css})"></i>${l.label}</span>`).join("") +
-    `<span style="color:var(--ink-muted)">${state.scale==="idx" ? "each type indexed to its month average = 100" : "customers per day"}${state.smooth ? ", 7-day average" : ""}</span>`;
-  drawTable(pts, active, month);
+  const unitNote = state.scale === "idx"
+    ? "ratio to each type's month average (1×)"
+    : "customers / day · hover for kWh, L, kg CO₂e";
+  document.getElementById("legend").innerHTML = active.map(l => {
+    const f = FACTORS[l.key] || FACTORS.Other_EFW;
+    const u = state.scale === "idx" ? "×" : "cust";
+    return `<span><i style="background:var(${l.css})"></i>${l.label} <span style="color:var(--ink-muted)">(${u} · ${f.kwh} kWh / ${f.water} L / ${f.co2} kg per cust)</span></span>`;
+  }).join("") +
+    `<span style="color:var(--ink-muted)">${unitNote}${state.smooth ? ", 7-day average" : ""}</span>`;
+  drawTable(rawPts, active, month);
 }
 function hookHover(svg) {
   const tip = document.getElementById("tip"), cross = svg.querySelector("#cross");
-  svg.onmousemove = ev => { const r = svg.getBoundingClientRect(); const sx = (ev.clientX - r.left)/r.width*W; const {pts, active, x, y} = CHART;
-    let bi=0, bd=Infinity; pts.forEach((p,i)=>{ const d=Math.abs(x(i)-sx); if(d<bd){bd=d;bi=i;} }); const p = pts[bi];
+  svg.onmousemove = ev => { const r = svg.getBoundingClientRect(); const sx = (ev.clientX - r.left)/r.width*W; const {pts, rawPts, active, x, y} = CHART;
+    let bi=0, bd=Infinity; pts.forEach((p,i)=>{ const d=Math.abs(x(i)-sx); if(d<bd){bd=d;bi=i;} }); const p = pts[bi], raw = rawPts[bi];
     cross.setAttribute("x1",x(bi)); cross.setAttribute("x2",x(bi)); cross.setAttribute("opacity","1");
-    tip.innerHTML = `<b>${p.d}</b>` + active.map(l => `<div><span><i style="background:var(${l.css})"></i>${l.label}</span><span>${state.scale==="idx" ? (p.v[l.key]||0).toFixed(0) : fmt(p.v[l.key]||0)}</span></div>`).join("");
+    tip.innerHTML = `<b>${p.d}</b>` + active.map(l => {
+      const f = FACTORS[l.key] || FACTORS.Other_EFW;
+      const cust = raw.v[l.key] || 0;
+      if (state.scale === "idx") {
+        return `<div><span><i style="background:var(${l.css})"></i>${l.label}</span><span>${(p.v[l.key]||0).toFixed(2)}× · ${fmt(cust)} cust</span></div>`;
+      }
+      return `<div><span><i style="background:var(${l.css})"></i>${l.label}</span><span>${fmt(cust)} cust · ${fmt(cust*f.kwh)} kWh · ${fmt(cust*f.water)} L · ${fmt(cust*f.co2)} kg</span></div>`;
+    }).join("");
     tip.style.left = (x(bi)/W*r.width)+"px"; tip.style.top = (y(Math.max(...active.map(l=>p.v[l.key]||0)))/H*r.height - 8)+"px"; tip.style.opacity = 1; };
   svg.onmouseleave = () => { document.getElementById("tip").style.opacity = 0; svg.querySelector("#cross").setAttribute("opacity","0"); };
 }
