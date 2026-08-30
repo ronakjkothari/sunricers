@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nexus Pulse — FIFA 2026 EFW Command</title>
+<title>Nexus Pulse · FIFA 2026 EFW Command</title>
 <style>
   /* tokens are shared with spatial.html so the shell and the embedded map read as one product */
   :root {
@@ -207,11 +207,11 @@
 
   <header>
     <div class="t">
-      <h1>Nexus Pulse <span class="pill">FIFA 2026 · Energy–Food–Water command</span></h1>
-      <p>Comparable evidence on summer resource pressure across the 11 U.S. host cities — and the plays that move it.</p>
-      <p class="loop"><b>Monitor</b> the footprint → <b>Locate</b> where it sits → <b>Decide</b> which play to run → <b>Hand over</b> the playbook.</p>
+      <h1>Nexus Pulse <span class="pill">FIFA 2026 · Energy-Food-Water command</span></h1>
+      <p>Compare summer energy, food, and water pressure across the 11 U.S. host cities, and see which interventions fit each city.</p>
+      <p class="loop"><b>Check</b> the footprint → <b>Find</b> where it sits → <b>Pick</b> a play → <b>Pass on</b> the playbook.</p>
     </div>
-    <button class="btn" id="theme" title="switch between light and dark">☾ Dark</button>
+    <button class="btn" id="theme" title="Switch between light and dark">☾ Dark</button>
   </header>
 
   <div class="globals">
@@ -242,7 +242,7 @@
     </section>
 
     <section class="panel">
-      <h2>What that footprint is made of</h2>
+      <h2>What this footprint is made of</h2>
       <div class="struct" id="struct"></div>
     </section>
 
@@ -266,8 +266,8 @@
       <h2>Next step</h2>
       <div class="lead" id="ctalead"></div>
       <div class="cta" style="padding-top:10px">
-        <button class="btn primary" id="gocompare">Open the playbook for this city →</button>
-        <button class="btn" id="gospatial">Inspect it on the map →</button>
+        <button class="btn primary" id="gocompare">Open this city's playbook</button>
+        <button class="btn" id="gospatial">Open the map</button>
       </div>
     </section>
   </section>
@@ -275,7 +275,7 @@
   <!-- 02 ------------------------------------------------------------------ -->
   <section class="pane" id="pane-compare" hidden>
     <section class="panel">
-      <h2>Readiness across the 11 hosts <span class="pill">0–100, higher = lower relative summer pressure</span>
+      <h2>Readiness across the 11 hosts <span class="pill">0-100. Higher means less summer pressure relative to the other hosts.</span>
         <span class="spacer"></span>
         <span style="font-size:12px;color:var(--ink-muted)">Pressure filter</span>
       </h2>
@@ -296,16 +296,15 @@
   <!-- 03 ------------------------------------------------------------------ -->
   <section class="pane" id="pane-spatial" hidden>
     <section class="panel">
-      <h2>Where the demand actually sits <span class="pill" id="spatialtitle"></span>
+      <h2>Where demand sits on the map <span class="pill" id="spatialtitle"></span>
         <span class="spacer"></span>
-        <a class="btn small" id="popout" href="spatial.html" target="_blank" rel="noopener">open full map ↗</a>
+        <a class="btn small" id="popout" href="spatial.html" target="_blank" rel="noopener">Open full map</a>
       </h2>
-      <div class="lead" style="padding-bottom:10px">Shops, districts, the heat index, the 61-month scrubber and the
-        measured +30% match-day effect. The city selector above drives this map. The readiness strip is hidden here —
-        it lives on the Compare tab.</div>
+      <div class="lead" style="padding-bottom:10px">Shops, districts, heat index, a month scrubber, and the measured +30% match-day lift near stadiums.
+        The host city selector above controls this map. Readiness scores stay on the Compare tab.</div>
       <div class="frameshell">
         <iframe id="frame" title="Nexus Pulse spatial map"></iframe>
-        <div class="frameplaceholder" id="frameph">Loading the map — this tab carries the heavy place data (~16 MB).</div>
+        <div class="frameplaceholder" id="frameph">Loading the map. This tab downloads about 16 MB of place data.</div>
       </div>
     </section>
   </section>
@@ -314,22 +313,21 @@
   <section class="pane" id="pane-scenarios" hidden>
     <section class="panel">
       <h2>Intervention lab <span class="pill">preview</span></h2>
-      <div class="lead">Toggle strategies and watch ΔkWh / ΔL / ΔCO₂e move against the baseline. The full lever set —
-        with cross-resource coupling and a cost-vs-abatement frontier — lands in the next iteration.
+      <div class="lead">Scale visitor demand and watch energy, water, and CO₂e change against the summer baseline.
+        The full lever set (cross-resource coupling and cost versus abatement) ships in the next iteration.
         One lever is live today.</div>
       <div class="lab">
         <div>
           <h4 style="margin:0 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Live lever · visitor surge</h4>
-          <div style="font-size:13px;color:var(--ink-2)">Scale tournament-window visitors against the summer baseline.</div>
+          <div style="font-size:13px;color:var(--ink-2)">Multiply June-July visitors relative to the summer baseline.</div>
           <div class="slider">
             <input type="range" id="surge" min="1" max="2" step="0.05" value="1">
             <span class="val" id="surgeval">1.00×</span>
           </div>
-          <div class="note">Footprints here are visits × intensity factors, so a visitor surge scales them linearly.
-            Climate amplifiers (CDD, urban heat) are <b>not</b> scaled — they do not depend on visitor counts.
-            Illustrative only.</div>
+          <div class="note">Footprints here are visits times intensity factors, so a visitor surge scales them linearly.
+            Cooling degree days and urban heat are not scaled, because they do not depend on visitor counts.</div>
 
-          <h4 style="margin:18px 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Landing next iteration</h4>
+          <h4 style="margin:18px 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Coming next</h4>
           <div class="levers" id="levers"></div>
         </div>
         <div>
@@ -510,7 +508,7 @@ function seriesOf(key) {
 function drawRank() {
   const el = document.getElementById("rankline"), c = cardOf();
   if (!c) {
-    el.innerHTML = `<span style="color:var(--ink-muted)">All 11 hosts — pick a city for readiness</span>`;
+    el.innerHTML = `<span style="color:var(--ink-muted)">All 11 hosts. Pick a city to see its readiness score.</span>`;
     return;
   }
   const half = (c.readiness_band[1] - c.readiness_band[0]) / 2;
@@ -523,8 +521,8 @@ function drawRank() {
         <code>${esc(f.stress)}</code>, then ${esc(f.readiness)}
         Window: ${esc(f.window)}. Uncertainty band ±${(f.uncertainty_pct * 100).toFixed(0)} points.
         <br><br>
-        <b>Two grains.</b> Overview KPI totals are city summer absolutes (store-visits × intensity factors)
-        — the footprint a city must provision. Readiness uses per-shop-month rates from
+        <b>Two kinds of numbers.</b> Overview KPI totals are city summer absolutes (store-visits times intensity factors).
+        That is the footprint a city must provision. Readiness uses per-shop-month rates from
         ${esc(s.label)}, so city size does not drive the rank.
       </span>
     </span>`;
@@ -534,7 +532,7 @@ function drawRank() {
 function drawKpis() {
   const a = absolutes(), n = SUMMER_IDX.length;
   document.getElementById("kpiline").innerHTML =
-    `June–July absolute footprint for <b>${esc(cityName())}</b> — citywide totals from visits × intensity factors.`;
+    `June-July absolute footprint for <b>${esc(cityName())}</b>. These are citywide totals from visits times intensity factors.`;
   const human = {
     energy_kwh:   v => `≈ ${fmt(v / n / 900)} homes for a month`,
     water_liters: v => `≈ ${fmt(v / n / 9000)} people's use for a month`,
@@ -565,7 +563,7 @@ function drawPressure() {
   const c = cardOf(), box = document.getElementById("presschips");
   document.getElementById("presstitle").textContent = cityName();
   if (!c) {
-    box.innerHTML = `<span class="empty">Readiness drivers are per host — pick a city to see which resources are elevated.</span>`;
+    box.innerHTML = `<span class="empty">Readiness drivers are per host. Pick a city to see which resources are elevated.</span>`;
     document.getElementById("pressnote").textContent = "";
     return;
   }
@@ -627,7 +625,7 @@ function drawSeries() {
   svg.innerHTML = s;
   document.getElementById("serielegend").innerHTML =
     `<span><i style="background:${col}"></i>${esc(m.label)} · ${esc(m.unit)} / month (left axis)</span>
-     <span><i style="background:${cssv("--s-venue")};opacity:.5"></i>June–July scoring window</span>`;
+     <span><i style="background:${cssv("--s-venue")};opacity:.5"></i>June-July scoring window</span>`;
 
   const tip = document.getElementById("tip"), box = svg.parentElement;
   const cross = svg.querySelector("#cross"), dot = svg.querySelector("#dot");
@@ -638,7 +636,7 @@ function drawSeries() {
     k = Math.max(0, Math.min(months.length - 1, k));
     cross.setAttribute("x1", X(k)); cross.setAttribute("x2", X(k)); cross.setAttribute("opacity", "0.5");
     dot.setAttribute("cx", X(k)); dot.setAttribute("cy", Y(vals[k])); dot.setAttribute("opacity", "1");
-    tip.innerHTML = `<b>${pretty(months[k])}${isSummer(months[k]) ? " · scored month" : ""}</b>
+    tip.innerHTML = `<b>${pretty(months[k])}${isSummer(months[k]) ? " · June-July window" : ""}</b>
       <div><span>${esc(m.label)}</span><span>${fmt(vals[k])} ${esc(m.unit)}</span></div>`;
     tip.style.left = (X(k) / W * box.clientWidth) + "px";
     tip.style.top = (Y(vals[k]) / H * box.clientHeight - 8) + "px";
@@ -651,7 +649,7 @@ function drawSeries() {
 function drawStruct() {
   const box = document.getElementById("struct");
   if (isAll()) {
-    box.innerHTML = `<div class="empty">Category mix, brands and spend are published per host — pick a city.</div>`;
+    box.innerHTML = `<div class="empty">Category mix, brands, and spend are published per host. Pick a city.</div>`;
     return;
   }
   const o = BY[state.city].ops_scale;
@@ -664,34 +662,34 @@ function drawStruct() {
   };
   box.innerHTML = `
     <div>
-      <h4>Visit mix — where the demand comes from</h4>
+      <h4>Visit mix</h4>
       ${bar(o.visit_mix)}
-      <h4 style="margin-top:14px">Money mix — summer brand spend</h4>
+      <h4 style="margin-top:14px">Money mix (summer brand spend)</h4>
       ${bar(o.spend.mix)}
-      <div class="note">Spend corroborates the visit story; it is never fed into readiness.
+      <div class="note">Spend corroborates the visit story. It is never fed into readiness.
         Summer total ${fmt(o.spend.total)} USD.</div>
     </div>
     <div>
-      <h4>Busiest brands, summer</h4>
+      <h4>Busiest brands in summer</h4>
       <ol>${o.top_brands_by_visits.map(b =>
-        `<li>${esc(b.brand)} — ${fmt(b.summer_visits)} visits<br><small>${esc(b.category)}</small></li>`).join("")}</ol>
+        `<li>${esc(b.brand)} · ${fmt(b.summer_visits)} visits<br><small>${esc(b.category)}</small></li>`).join("")}</ol>
     </div>
     <div>
-      <h4>Climate &amp; heat</h4>
+      <h4>Climate and heat</h4>
       <dl class="facts">
         <dt>Mean summer CDD</dt><dd>${fmt(o.climate.mean_cdd_c)}</dd>
         <dt>Mean summer temp</dt><dd>${o.climate.mean_temp_c.toFixed(1)} °C</dd>
         <dt>Mean urban heat index</dt><dd>${o.climate.mean_uhi.toFixed(1)}</dd>
         <dt>Shops in the panel</dt><dd>${full(BY[state.city].raw_indicators.shops || 0)}</dd>
       </dl>
-      <div class="note">Climate amplifies the footprint but is not demand — cooling degree days and urban heat enter readiness as their own drivers.</div>
+      <div class="note">Climate amplifies the footprint but is not demand. Cooling degree days and urban heat enter readiness as their own drivers.</div>
     </div>`;
 }
 
 function drawCta() {
   const c = cardOf();
   document.getElementById("ctalead").innerHTML = c
-    ? `<b>${esc(c.host_city)}</b> ranks #${c.rank} of ${C.scorecards.length} on summer nexus pressure with
+    ? `<b>${esc(c.host_city)}</b> ranks #${c.rank} of ${C.scorecards.length} on summer resource pressure, with
        ${c.recommended_plays.length} pressing play${c.recommended_plays.length === 1 ? "" : "s"} on the board.`
     : `Pick a host city to open its playbook, or compare all 11 side by side.`;
 }
@@ -724,7 +722,7 @@ function drawStrip() {
       <div class="bar">
         <em style="left:${c.readiness_band[0]}%;width:${Math.max(0, c.readiness_band[1] - c.readiness_band[0])}%"></em>
         <i style="width:${Math.max(2, c.readiness_score)}%;background:${scoreColour(c.readiness_score)}"></i></div>
-      <div class="tag">${c.rank === 1 ? "leanest" : c.rank === n ? "most pressure" : "&nbsp;"}</div>
+      <div class="tag">${c.rank === 1 ? "least pressure" : c.rank === n ? "most pressure" : "&nbsp;"}</div>
     </div>`).join("") : `<div class="empty" style="grid-column:1/-1">No host is elevated on that driver.</div>`;
   document.querySelectorAll("#strip .card").forEach(el => el.onclick = () => setCity(el.dataset.city));
   document.getElementById("stripnote").innerHTML = state.filter
@@ -742,7 +740,7 @@ function drawCompare() {
     return;
   }
   document.getElementById("cmptitle").innerHTML =
-    `${esc(c.host_city)} — rank #${c.rank}, readiness ${c.readiness_score.toFixed(1)}`;
+    `${esc(c.host_city)} · rank #${c.rank}, readiness ${c.readiness_score.toFixed(1)}`;
 
   const zb = c.drivers.map(d => {
     const w = Math.min(50, Math.abs(d.z) * 20);
@@ -753,8 +751,8 @@ function drawCompare() {
   }).join("");
   const r = c.raw_indicators;
   left.innerHTML = `
-    <div style="font-size:13px;color:var(--ink-2)">Pressure drivers, z vs the other ten hosts.
-      Right of centre = more pressure than the 11-host mean.</div>
+    <div style="font-size:13px;color:var(--ink-2)">Pressure drivers as z-scores versus the other ten hosts.
+      Right of centre means more pressure than the 11-host mean.</div>
     <div class="zbars">${zb}</div>
     <dl class="facts">
       <dt>Energy per shop-month</dt><dd>${fmt(r.energy_kwh)} kWh</dd>
@@ -773,15 +771,15 @@ function drawCompare() {
 
   const plays = c.recommended_plays || [], gen = c.general_options || [];
   right.innerHTML =
-    `<div style="font-size:13px;color:var(--ink-2)">Steal this play — matched to ${esc(c.host_city)}'s elevated drivers,
-       with the citywide effect of applying it to this summer's totals.</div>` +
+    `<div style="font-size:13px;color:var(--ink-2)">Recommended plays for ${esc(c.host_city)}, matched to elevated drivers.
+       Effects below apply the play's percent change to this city's summer totals.</div>` +
     (plays.length
       ? plays.map(playCard).join("")
-      : `<div class="empty" style="margin-top:10px">No pressing plays: no driver here sits above the 11-host mean.</div>`) +
+      : `<div class="empty" style="margin-top:10px">No pressing plays. No driver here sits above the 11-host mean.</div>`) +
     (gen.length
       ? `<details ${plays.length ? "" : "open"} style="margin-top:6px">
            <summary style="cursor:pointer;font-size:12px;color:var(--ink-2)">
-             ${gen.length} general option${gen.length === 1 ? "" : "s"} — not pressing for this host</summary>
+             ${gen.length} general option${gen.length === 1 ? "" : "s"} (not pressing for this host)</summary>
            <div style="margin-top:9px">${gen.map(playCard).join("")}</div></details>`
       : "");
   right.querySelectorAll("[data-peer]").forEach(b => b.onclick = () => setCity(b.dataset.peer));
@@ -796,7 +794,7 @@ function playCard(p) {
   ].filter(([,pct]) => pct).map(([l,pct,abs,u]) =>
     `<span title="${esc(d.basis || "")}"><b>${l}</b> ${pct > 0 ? "+" : ""}${pct}% · ${fmt(abs)} ${u}</span>`).join("");
   const steal = (p.steal_from_peers || []).length
-    ? `<div class="steal">Already indicated for peers:
+    ? `<div class="steal">Also indicated for peers:
         ${p.steal_from_peers.map(s => `<button class="lnk" data-peer="${esc(s)}">${esc(s)}</button>`).join(" · ")}</div>`
     : "";
   return `<div class="playcard">
@@ -865,7 +863,7 @@ function drawLevers() {
 
 function drawSurge() {
   document.getElementById("surgeval").textContent = state.surge.toFixed(2) + "×";
-  document.getElementById("surgetitle").textContent = `Baseline vs surge — ${cityName()}`;
+  document.getElementById("surgetitle").textContent = `Baseline vs surge · ${cityName()}`;
   const a = absolutes(), k = state.surge;
   const rows = [["e","energy_kwh"], ["w","water_liters"], ["co2","kg_co2e"], ["v","visits"]].map(([mk, key]) => {
     const m = METRICS[mk], base = a[key] || 0, out = base * k;
@@ -875,9 +873,9 @@ function drawSurge() {
   document.getElementById("surgetbl").innerHTML =
     `<tr><th>Resource</th><th>Baseline summer</th><th>At ${k.toFixed(2)}×</th><th>Δ</th></tr>${rows}`;
   document.getElementById("surgenote").innerHTML =
-    `Baseline is the ${SUMMER_IDX.length}-month June–July total for ${esc(cityName())}.
-     Illustrative linear scaling — no cross-resource coupling, no capacity ceilings, no price response.
-     The real lever engine arrives with the intervention lab.`;
+    `Baseline is the ${SUMMER_IDX.length}-month June-July total for ${esc(cityName())}.
+     This is a linear scale only. It does not model cross-resource coupling, capacity ceilings, or price response.
+     The full lever engine arrives with the intervention lab.`;
 }
 </script>
 </body>
