@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nexus Pulse · EFW map</title>
+<title>Pulse · EFW map</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <link rel="stylesheet" href="pulse.css">
 <script src="pulse-fx.js" defer></script>
@@ -21,7 +21,7 @@
 
   <header>
     <div class="t">
-      <h1>Nexus Pulse · energy, food, and water in the 11 World Cup host cities</h1>
+      <h1>Pulse · energy, food, and water in the 11 World Cup host cities</h1>
       <p>Map of food, energy, and water demand in the host cities, built from five years of card spend data.</p>
       <p class="how" id="how">Every dot is a shop. Bigger dots serve more customers. Colour shows the type of shop.</p>
     </div>
@@ -490,7 +490,7 @@ function kpi(k, v, u, series) {
   if (series && series.length > 2) {
     const mx = Math.max(...series, 1), mn = Math.min(...series);
     const pts = series.map((s,i) => `${(i/(series.length-1)*100).toFixed(1)},${(24 - (s-mn)/((mx-mn)||1)*22).toFixed(1)}`).join(" ");
-    spark = `<svg viewBox="0 0 100 26" preserveAspectRatio="none"><polyline class="spark" points="${pts}"/></svg>`;
+    spark = `<svg viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="var(--bar-sel)" stroke-width="1.5"/></svg>`;
   }
   return `<div class="kpi glass"><div class="k">${k}</div><div class="v">${v}</div><div class="u">${u}</div>${spark}</div>`;
 }
@@ -691,7 +691,12 @@ function initMap() {
   map = new maplibregl.Map({ container:"map", style:BASEMAP[state.theme], center:[-96,38], zoom:3.4, attributionControl:{compact:true} });
   map.addControl(new maplibregl.NavigationControl({showCompass:false}), "top-right");
   hoverPopup = new maplibregl.Popup({ closeButton:false, closeOnClick:false, offset:10 });
-  map.on("load", () => { addOurLayers(); mapReady = true; paintMap(); requestAnimationFrame(() => { map.resize(); flyToCity(true); }); });
+  map.on("load", () => {
+    addOurLayers();
+    mapReady = true;
+    paintMap();
+    requestAnimationFrame(() => { map.resize(); flyToCity(true); pulseMapChrome(); });
+  });
   map.on("zoomend", () => { if (state.city === ALL) { paintMap(); paintLegend(); } });
 
   const shopHtml = p => `<b>${esc(p.name)}</b><small>${esc(p.city)} · ${esc(p.layer)}${p.near==1 ? " · within 2 km of the stadium" : ""}</small>
@@ -810,7 +815,6 @@ function paintMap() {
   map.setPaintProperty("stadium-pt","circle-color", cssv("--ink-1")); map.setPaintProperty("stadium-pt","circle-stroke-color", cssv("--plane"));
   map.setPaintProperty("district-line","line-color", cssv("--plane"));
   applyHeatVisibility();
-  pulseMapChrome();
 }
 
 let _mapPulseTimer = 0;
@@ -962,10 +966,9 @@ function drawDaily(month) {
   s += `<line class="axis" x1="${M.l}" y1="${H-M.b}" x2="${W-M.r}" y2="${H-M.b}"/>`;
   const step_ = Math.max(1, Math.ceil(pts.length/10));
   pts.forEach((p,i) => { if (i % step_) return; s += `<text class="glabel" x="${x(i)}" y="${H-M.b+16}" text-anchor="middle">${+p.d.slice(8)}</text>`; });
-  active.forEach(l => { const d = pts.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(p.v[l.key]||0).toFixed(1)}`).join(" "); s += `<path class="serie draw" d="${d}" stroke="var(${l.css})"/>`; });
+  active.forEach(l => { const d = pts.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(p.v[l.key]||0).toFixed(1)}`).join(" "); s += `<path class="serie" d="${d}" stroke="var(${l.css})"/>`; });
   s += `<line id="cross" class="axis" x1="0" y1="${M.t}" x2="0" y2="${H-M.b}" opacity="0"/>`;
   svg.innerHTML = s;
-  if (typeof armSerieDraw === "function") armSerieDraw(svg);
   CHART = {pts, rawPts, active, x, y};
   hookHover(svg);
   const unitNote = state.scale === "idx"

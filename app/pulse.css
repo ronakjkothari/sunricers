@@ -1,4 +1,4 @@
-/* Nexus Pulse visual system — shared by index.html + spatial.html
+/* Pulse visual system — shared by index.html + spatial.html
    Direction: floodlight ops console. Angular glass, pixel noise, snappy steps.
    Not soft Apple glass. Not purple cyber. */
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@600;700;800&display=swap");
@@ -616,6 +616,18 @@ input[type=search] { cursor: text; width: 100%; }
   flex-wrap: wrap;
   margin: 18px 0 0;
   padding: 12px 14px;
+  /* tip hangs below this bar — must not clip or sit under tabs */
+  position: relative;
+  z-index: 50;
+  overflow: visible;
+}
+.globals.glass {
+  clip-path: none;
+}
+.globals.glass::after {
+  /* keep scanlines inside the bar without covering the floating tip */
+  inset: 0;
+  clip-path: var(--clip-panel);
 }
 .globals .lbl {
   font-size: 11px;
@@ -629,19 +641,30 @@ input[type=search] { cursor: text; width: 100%; }
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
   position: relative;
+  z-index: 1;
 }
 .globals .rank b { color: var(--ink-1); font-family: var(--font-display); font-size: 15px; }
-.globals .rank .tiphost { cursor: help; border-bottom: 1px dotted var(--ink-muted); }
+.globals .rank .tiphost {
+  cursor: help;
+  border-bottom: 1px dotted var(--ink-muted);
+  position: relative;
+  display: inline-block;
+}
 .globals .rank .tiphost:hover .ranktip,
-.globals .rank .tiphost:focus .ranktip { opacity: 1; visibility: visible; }
+.globals .rank .tiphost:focus .ranktip,
+.globals .rank .tiphost:focus-within .ranktip {
+  opacity: 1;
+  visibility: visible;
+}
 .ranktip {
   position: absolute;
   right: 0;
   top: calc(100% + 8px);
-  width: min(360px, 78vw);
-  z-index: 30;
+  width: min(380px, 78vw);
+  z-index: 60;
   background: var(--surface-solid);
   border: 1px solid var(--hairline);
+  border-top-color: var(--glass-edge);
   border-radius: var(--radius);
   padding: 10px 12px;
   font-size: 12px;
@@ -652,6 +675,10 @@ input[type=search] { cursor: text; width: 100%; }
   pointer-events: none;
   text-align: left;
   clip-path: var(--clip-kpi);
+  box-shadow: 6px 8px 0 rgba(18, 22, 15, 0.18);
+}
+:root[data-theme="dark"] .ranktip {
+  box-shadow: 6px 8px 0 rgba(0, 0, 0, 0.45);
 }
 .ranktip b { color: var(--ink-1); display: inline; font-family: var(--font-mono); font-size: 12px; }
 .ranktip code {
