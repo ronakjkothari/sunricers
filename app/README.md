@@ -1,86 +1,143 @@
 # Nexus Pulse — the app
 
-Two pages, no build step, no dependencies beyond the two MapLibre CDN tags in
-`spatial.html`. Hand-rolled SVG charts throughout.
+No build step and no dependencies, beyond Montserrat + Manrope from Google Fonts
+and the two MapLibre CDN tags on the map page. ES modules load natively over a
+static server.
 
 ```bash
 cd app && python3 -m http.server 8000     # then open http://localhost:8000
 ```
 
-Opening the files directly does not work (browsers block local fetches). If the map
-area is blank, click on the tab: Chrome pauses MapLibre while a tab is in the background.
+Opening the files directly does not work — browsers block local `fetch` and ES
+module loads from `file://`.
 
-| Page | Plan | What it is |
-|------|------|------------|
-| `index.html` | **A** | The command shell and the front door. Global host-city selector + four tabs: Overview, Compare hosts, Spatial map, Scenarios. |
-| `spatial.html` | **B** | The map page. Runs standalone at `/spatial.html`, and is embedded in A's Spatial tab. |
+## Layout
 
-## How A and B talk
+```
+index.html          shell only: a left icon rail and four empty mounts
+js/
+  boot.js           state, hash routing, data loading, view mounting
+  lib/format.js     fmt · full · esc · pretty · niceMax · ordinal
+  lib/palette.js    cached CSS-var reads and the theme swap
+  lib/icons.js      twelve line icons, inline SVG
+  lib/stats.js      peer statistics: ranks, medians, contributions, verdict copy
+  views/*.js        one module per tab, each mount/update/(activate)
+css/
+  base.css          tokens, type, cards, buttons, the rail
+  overview.css      the dossier
+  pages.css         Compare, Scenarios, the embedded map
+spatial.html        the map page — still its own document (see below)
+pulse.css           the map page's stylesheet, pending its redesign
+```
 
-Full detail — including why each rule exists — is in
-[`../docs/A_ARCHITECTURE.md`](../docs/A_ARCHITECTURE.md).
+Each view owns the DOM inside its own mount element and queries within it, so
+ids never collide between tabs. State lives once, in `boot.js`.
 
-A embeds B in a same-origin iframe and steers it rather than reloading it:
+Views load with a dynamic `import()` on first activation. That keeps the map's
+~11 MB of place data and MapLibre off the boot path, which is what the old
+iframe was doing — without a second document, stylesheet, or font load.
 
-- `spatial.html?embed=1&city=<host>&theme=<light\|dark>` seeds the first load.
-  `embed=1` hides B's title, lead paragraph, theme button and readiness strip, because A
-  supplies all four. B's "how to read this" line stays — it is the only thing explaining
-  what a dot means, and the view switcher rewrites it.
-- After that, A calls `setCity()` / `setTheme()` on the frame once
-  `window.__spatialReady` is set, reading `window.__spatialState` to avoid redundant
-  calls. Switching cities therefore does **not** re-download B's ~16 MB of place data.
-- Host-city labels are identical across both sides (`places.json` `m` values equal
-  Plan D's `host_city`), so no crosswalk is needed in the browser.
+**The Overview boots on ~240 KB** (contract + series + shell) plus about 255 KB
+of photography.
 
-A itself boots on ~200 KB: it loads only `a_integration.json` and `overview_kpis.json`.
-B's heavy tables are fetched only when the Spatial tab is first opened.
+## Reading the Overview
 
-## Files in `data/`
+Three bands, and every block belongs to exactly one:
 
-Built by Plan D — `python -m engines.playbook.cli --source map --sync-app --validate`:
+| Band | Question | Blocks |
+|---|---|---|
+| **A verdict** | How is this city doing? | full-bleed banner, readiness gauge, the one-sentence verdict, the host picker; a condensed sticky header takes over on scroll |
+| **B evidence** | Why? | four KPI tiles, composition strip, the readiness decomposition, the 60-month chart |
+| **C action** | What now? | the top plays with before/after bars, routes to the playbook and the map |
 
-- `a_integration.json` — **A's spine.** The frozen D contract: 11 scorecards, readiness +
-  band, 5 z-drivers, peers, steal-this-play, and the `ops_scale` absolutes A's KPIs use
-- `city_cards/*.md` — per-host one-pagers, offered as downloads on A's Compare tab
-- `scorecards.json` — compact readiness cards for B's standalone strip
-- `ops_context.json` — compact absolute load for B's side panel
+Layout: the banner and sticky header are `.bleed` (full container width); every
+other block is inset by `--gutter`, so the page has one left edge below the fold.
+Nothing scrolls horizontally — the host picker is a grid popover, not a rail.
+
+Two things carry most of the meaning:
+
+- **The waterfall is the scoring formula, in readiness points.** Readiness is a
+  linear rescale of the stress index, so a host sitting at the 11-host average on
+  every driver scores a fixed **62.2**, and each driver's `weight × z` converts
+  directly into points that move it from there. The steps land exactly on the
+  host's score — `test_shell.js` asserts that identity for all eleven — which is
+  what lets the panel answer "why 12.4" rather than showing abstract z-units.
+- **Every magnitude carries a peer comparison.** `24.7B kWh` alone is
+  uninterpretable. The tiles pair it with the city's rank on the *rate* per
+  trading shop-month, which is what readiness is scored on, and the chart draws
+  the 11-host median and interquartile band behind the city's line.
+
+Weights come from `meta.formula.weights` when present, and are otherwise parsed
+out of `meta.formula.stress`. Revising the weights is therefore a data change,
+not a UI change.
+
+Driver rows carry two affordances: the row focuses that driver (highlighting it
+in the waterfall), and the trailing arrow opens Compare filtered to every host
+elevated on it. The chart's metric is set by the pills in its own header, and by
+the KPI tiles — both stay in sync.
+
+## The map page
+
+`spatial.html` is still a separate document, embedded in an iframe on the
+Spatial tab, and still on the old stylesheet. It is the next page slated for the
+redesign: full-bleed map, the control bar floating over it, three stat pills on
+the canvas, and detail cards beneath reusing the Overview's components. The
+flutter canvas and every `backdrop-filter` have already been stripped from it.
+
+A embeds B and steers it via `setCity()` / `setTheme()` once `__spatialReady` is
+set, so switching cities does not re-download B's place data.
+
+## Regenerating
+
+```bash
+python -m engines.playbook.cli --source map --sync-app --validate   # D -> app/data
+python scripts/build_overview_kpis.py                               # Overview series
+python scripts/build_city_images.py                                 # photo derivatives
+node scripts/test_shell.js                                          # regression check
+```
+
+`build_city_images.py` turns `assets/images/*.jpg` (37 MB of up-to-6000px
+originals) into `assets/img/` — a 1200px banner photo, a 320px thumbnail, and
+inline blur-up placeholders, 1.6 MB for the set. It also derives the rail logo
+and `favicon.ico` from `assets/icon.png`. **Never ship the originals.**
+
+> The photographs in `assets/images/` are untracked and their provenance is not
+> recorded. Add a `CREDITS.md` with a source and licence per file before this
+> goes public.
+
+## Data
+
+Built by Plan D — `python -m engines.playbook.cli --source map --sync-app`:
+
+- `a_integration.json` — **the spine.** 11 scorecards: readiness + band, 5
+  z-drivers with raw values, peers, plays, and the `ops_scale` absolutes
+- `city_cards/*.md` — per-host one-pagers, offered as downloads
+- `scorecards.json`, `ops_context.json` — compact forms for the map page
 
 Built by `python scripts/build_overview_kpis.py`:
 
-- `overview_kpis.json` — 11 hosts × 60 months of energy / water / CO₂e / visits / CDD,
-  for A's Overview chart. Merged TX and CA markets are POI-split with the same weights D
-  uses, and the script asserts its June–July sums match D's `ops_scale.absolute`
+- `overview_kpis.json` — 11 hosts × 60 months of energy / water / CO₂e / visits / CDD
 
-Required by B (from `notebooks/build_map_tables.ipynb` step 6, copy the whole `web/`
-folder here keeping `sm/` inside it):
-
-- `places.json` — one row per shop: `m` city, `k` placekey, `n` name, `l` type,
-  `x`/`y` lon/lat, `c` lifetime customers, `u` heat index
-- `sm/<city>.json` — `keys` (placekeys) and `v` (61 monthly customer counts per shop);
-  this is what animates the map
-- `heat.json` — heat index averaged into 0.01° squares
-- `daily.json` — city × type × day customers and spend, for the daily chart
-- `months.json` — the 61 month labels
-
-Optional for B (the page runs without them):
-
-- `matches.json`, `stadiums.json` — the 78 US fixtures and 11 stadiums, from
-  `data/worldcup/` (see its README for the snippet)
-- `visitors.json`, `visitors_city_month.json` — `notebooks/visitors.ipynb`
-- `baseline.json` — `scripts/build_baseline.py`, not read by either page
+Required by the map page (from `notebooks/build_map_tables.ipynb` step 6):
+`places.json`, `sm/<city>.json`, `heat.json`, `daily.json`, `months.json`.
+Optional: `matches.json`, `stadiums.json`, `visitors.json`, `visitors_city_month.json`.
 
 ## What the numbers are
 
 Two grains, deliberately never blended, and both labelled in the UI:
 
-- **Rates** — energy / water / CO₂e per trading shop-month, from monthly card customers
-  (`RAW_NUM_CUSTOMERS`) × `intensity_factors.csv`. Size-neutral, so a big city does not
-  rank as pressured just for being big. **This is what drives readiness.**
-- **Absolutes** — city summer totals from store-visits × the same factors. This is the
-  load a city actually has to provision, and what the surge scenario scales.
+- **Rates** — energy / water / CO₂e per trading shop-month. Size-neutral, so a
+  big city does not rank as pressured just for being big. **This drives readiness**,
+  and it is what the KPI chips rank.
+- **Absolutes** — city summer totals from store-visits × intensity factors. This
+  is the load a city must actually provision, and what the KPI headline numbers show.
 
-Daily lines are derived from `SPEND_BY_DAY` and are stamped on the settlement day, hence
-the smooth toggle. The +30% match-day effect is measured (566 NFL games, 19 Copa matches),
-applied only within 2 km. Nothing here is a forecast; a 2026 match is shown against the
-same month of 2024. The full method note is in the Spatial page's "How this was built"
-box and in A's disclaimer drawer.
+Ranking the absolutes gives nearly the same answer on all four metrics, because
+they are all visits × a factor — which is exactly why the tiles rank the rate
+instead. A city can be 6th largest and still rank 11th on readiness; that gap is
+the product's whole argument, so the section caption states it outright.
+
+The +30% match-day effect is measured (566 NFL games, 19 Copa matches), applied
+only within 2 km. Nothing here is a forecast; a 2026 match is shown against the
+same month of 2024. Sample data are transformed — the scores demonstrate a
+comparative methodology, not ground-truth city rankings.

@@ -4,10 +4,17 @@
   "meta": {
     "engine": "plan_d_eleven_hosts_playbook",
     "engine_version": "0.4.0",
-    "generated_at": "2026-08-19T06:16:25.750198+00:00",
+    "generated_at": "2026-09-01T14:01:35.530016+00:00",
     "disclaimer": "Sample data are transformed (noise/jitter). Scores demonstrate comparative methodology for mega-event resource readiness \u2014 not ground-truth city rankings.",
     "formula": {
-      "stress": "0.35*z(energy)+0.25*z(co2e)+0.20*z(water)+0.10*z(cdd)+0.10*z(uhi)",
+      "weights": {
+        "energy_kwh": 0.35,
+        "kg_co2e": 0.25,
+        "water_liters": 0.2,
+        "cdd": 0.1,
+        "uhi": 0.1
+      },
+      "stress": "0.35*z(energy)+0.25*z(co2e)+0.2*z(water)+0.1*z(cdd)+0.1*z(uhi)",
       "readiness": "min-max rescale of inverted stress to 0\u2013100 across 11 hosts; higher = lower relative summer nexus load",
       "window": "months=[6, 7] (tournament analog)",
       "uncertainty_pct": 0.15,
