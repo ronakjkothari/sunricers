@@ -54,6 +54,37 @@
   .offbox .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
   .offbox .v { font-size:15px; font-weight:600; margin-top:2px; }
   .offbox .u { font-size:11px; color:var(--ink-muted); margin-top:2px; }
+  /* your own lever: the add/edit form and the "your estimate" card */
+  #customlab { margin-top:12px; }
+  .lever.custom { border-style:dashed; }
+  .lever .ev.mine { border-color:var(--s-venue); color:var(--s-venue); }
+  .lever .cbtns { display:flex; gap:6px; margin-top:8px; }
+  .cform { border:1px solid var(--ink-2); border-radius:var(--radius,8px); padding:12px 14px; background:var(--surface-1); display:grid; gap:9px; font-size:12px; }
+  .cform .ch { font-size:13px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .cform .ev { display:inline-block; font-size:10px; font-weight:500; padding:1px 6px; border-radius:999px; border:1px solid var(--s-venue); color:var(--s-venue); }
+  .cform .f { display:grid; grid-template-columns:110px 1fr; gap:8px; align-items:center; margin:0; }
+  .cform .f > span:first-child { color:var(--ink-2); }
+  .cform input[type=text], .cform select { width:100%; font:inherit; font-size:13px; color:var(--ink-1); background:var(--plane); border:1px solid var(--hairline); border-radius:6px; padding:6px 9px; }
+  .cform .tch { display:inline-flex; align-items:center; gap:5px; margin:2px 12px 2px 0; cursor:pointer; }
+  .cform .tch input { margin:0; }
+  .cform .segrow { border-top:1px solid var(--grid); padding-top:8px; }
+  .cform .segrow[hidden] { display:none; }
+  .cform .sh { font-weight:600; margin-bottom:2px; }
+  .cform .cols, .cform .pvr { display:grid; grid-template-columns:76px 72px 72px 72px 1fr; gap:6px; align-items:center; }
+  .cform:not(.range) .cols, .cform:not(.range) .pvr { grid-template-columns:76px 72px 1fr; }
+  .cform:not(.range) .onlyrange, .cform:not(.range) .pvr input.lo, .cform:not(.range) .pvr input.hi { display:none; }
+  .cform .cols { font-size:10px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
+  .cform .pvr { margin-top:4px; }
+  .cform .pvr input { width:100%; font:inherit; font-size:12px; color:var(--ink-1); background:var(--plane); border:1px solid var(--hairline); border-radius:6px; padding:5px 6px; font-variant-numeric:tabular-nums; }
+  .cform .pvr input.bad { border-color:var(--s-energy); box-shadow:0 0 0 1px var(--s-energy); }
+  .cform .pvr .rl { color:var(--ink-2); }
+  .cform .pvr .base { color:var(--ink-muted); font-size:11px; line-height:1.3; }
+  .cform .pvr .base b { color:var(--ink-1); }
+  .cform .err { color:var(--s-energy); display:grid; gap:2px; }
+  .cform .err:empty { display:none; }
+  .cform .err .warn { color:var(--s-venue); }
+  .cform .cta2 { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .cform .cta2 .note { margin:0; }
 </style>
 </head>
 <body>
@@ -183,6 +214,10 @@
 
           <h4 style="margin:18px 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Levers</h4>
           <div class="levers" id="levers"><div class="note">Loading <code>data/levers.json</code>…</div></div>
+          <div id="customlab">
+            <button class="btn small" id="addlever" type="button">+ Add your own lever</button>
+            <div id="customform" hidden></div>
+          </div>
         </div>
         <div>
           <h4 style="margin:0 0 8px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em"
@@ -256,6 +291,7 @@ Promise.all([
   const opt = url => fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
   Promise.all([opt("data/levers.json"), opt("data/matches.json")]).then(([lev, mt]) => {
     LEV = lev; MATCHES = mt || [];
+    if (LEV) mergeCustomLevers();
     readLeversHash(); drawLevers(); drawSurge(); pushToFrame();
   });
 }).catch(err => {
@@ -297,6 +333,7 @@ function boot() {
     // the embedded map reports its height so the page keeps a single scrollbar
     window.__frameHeight = h => { const f = document.getElementById("frame"); if (f && h > 200) f.style.height = Math.ceil(h) + "px"; };
   }
+  document.getElementById("addlever").onclick = () => openCustomForm(null);
   document.getElementById("clearlevers").onclick = () => { state.levers.clear(); drawLevers(); drawSurge(); pushToFrame(); writeHash(); };
 
   addEventListener("hashchange", () => { readHash(); drawLevers(); renderAll(); pushToFrame(); });
@@ -752,6 +789,7 @@ function pushToFrame() {
     const st = w.__spatialState;              // `state` there is a const, not a window property
     if (st.city !== state.city) w.setCity(state.city);
     if (st.theme !== state.theme) w.setTheme(state.theme);
+    if (typeof w.setCustomLevers === "function") { const sig = JSON.stringify(customLevers()); if (w.__customSig !== sig) w.setCustomLevers(customLevers()); }
     if (typeof w.setLevers === "function") { const mine = [...state.levers].sort().join(","), theirs = [...(st.levers || [])].sort().join(","); if (mine !== theirs) w.setLevers([...state.levers], true); }
   } catch (_) { /* frame not ready yet — mountFrame's poll will catch up */ }
 }
@@ -782,6 +820,7 @@ function drawLevers() {
     const ls = LEV.levers.filter(l => l.bucket === b);
     return `<div class="bucket">${esc(label)}</div>` + ls.map(l => {
       const on = state.levers.has(l.id);
+      if (l.custom) return customCardHtml(l, on);
       const eff = l.offmap
         ? Object.entries(l.offmap.per_fan).filter(([k]) => k !== "gal").map(([k, v]) => `${RES.find(r => r[0]===k)[1]} <b>${v[1]}</b> ${RES.find(r => r[0]===k)[2]} per fan (${v[0]}–${v[2]})`).join(" · ")
         : Object.entries(l.cuts).map(([seg, cuts]) => `${LEV.segments[seg].label}: ` + Object.entries(cuts).map(([k, v]) =>
@@ -814,6 +853,7 @@ function drawLevers() {
     });
     drawSurge(); pushToFrame(); writeHash();
   });
+  bindCustomButtons(box);
 }
 
 /** Split the city's summer absolutes into shop types, so a lever can cut only the type it touches.
@@ -984,6 +1024,190 @@ function drawSurge() {
   document.getElementById("leversnote").textContent = nOn
     ? `${nShop ? `${nShop} shop lever${nShop>1?"s":""}` : ""}${nShop && nOff ? " and " : ""}${nOff ? `${nOff} match-day lever${nOff>1?"s":""}` : ""} on. On the map the touched shops get a dark ring and the tiles show the after-numbers; match-day levers appear on the match card.`
     : "";
+}
+
+// --- Your own lever ----------------------------------------------------------
+// An organiser types a saving per visit (kWh, litres, kg CO₂e, kg food waste) for each shop type an idea
+// touches, or per fan for a stadium idea. Dividing by the per-visit factor in data/curated/intensity_factors.csv
+// turns it into the same [low, mid, high] fraction the studied levers use, so compounding, bars, the map's
+// rings and the match card are all shared. Kept in this browser only, tagged "your estimate".
+const CUSTOM_KEY = "pulse_custom_levers";
+const FOOD_WASTE_CO2 = 2.5;   // kg CO₂e per kg of wasted food (FAO, Food Wastage Footprint, 2013)
+const CSEGS = [["restaurant","Restaurants","visit"], ["grocery","Grocery & convenience","visit"], ["hotel","Hotels","stay"], ["venue","Venues","visit"]];
+const CRES = [["kwh","Energy","kWh"], ["water","Water","L"], ["co2","CO₂e","kg CO₂e"], ["food","Food waste","kg"]];
+const OWNERS = ["City hall","Host committee","Venue operator","Hotel association","Restaurant association","Grocery chains","Transit agency","Water or energy utility","Other"];
+const customLevers = () => LEV ? LEV.levers.filter(l => l.custom) : [];
+let CF_TRIED = false;   // errors are listed only after the first Save press, so the form does not jump while typing
+function loadCustomInputs() {
+  try { const a = JSON.parse(localStorage.getItem(CUSTOM_KEY) || "[]"); return Array.isArray(a) ? a.map(l => l && l.inputs).filter(c => c && c.id) : []; }
+  catch (_) { return []; }
+}
+function saveCustomLevers() { try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(customLevers())); } catch (_) {} }
+function mergeCustomLevers() { LEV.levers = LEV.levers.filter(l => !l.custom).concat(loadCustomInputs().map(buildCustomLever)); }
+const addTri = (a, b, m) => [0,1,2].map(i => (a ? a[i] : 0) + m * (b ? b[i] : 0));
+const segLabel = seg => (CSEGS.find(s => s[0] === seg) || [seg, seg])[1];
+const segWord = seg => seg === "fans" ? "fan" : (CSEGS.find(s => s[0] === seg) || [0, 0, "visit"])[2];
+
+/** the typed per-visit numbers → a lever shaped exactly like one from levers.json */
+function buildCustomLever(c) {
+  const l = { id:c.id, title:c.title, bucket:c.fans ? "match day" : (c.bucket || "before"), plain:c.plain || "", owner:c.owner || "",
+              touches:c.fans ? [] : (c.segs || []).slice(), evidence:"your estimate",
+              evidence_plain:"Your own per-visit estimate typed into the lab, not a study.", dials:[], custom:true, inputs:c };
+  if (c.fans) {
+    const pf = c.pf || {}, per = {};
+    if (pf.kwh) per.kwh = pf.kwh; if (pf.water) per.water = pf.water;
+    if (pf.co2 || pf.food) per.co2 = addTri(pf.co2, pf.food, FOOD_WASTE_CO2);
+    l.offmap = { per_fan: per, unit_note: "per attending fan, your estimate" + (pf.food ? `; food waste counted at ${FOOD_WASTE_CO2} kg CO₂e per kg` : "") };
+  } else {
+    l.cuts = {};
+    for (const seg of (c.segs || [])) {
+      const s = LEV.segments[seg]; if (!s) continue;
+      const f = s.factor, pv = (c.pv || {})[seg] || {}, cuts = {};
+      if (pv.kwh) cuts.kwh = pv.kwh.map(x => Math.min(1, x / f.kwh));
+      if (pv.water) cuts.water = pv.water.map(x => Math.min(1, x / f.water));
+      if (pv.co2 || pv.food) cuts.co2 = addTri(pv.co2, pv.food, FOOD_WASTE_CO2).map(x => Math.min(1, x / f.co2));
+      if (Object.keys(cuts).length) l.cuts[seg] = cuts;
+    }
+  }
+  return l;
+}
+
+function customCardHtml(l, on) {
+  const c = l.inputs || {}, rname = k => RES.find(r => r[0] === k)[1], runit = k => RES.find(r => r[0] === k)[2];
+  const rng = v => v[0] !== v[2];
+  const eff = l.offmap
+    ? Object.entries(l.offmap.per_fan).map(([k, v]) => `${rname(k)} <b>${v[1]}</b> ${runit(k)} per fan${rng(v) ? ` (${v[0]}–${v[2]})` : ""}`).join(" · ")
+    : Object.entries(l.cuts).map(([seg, cuts]) => `${LEV.segments[seg].label}: ` + Object.entries(cuts).map(([k, v]) =>
+        `${rname(k)} <b>−${(v[1]*100).toFixed(1)}%</b>${rng(v) ? ` <span class="lowhigh">(${(v[0]*100).toFixed(1)}–${(v[2]*100).toFixed(1)})</span>` : ""}`).join(", ")).join(" · ");
+  const typedRows = (obj, word) => CRES.filter(([k]) => obj && obj[k]).map(([k, lab, unit]) => `${lab} <b>${obj[k][1]}</b>${rng(obj[k]) ? ` (${obj[k][0]}–${obj[k][2]})` : ""} ${unit} per ${word}`).join(", ");
+  const typed = c.fans ? typedRows(c.pf, "fan")
+    : (c.segs || []).map(seg => `${segLabel(seg)}: ${typedRows((c.pv || {})[seg], segWord(seg)) || "nothing"}`).join(" · ");
+  return `<label class="lever custom ${on ? "on" : ""}">
+    <input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""}>
+    <div>
+      <div class="lt">${esc(l.title)}<span class="ev mine" title="your own estimate, not a study">your estimate</span></div>
+      <div class="lp">${esc(l.plain)}</div>
+      <div class="lm">${eff || "no numbers"}</div>
+      <div class="here">${on && !l.offmap ? hereLine(l) : ""}</div>
+    </div>
+    <details><summary>your numbers, edit, delete</summary>
+      <div style="margin-top:4px"><b>You typed:</b> ${typed}.</div>
+      <div style="margin-top:4px"><b>Owner:</b> ${esc(l.owner || "—")}. The percent is your saving per ${c.fans ? "fan" : "visit"}${c.fans ? "" : " divided by what a visit uses today (<code>data/curated/intensity_factors.csv</code>)"}${(c.fans ? c.pf && c.pf.food : Object.values(c.pv || {}).some(o => o && o.food)) ? `; food waste is counted at ${FOOD_WASTE_CO2} kg CO₂e per kg (FAO 2013)` : ""}. Saved in this browser only.</div>
+      <div class="cbtns"><button type="button" class="btn small" data-edit="${esc(l.id)}">Edit</button><button type="button" class="btn small" data-del="${esc(l.id)}">Delete</button></div>
+    </details>
+  </label>`;
+}
+function bindCustomButtons(box) {
+  box.querySelectorAll("button[data-edit]").forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation(); openCustomForm(b.dataset.edit); });
+  box.querySelectorAll("button[data-del]").forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation();
+    if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Sure? Delete"; return; }   // two clicks, no blocking dialog
+    deleteCustomLever(b.dataset.del); });
+}
+function deleteCustomLever(id) {
+  LEV.levers = LEV.levers.filter(l => l.id !== id); state.levers.delete(id);
+  saveCustomLevers(); closeCustomForm(); drawLevers(); drawSurge(); pushToFrame(); writeHash();
+}
+function closeCustomForm() {
+  const f = document.getElementById("customform"); f.hidden = true; f.innerHTML = "";
+  document.getElementById("addlever").hidden = false;
+}
+function openCustomForm(id) {
+  if (!LEV) return;
+  const l = id ? leverById(id) : null, c = l && l.inputs ? l.inputs : null;
+  const f = document.getElementById("customform");
+  f.innerHTML = customFormHtml(c); f.hidden = false; CF_TRIED = false;
+  document.getElementById("addlever").hidden = true;
+  f.oninput = () => readCustomForm(); f.onchange = () => readCustomForm();
+  f.querySelector("#cf_save").onclick = saveCustomForm;
+  f.querySelector("#cf_cancel").onclick = closeCustomForm;
+  readCustomForm();
+  try { f.scrollIntoView({ block: "nearest", behavior: "smooth" }); if (!c) f.querySelector("#cf_title").focus(); } catch (_) {}
+}
+function customFormHtml(c) {
+  const v = (arr, i) => (arr && arr[i] != null) ? arr[i] : "";
+  const row = (seg, [r, lab], word) => {
+    const arr = seg === "fans" ? (c && c.pf ? c.pf[r] : null) : (c && c.pv && c.pv[seg] ? c.pv[seg][r] : null);
+    return `<div class="pvr" data-seg="${seg}" data-r="${r}"><span class="rl">${lab}</span>
+      <input type="number" min="0" step="any" class="lo" value="${v(arr,0)}" placeholder="low" aria-label="${lab} low">
+      <input type="number" min="0" step="any" class="mid" value="${v(arr,1)}" placeholder="0" aria-label="${lab} saved per ${word}">
+      <input type="number" min="0" step="any" class="hi" value="${v(arr,2)}" placeholder="high" aria-label="${lab} high">
+      <span class="base"></span></div>`;
+  };
+  const segrow = (seg, title, word) => `<div class="segrow" data-seg="${seg}" hidden><div class="sh">${title} · what one ${word} saves</div>
+    <div class="cols"><span></span><span class="onlyrange">low</span><span>your guess</span><span class="onlyrange">high</span><span>what a ${word} ${seg === "fans" ? "does" : "uses"} today</span></div>
+    ${CRES.map(r => row(seg, r, word)).join("")}</div>`;
+  const on = seg => c && (seg === "fans" ? c.fans : (c.segs || []).includes(seg));
+  const tick = (seg, lab) => `<label class="tch"><input type="checkbox" data-seg="${seg}" ${on(seg) ? "checked" : ""}>${lab}</label>`;
+  return `<div class="cform ${c && c.range ? "range" : ""}">
+    <input type="hidden" id="cf_id" value="${esc(c ? c.id : "")}">
+    <div class="ch">${c ? "Edit your lever" : "Your own lever"} <span class="ev mine">your estimate</span></div>
+    <label class="f"><span>Name</span><input type="text" id="cf_title" maxlength="60" placeholder="e.g. Hotel water pledge" value="${esc(c ? c.title : "")}"></label>
+    <label class="f"><span>What a person does</span><input type="text" id="cf_plain" maxlength="160" placeholder="one plain sentence" value="${esc(c ? c.plain : "")}"></label>
+    <label class="f"><span>Who owns it</span><select id="cf_owner">${OWNERS.map(o => `<option ${c && c.owner === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+    <label class="f"><span>When</span><select id="cf_bucket"><option value="before" ${!c || c.bucket !== "during" ? "selected" : ""}>Before the tournament</option><option value="during" ${c && c.bucket === "during" ? "selected" : ""}>During the tournament</option></select></label>
+    <div class="f"><span>Touches</span><div>${CSEGS.map(([s, lab]) => tick(s, lab)).join("")}${tick("fans", "Fans at the match")}</div></div>
+    <div class="f"><span>Range</span><label class="tch"><input type="checkbox" id="cf_range" ${c && c.range ? "checked" : ""}>Not sure? give a low and a high too</label></div>
+    ${CSEGS.map(([s, lab, word]) => segrow(s, lab, word)).join("")}${segrow("fans", "Fans at the match", "fan")}
+    <div class="err" id="cf_err"></div>
+    <div class="cta2"><button type="button" class="btn small primary" id="cf_save">Save lever</button><button type="button" class="btn small" id="cf_cancel">Cancel</button>
+      <span class="note">Saved in this browser only, tagged “your estimate”.</span></div>
+  </div>`;
+}
+/** read the form, paint the "uses today → −x%" hints and the error list; returns the inputs and the errors */
+function readCustomForm() {
+  const form = document.getElementById("customform"), q = s => form.querySelector(s);
+  const num = el => { const s = String(el.value == null ? "" : el.value).trim(); if (s === "") return null; const n = Number(s); return Number.isFinite(n) ? n : NaN; };
+  const range = !!q("#cf_range").checked; q(".cform").classList.toggle("range", range);
+  const segs = [...form.querySelectorAll("input[data-seg]")].filter(cb => cb.checked).map(cb => cb.dataset.seg);
+  const fans = segs.includes("fans"), shopSegs = segs.filter(s => s !== "fans");
+  form.querySelectorAll(".segrow").forEach(d => d.hidden = !segs.includes(d.dataset.seg));
+  q("#cf_bucket").disabled = fans && !shopSegs.length;   // a fans-only lever lives on the match card
+  const errors = [], warns = [];
+  const c = { id: q("#cf_id").value || "", title: q("#cf_title").value.trim(), plain: q("#cf_plain").value.trim(), owner: q("#cf_owner").value,
+              bucket: q("#cf_bucket").value, fans, segs: shopSegs, range, pv: {}, pf: {} };
+  if (!c.title) errors.push("Give the lever a name.");
+  if (!segs.length) errors.push("Tick at least one shop type, or fans at the match.");
+  let any = 0;
+  form.querySelectorAll(".pvr").forEach(row => {
+    const seg = row.dataset.seg, r = row.dataset.r; if (!segs.includes(seg)) return;
+    const [, lab, unit] = CRES.find(x => x[0] === r), word = segWord(seg), plural = word + "s";
+    const f = seg === "fans" ? null : LEV.segments[seg].factor;
+    const fr = f ? (r === "food" ? f.co2 : f[r]) : null;   // what a visit uses today; food waste is compared in CO₂e
+    const baseTxt = f ? (r === "food" ? `≈${f.co2} kg CO₂e of food; 1 kg waste = ${FOOD_WASTE_CO2} kg CO₂e` : `≈${fr} ${unit}`) : "no shop baseline for fans";
+    const base = row.querySelector(".base"); row.querySelectorAll("input").forEach(i => i.classList.remove("bad"));
+    const mid = num(row.querySelector(".mid")), lo0 = num(row.querySelector(".lo")), hi0 = num(row.querySelector(".hi"));
+    if (mid === null && (!range || (lo0 === null && hi0 === null))) { base.innerHTML = baseTxt; return; }
+    if (mid === null) { errors.push(`${lab} for ${plural}: give the middle number too.`); row.querySelector(".mid").classList.add("bad"); base.innerHTML = baseTxt; return; }
+    const lo = range && lo0 !== null ? lo0 : mid, hi = range && hi0 !== null ? hi0 : mid, tri = [lo, mid, hi];
+    if (tri.some(x => Number.isNaN(x) || x < 0)) { errors.push(`${lab} for ${plural}: numbers must be zero or more.`); row.querySelector(".mid").classList.add("bad"); base.innerHTML = baseTxt; return; }
+    if (!(lo <= mid && mid <= hi)) { errors.push(`${lab} for ${plural}: low ≤ middle ≤ high.`); row.querySelectorAll(".lo,.hi").forEach(i => i.classList.add("bad")); }
+    const eq = r === "food" ? tri.map(x => x * FOOD_WASTE_CO2) : tri;
+    let pct = "";
+    if (fr) {
+      const p = eq[1] / fr;
+      pct = ` → <b>−${(p*100).toFixed(1)}%</b>` + (range && hi !== lo ? ` (${(eq[0]/fr*100).toFixed(1)}–${(eq[2]/fr*100).toFixed(1)})` : "");
+      if (eq[2] > fr) { errors.push(`${lab} for ${plural}: a ${word} only ${r === "food" ? "makes" : "uses"} ${fr} ${r === "food" ? "kg CO₂e" : unit}, you cannot save more than that.`); row.querySelector(eq[1] > fr ? ".mid" : ".hi").classList.add("bad"); }
+      else if (p > 0.5) warns.push(`${lab} for ${plural}: −${(p*100).toFixed(0)}% is a very big cut, be sure.`);
+    }
+    base.innerHTML = baseTxt + pct;
+    any++;
+    (seg === "fans" ? c.pf : (c.pv[seg] ||= {}))[r] = tri;
+  });
+  if (segs.length && !any) errors.push("Type at least one saving.");
+  for (const seg of shopSegs) { const pv = c.pv[seg];
+    if (pv && pv.co2 && pv.food && addTri(pv.co2, pv.food, FOOD_WASTE_CO2)[2] > LEV.segments[seg].factor.co2)
+      errors.push(`${segLabel(seg)}: CO₂e plus food waste is more than a visit makes (${LEV.segments[seg].factor.co2} kg CO₂e).`); }
+  q("#cf_err").innerHTML = (CF_TRIED ? errors.map(e => `<div>${esc(e)}</div>`).join("") : "") + warns.map(w => `<div class="warn">${esc(w)}</div>`).join("");
+  return { c, errors };
+}
+function saveCustomForm() {
+  CF_TRIED = true;
+  const { c, errors } = readCustomForm(); if (errors.length) return;
+  if (!c.id) c.id = "custom_" + c.title.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 24) + "_" + Date.now().toString(36);
+  const l = buildCustomLever(c);
+  LEV.levers = LEV.levers.filter(x => x.id !== c.id).concat([l]);
+  state.levers.add(c.id); saveCustomLevers(); closeCustomForm();
+  drawLevers(); drawSurge(); pushToFrame(); writeHash();
 }
 </script>
 </body>

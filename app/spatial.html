@@ -237,7 +237,7 @@ Promise.all([
 ]).then(([places,heat,daily,months,matches,stadiums,scores,vis,lev]) => {
   DATA={places,heat,daily}; MONTHS=months;
   MATCHES = matches || []; STADIUMS = stadiums || {}; SCORES = scores; LEV = lev;
-  if (LEV) { try { GRO_RE = new RegExp(LEV.grocery_regex, "i"); } catch (_) { GRO_RE = null; } }
+  if (LEV) { try { GRO_RE = new RegExp(LEV.grocery_regex, "i"); } catch (_) { GRO_RE = null; } mergeStoredCustomLevers(); }
   if (vis) { VIS = {}; vis.forEach(v => VIS[v.k] = v); }
   DATA.places.forEach(p => { p.nl = (p.n||"").toLowerCase(); p.cell = cellKey(p.x, p.y);
                              p.vs = VIS && VIS[p.k] ? VIS[p.k].v : null; p.seg = segOf(p); });
@@ -552,6 +552,25 @@ function setLevers(ids, fromShell) {
   if (!fromShell) { try { if (window.parent !== window && typeof window.parent.__leversFromMap === "function") window.parent.__leversFromMap([...state.levers]); } catch (_) {} }
 }
 window.setLevers = setLevers;
+/** levers the organiser typed into the shell's lab ("your estimate"): same shape as levers.json entries.
+ *  The shell pushes them through setCustomLevers(); the pop-out reads the same browser storage itself. */
+function mergeStoredCustomLevers() {
+  let list = []; try { list = JSON.parse(localStorage.getItem("pulse_custom_levers") || "[]"); } catch (_) {}
+  if (Array.isArray(list) && list.length) setCustomLevers(list, true);
+}
+function setCustomLevers(list, atBoot) {
+  if (!LEV) return;
+  list = (list || []).filter(l => l && l.id && l.custom && (l.cuts || l.offmap));
+  LEV.levers = LEV.levers.filter(l => !l.custom).concat(list);
+  window.__customSig = JSON.stringify(list);
+  state.levers = new Set([...state.levers].filter(id => leverById(id)));
+  if (atBoot) return;   // boot() draws the picker itself
+  const pan = document.getElementById("leverpanel"), wasOpen = pan && !pan.hidden && !pan.classList.contains("closed");
+  drawLeverPicker();
+  if (wasOpen) { pan.classList.remove("closed"); const tg = document.getElementById("levertog"); if (tg) tg.textContent = "▾"; paintLeverPicker(); }
+  render();
+}
+window.setCustomLevers = setCustomLevers;
 function drawLeverPicker() {
   if (!LEV) return;
   const pan = document.getElementById("leverpanel"); pan.hidden = false; pan.classList.add("closed");   // starts folded so it never hides the west coast
