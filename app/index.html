@@ -54,6 +54,24 @@
   .offbox .k { font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; }
   .offbox .v { font-size:15px; font-weight:600; margin-top:2px; }
   .offbox .u { font-size:11px; color:var(--ink-muted); margin-top:2px; }
+  /* what helps this city: levers ranked, with energy / water / CO₂e kept apart */
+  .leverrank { padding:12px 16px 0; }
+  .leverrank h5 { margin:0 0 4px; font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+  .leverrank .lead2 { font-size:13px; color:var(--ink-2); margin-bottom:8px; }
+  .leverrank .lead2 b { color:var(--ink-1); }
+  .leverrank .tblwrap { overflow-x:auto; }
+  .leverrank table { font-size:12px; }
+  .leverrank th, .leverrank td { padding:5px 8px; white-space:nowrap; }
+  .leverrank th:nth-child(2), .leverrank td.n { text-align:left; }
+  .leverrank td.n { white-space:normal; min-width:180px; }
+  .leverrank th.hot, .leverrank td.hot { background:color-mix(in srgb, var(--s-venue) 16%, transparent); color:var(--ink-1); font-weight:600; }
+  .leverrank td.nil { color:var(--ink-muted); font-weight:400; }
+  .leverrank tr.on td { background:color-mix(in srgb, var(--ink-1) 5%, transparent); }
+  .leverrank td.cost { color:var(--ink-2); white-space:normal; min-width:170px; }
+  .leverrank .tag { display:inline-block; font-size:10px; padding:1px 6px; border-radius:999px; border:1px solid var(--hairline); color:var(--ink-muted); margin-left:4px; }
+  .leverrank .ev { display:inline-block; font-size:10px; font-weight:500; padding:1px 6px; border-radius:999px; border:1px solid var(--s-venue); color:var(--s-venue); margin-left:4px; }
+  .leverrank input { margin:0; cursor:pointer; }
+  .leverrank .note { margin:6px 0 4px; }
   /* your own lever: the add/edit form and the "your estimate" card */
   #customlab { margin-top:12px; }
   .addlever { display:block; width:100%; text-align:left; font:inherit; cursor:pointer; color:var(--ink-1); background:var(--surface-1);
@@ -213,6 +231,7 @@
       <div class="lead">Switch levers on and watch energy, water and CO₂e move against the summer baseline. Every cut is a
         <b>range</b> (low / middle / high) built from measured studies, never one number; the percent is the trustworthy part.
         Each lever card says what a person actually does, what it touches, and where its numbers come from.</div>
+      <div class="leverrank" id="leverrank"></div>
       <div class="lab">
         <div>
           <h4 style="margin:0 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Visitor surge</h4>
@@ -1031,6 +1050,7 @@ function drawSurge() {
        simulation, combined end to end. The percent is what to trust; the absolute kWh and litres inherit the baseline's noise.`
     : `Switch a lever on to see its cut. Baseline is the June–July total for ${esc(cityName())}; a ${k.toFixed(2)}× surge scales it linearly.`;
   document.getElementById("offmap").innerHTML = offmapHtml();
+  drawLeverRank();
   const nShop = [...state.levers].filter(id => leverById(id) && !leverById(id).offmap).length, nOff = nOn - nShop;
   document.getElementById("leversnote").textContent = nOn
     ? `${nShop ? `${nShop} shop lever${nShop>1?"s":""}` : ""}${nShop && nOff ? " and " : ""}${nOff ? `${nOff} match-day lever${nOff>1?"s":""}` : ""} on. On the map the touched shops get a dark ring and the tiles show the after-numbers; match-day levers appear on the match card.`
@@ -1061,7 +1081,8 @@ const segWord = seg => seg === "fans" ? "fan" : (CSEGS.find(s => s[0] === seg) |
 function buildCustomLever(c) {
   const l = { id:c.id, title:c.title, bucket:c.fans ? "match day" : (c.bucket || "before"), plain:c.plain || "", owner:c.owner || "",
               touches:c.fans ? [] : (c.segs || []).slice(), evidence:"your estimate",
-              evidence_plain:"Your own per-visit estimate typed into the lab, not a study.", dials:[], custom:true, inputs:c };
+              evidence_plain:"Your own per-visit estimate typed into the lab, not a study.", dials:[], custom:true, inputs:c,
+              cost_tier:{ n:c.cost ?? 1, t:COST_TIERS[c.cost ?? 1] } };
   if (c.fans) {
     const pf = c.pf || {}, per = {};
     if (pf.kwh) per.kwh = pf.kwh; if (pf.water) per.water = pf.water;
@@ -1103,6 +1124,7 @@ function customCardHtml(l, on) {
     </div>
     <details><summary>your numbers, edit, delete</summary>
       <div style="margin-top:4px"><b>You typed:</b> ${typed}.</div>
+      <div style="margin-top:4px"><b>Cost:</b> ${esc(COST_TIERS[c.cost ?? 1])}.</div>
       <div style="margin-top:4px">The percent is your saving per ${c.fans ? "fan" : "visit"}${c.fans ? "" : " divided by what a visit uses today (<code>data/curated/intensity_factors.csv</code>)"}${(c.fans ? c.pf && c.pf.co2unit === "food" : Object.values(c.pv || {}).some(o => o && o.co2unit === "food")) ? `; food waste is counted at ${FOOD_WASTE_CO2} kg CO₂e per kg (FAO 2013)` : ""}. Saved in this browser only.</div>
       <div class="cbtns"><button type="button" class="btn small" data-edit="${esc(l.id)}">Edit</button><button type="button" class="btn small" data-del="${esc(l.id)}">Delete</button></div>
     </details>
@@ -1159,6 +1181,7 @@ function customFormHtml(c) {
     <div class="ch">${c ? "Edit your lever" : "Your own lever"} <span class="ev mine">your estimate</span></div>
     <label class="f"><span>Name</span><input type="text" id="cf_title" maxlength="60" placeholder="e.g. Hotel water pledge" value="${esc(c ? c.title : "")}"></label>
     <label class="f"><span>What a person does</span><input type="text" id="cf_plain" maxlength="160" placeholder="one plain sentence" value="${esc(c ? c.plain : "")}"></label>
+    <label class="f"><span>Cost</span><select id="cf_cost">${COST_TIERS.map((tt, i) => `<option value="${i}" ${(c ? c.cost : 1) === i ? "selected" : ""}>${tt}</option>`).join("")}</select></label>
     <label class="f"><span>When</span><select id="cf_bucket"><option value="before" ${!c || c.bucket !== "during" ? "selected" : ""}>Before the tournament</option><option value="during" ${c && c.bucket === "during" ? "selected" : ""}>During the tournament</option></select></label>
     <div class="f"><span>Touches</span><div>${CSEGS.map(([s, lab]) => tick(s, lab)).join("")}${tick("fans", "Fans at the match")}</div></div>
     <div class="f"><span>Range</span><label class="tch"><input type="checkbox" id="cf_range" ${c && c.range ? "checked" : ""}>Not sure? give a low and a high too</label></div>
@@ -1179,7 +1202,7 @@ function readCustomForm() {
   q("#cf_bucket").disabled = fans && !shopSegs.length;   // a fans-only lever lives on the match card
   const errors = [], warns = [];
   const c = { id: q("#cf_id").value || "", title: q("#cf_title").value.trim(), plain: q("#cf_plain").value.trim(),
-              bucket: q("#cf_bucket").value, fans, segs: shopSegs, range, pv: {}, pf: {} };
+              bucket: q("#cf_bucket").value, cost: +q("#cf_cost").value || 0, fans, segs: shopSegs, range, pv: {}, pf: {} };
   if (!c.title) errors.push("Give the lever a name.");
   if (!segs.length) errors.push("Tick at least one shop type, or fans at the match.");
   let any = 0;
@@ -1223,6 +1246,74 @@ function saveCustomForm() {
   LEV.levers = LEV.levers.filter(x => x.id !== c.id).concat([l]);
   state.levers.add(c.id); saveCustomLevers(); closeCustomForm();
   drawLevers(); drawSurge(); pushToFrame(); writeHash();
+}
+
+// --- What helps this city ------------------------------------------------------
+// Ranks the levers for the selected city on the three things the data can carry: the cut on each resource
+// kept separate (a city can be fine on energy and terrible on water, so there is no blended number), the
+// reach (share of the city's summer visits at the shops the lever touches) and the cost tier from the card.
+// The city's problem is Plan D's driver z-scores versus the other hosts. Acceptance and legacy are not
+// scored here on purpose: they are judgement, not data.
+const DRIVER_RES = { energy_kwh:"kwh", water_liters:"water", kg_co2e:"co2" };
+const COST_TIERS = ["$0 · nothing to buy", "$ · small kit, pays back in months", "$$ · real money, pays back in years", "$$$ · big budget"];
+const costTier = l => l.cost_tier || null;
+/** summer visits per shop type, the same split segmentPiles() uses */
+function segmentVisits() {
+  const cards = isAll() ? C.scorecards : [BY[state.city]]; const v = {}; let all = 0;
+  cards.forEach(c => {
+    const a = c.ops_scale.absolute, mix = c.ops_scale.visit_mix || {};
+    const fs = (LEV.food_split || {})[c.host_city] || { restaurant:0.73, grocery:0.27 };
+    all += a.visits || 0;
+    for (const [seg, s] of Object.entries(LEV.segments)) { const lv = (a.visits || 0) * (mix[s.layer] || 0); v[seg] = (v[seg] || 0) + (s.layer === "Food" ? lv * (fs[seg] ?? 0) : lv); }
+  });
+  return { v, all };
+}
+function drawLeverRank() {
+  const box = document.getElementById("leverrank"); if (!box) return;
+  if (!LEV || !C) { box.innerHTML = ""; return; }
+  const c = cardOf();
+  const { seg, tot } = segmentPiles(); const { v: sv, all: allV } = segmentVisits();
+  const ms = MATCHES.filter(m => isAll() || m.m === state.city); const seats = ms.reduce((s, m) => s + (m.a || m.cap || 0), 0);
+  const z = {}; if (c) c.drivers.forEach(d => { if (DRIVER_RES[d.key]) z[DRIVER_RES[d.key]] = d.z; });
+  const top = c ? RES.map(([r]) => r).sort((a, b) => (z[b] ?? -9) - (z[a] ?? -9))[0] : null;
+  const worst = top && z[top] >= 0.25 ? top : null;   // nothing stands out below a quarter of a standard deviation
+  const heat = c ? c.drivers.filter(d => (d.key === "cdd" || d.key === "uhi") && d.z > 0.25) : [];
+  const rows = LEV.levers.map(l => {
+    const cut = {}; let reach = 0;
+    if (l.offmap) { for (const [r] of RES) { const pf = l.offmap.per_fan[r]; cut[r] = pf && tot[r] ? pf[1] * seats / tot[r] : 0; } }
+    else {
+      for (const [r] of RES) { let s = 0; for (const [sg, cuts] of Object.entries(l.cuts)) if (cuts[r] && seg[sg]) s += seg[sg][r] * cuts[r][1]; cut[r] = tot[r] ? s / tot[r] : 0; }
+      for (const sg of Object.keys(l.cuts)) reach += (sv[sg] || 0); reach = allV ? reach / allV : 0;
+    }
+    return { l, cut, reach, best: Math.max(...RES.map(([r]) => cut[r])) };
+  });
+  rows.sort((a, b) => (worst ? (b.cut[worst] - a.cut[worst]) : 0) || (b.best - a.best));
+  const zWord = zz => zz == null ? "" : Math.abs(zz) < 0.25 ? "about average" : zz > 0.75 ? "well above the other hosts" : zz > 0 ? "above the other hosts" : zz < -0.75 ? "well below the other hosts" : "below the other hosts";
+  const rl = r => RES.find(x => x[0] === r)[1];
+  const lead = !c
+    ? `Levers ranked by their biggest single cut across all 11 hosts. Pick a city to rank against that city's own problem.`
+    : !worst
+    ? `${esc(cityName())} is ${zWord(z[top])} on all three (energy z ${z.kwh.toFixed(2)}, water ${z.water.toFixed(2)}, CO₂e ${z.co2.toFixed(2)}), so nothing stands out and levers are ranked by their biggest single cut.` +
+      (heat.length ? ` Heat is a driver here though (${heat.map(d => `${d.label.toLowerCase()} z +${d.z.toFixed(2)}`).join(", ")}), so energy cuts that touch cooling matter more than the number shows.` : "")
+    : `${esc(cityName())}'s worst of the three is <b>${rl(worst)}</b> (${zWord(z[worst])}, z ${z[worst] >= 0 ? "+" : ""}${z[worst].toFixed(2)}), so levers are ranked by their ${rl(worst) === "CO₂e" ? "CO₂e" : rl(worst).toLowerCase()} cut. ` +
+      RES.filter(([r]) => r !== worst).map(([r, lab]) => `${lab}: ${zWord(z[r])}`).join("; ") + "." +
+      (heat.length ? ` Heat is a driver here too (${heat.map(d => `${d.label.toLowerCase()} z +${d.z.toFixed(2)}`).join(", ")}), so energy cuts that touch cooling matter more than the number shows.` : "");
+  const pct = (x, hot) => x > 1e-6 ? `<td class="${hot ? "hot" : ""}">${x < 0.0005 ? "<0.1%" : "−" + (x*100).toFixed(1) + "%"}</td>` : `<td class="${hot ? "hot" : ""} nil">—</td>`;
+  box.innerHTML = `<h5>What helps ${esc(cityName())} · levers ranked</h5><div class="lead2">${lead}</div>
+    <div class="tblwrap"><table>
+      <tr><th></th><th>Lever</th>${RES.map(([r, lab]) => `<th class="${r === worst ? "hot" : ""}">${lab} cut</th>`).join("")}<th>Reach</th><th>Cost</th></tr>
+      ${rows.map(({ l, cut, reach }) => { const on = state.levers.has(l.id), ct = costTier(l);
+        return `<tr class="${on ? "on" : ""}"><td><input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""} aria-label="switch on ${esc(l.title)}"></td>
+          <td class="n">${esc(l.title)}${l.custom ? `<span class="ev">your estimate</span>` : ""}${l.offmap ? `<span class="tag">match card</span>` : ""}</td>
+          ${RES.map(([r]) => pct(cut[r], r === worst)).join("")}
+          <td>${l.offmap ? (ms.length ? `${ms.length} fixture${ms.length > 1 ? "s" : ""} · ${full(seats)} fans` : "no fixtures here") : `${(reach*100).toFixed(0)}% of visits`}</td>
+          <td class="cost" title="${esc(l.cost || "")}">${ct ? esc(ct.t) : "not set"}</td></tr>`; }).join("")}
+    </table></div>
+    <div class="note">Each cut is that lever alone, middle value, as a share of ${esc(cityName())}'s June–July total for that one resource; the three are kept apart on purpose. Reach is the share of the city's summer visits at the shops the lever touches. Match-day levers are attendance × per-fan against the same totals. Cost is the tier on the lever's card; hover for the sourced figure. Not scored: whether people will accept it and what lasts after the tournament. That is judgement, not data.</div>`;
+  box.querySelectorAll("input[type=checkbox]").forEach(cb => cb.onchange = () => {
+    if (cb.checked) state.levers.add(cb.dataset.id); else state.levers.delete(cb.dataset.id);
+    drawLevers(); drawSurge(); pushToFrame(); writeHash();
+  });
 }
 </script>
 </body>

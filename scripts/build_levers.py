@@ -31,6 +31,7 @@ LEVERS = [
                         "u": "https://green-forum.ec.europa.eu/document/download/31ee1841-92ff-4eb9-b37e-9fc1f4d66bb7_en?filename=2_PDFsam_BEMP-5-FINAL.pdf"},
         "dials": ["opt-out vs opt-in towel card (roughly doubles participation)", "laundry efficiency (5 to 20 L per kg)", "share of rooms still on pre-1994 fittings"],
         "placeholder": "Ronak: water −30%, energy −3%",
+        "cost_tier": {"n": 2, "t": "$$ · about $100k a hotel, pays back in 2 years"},   # 0 nothing to buy … 3 big budget; ranking column in the lab
         "cost": ("≈$100,000 per 400-room hotel with the utility installing the fixtures, payback under 2 years (EPA WaterSense, Holiday Inn San Antonio); "
                  "showerhead $12 and tap aerator $8 installed (Illinois TRM v14 §4.3); towel cards ≈$0; "
                  "laundry last-rinse reclaim $79,000 per hotel, payback 2.6 years (EPA WaterSense, Westin Riverwalk)."),
@@ -50,6 +51,7 @@ LEVERS = [
                         "u": "https://ma-eeac.org/wp-content/uploads/Prescriptive-Gas-Pre-Rinse-Spray-Valve-Measure-Impact-Evaluation.pdf"},
         "dials": ["share of kitchens with old kit", "which devices the grant covers"],
         "placeholder": "Ronak: water −15%, energy −2%, food CO₂e −5%",
+        "cost_tier": {"n": 1, "t": "$ · $21–88 a spray valve, pays back in months"},   # 0 nothing to buy … 3 big budget; ranking column in the lab
         "cost": ("Spray valve $21–88 installed, payback 4–8 months (Illinois TRM v14 §4.2.11, EPA WaterSense); "
                  "ENERGY STAR dishwasher +$156–3,309 over standard, saves ≈$1,616 a year in utilities (Illinois TRM §4.2.6, DOE FEMP)."),
         "card": "interventions/kitchen_water_efficiency.md",
@@ -69,6 +71,7 @@ LEVERS = [
                         "u": "https://www.energy.ca.gov/sites/default/files/2021-05/CEC-500-2021-021.pdf"},
         "dials": ["share of kitchens with old kit", "grant limited to the biggest energy hogs vs any ENERGY STAR item"],
         "placeholder": "no placeholder",
+        "cost_tier": {"n": 2, "t": "$$ · per-appliance grants, programme cost not pulled"},   # 0 nothing to buy … 3 big budget; ranking column in the lab
         "cost": "Per-measure costs live in Illinois TRM v14 §4.2 (commercial kitchen equipment); no single programme cost pulled yet.",
         "card": "interventions/kitchen_energy_retrofits.md",
     },
@@ -86,6 +89,7 @@ LEVERS = [
                         "u": "https://www.producefoodsafety.org/files/inline-files/displaycasedoors.pdf"},
         "dials": ["share of stores still running open cases", "heated glass vs no-heat glass + LED"],
         "placeholder": "no placeholder",
+        "cost_tier": {"n": 2, "t": "$$ · door kits per fridge case, cost not pulled"},   # 0 nothing to buy … 3 big budget; ranking column in the lab
         "cost": "No public cost dataset pulled yet (retrofit door kits are priced per linear foot by vendors, not in the TRMs we checked).",
         "card": "interventions/grocery_fridge_doors.md",
     },
@@ -105,6 +109,7 @@ LEVERS = [
                         "u": "https://digital.library.unt.edu/ark:/67531/metadc780320/m2/1/high_res_d/840985.pdf"},
         "dials": ["share of roofs that are single-storey and due for recoating", "trees as legacy line (≈88 kWh/yr per mature public tree, USFS)"],
         "placeholder": "Ronak: energy −12%, water −2% (cool_roofs_shade_uhi)",
+        "cost_tier": {"n": 2, "t": "$$ · recoat at the next reroof, pays over years"},   # 0 nothing to buy … 3 big budget; ranking column in the lab
         "cost": ("No public installed-cost dataset (RSMeans is paywalled); modelled net saving $0.36 per m² of roof per year after the winter penalty "
                  "(Levinson & Akbari 2010). Trees: $80–120 to plant, $20–34 per public tree per year over 40 years (USFS Northeast Community Tree Guide)."),
         "card": "interventions/cool_roofs_shade.md (research summary; no MC script yet)",
@@ -125,6 +130,7 @@ LEVERS = [
                         "u": "https://escholarship.org/uc/item/2c58r8qm"},
         "dials": ["+1 or +2 °C", "event week only vs whole summer"],
         "placeholder": "Ronak: energy −8%, water −1%",
+        "cost_tier": {"n": 0, "t": "$0 · a thermostat rule, nothing to buy"},   # 0 nothing to buy … 3 big budget; ranking column in the lab
         "cost": "≈$0 — a thermostat reprogramming protocol, no equipment; optional guest-room HVAC controller $260 per room (Illinois TRM v14 §4.4.8).",
         "card": "interventions/peak_cooling_setpoints.md",
     },
@@ -142,6 +148,7 @@ LEVERS = [
                         "u": "https://www.frontiersin.org/articles/10.3389/fsufs.2022.1001157/full"},
         "dials": ["default vs merely available", "share of concession points that comply"],
         "placeholder": "Ronak: food CO₂e −25%, water −8%, energy −5%",
+        "cost_tier": {"n": 0, "t": "$0 · cheaper ingredients than meat"},   # 0 nothing to buy … 3 big budget; ranking column in the lab
         "cost": ("≤$0 — plant-based meals average ≈30% cheaper ingredients than meat-based (Bryant Research 2024); "
                  "retail beef $6.32/lb vs chicken $2.40/lb (BLS average prices); the big cafeteria trial saw no drop in total sales (Garnett 2019)."),
         "card": "interventions/plant_forward_concessions.md",
@@ -160,6 +167,7 @@ LEVERS = [
                         "u": "https://www.oeko.de/oekodoc/292/2006-011-en.pdf"},
         "dials": ["with or without a parking cap", "free vs paid (the 2026 hosts charged $80–150)"],
         "placeholder": "no placeholder (replaces gasoline_visit_shift, energy −10%)",
+        "cost_tier": {"n": 3, "t": "$$$ · about $6M a match for extra service"},   # 0 nothing to buy … 3 big budget; ranking column in the lab
         "cost": ("Extra service costs the host agency $165–352 per bus-hour depending on the city (FTA National Transit Database 2024); "
                  "NJ Transit priced its 2026 match specials at ≈$6M per match; an electric shuttle bus is ≈$770–908k with charging. "
                  "No per-rider subsidy figure is published anywhere."),
