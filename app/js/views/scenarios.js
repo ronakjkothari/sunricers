@@ -37,16 +37,26 @@ export function mount(el, context) {
   root.innerHTML = `
     <section class="card panel" style="margin-top:0">
       <header>
+        <h2 id="sc-rankh">What helps this city</h2>
+        <span class="chip" id="sc-rankchip"></span>
+        <span class="sp"></span>
+        <span class="eyebrow">each lever alone · middle value</span>
+      </header>
+      <div class="body leverrank" id="sc-rank"></div>
+    </section>
+
+    <section class="card panel">
+      <header>
         <h2>Intervention lab</h2>
         <span class="chip" id="sc-city"></span>
+        <span class="sp"></span>
+        <button class="btn sm" id="sc-showonmap">${icon("map", 14)} Show on the map</button>
+        <button class="btn sm ghost" id="sc-clear">Clear levers</button>
       </header>
       <div class="body">
-        <p class="note" style="margin-bottom:14px;max-width:80ch">
+        <p class="note" style="margin-bottom:18px;max-width:80ch">
           Switch levers on and watch energy, water and CO₂e move against the summer baseline. Every cut is a
-          <b>range</b> (low / middle / high) built from measured studies, never one number; the percent is the
-          trustworthy part. Each lever card says what a person actually does, what it touches, and where its
-          numbers come from.</p>
-        <div class="leverrank" id="sc-rank"></div>
+          <b>range</b> (low / middle / high) from measured studies, never one number; the percent is the trustworthy part.</p>
         <div class="lab">
           <div>
             <div class="eyebrow">Visitor surge</div>
@@ -76,11 +86,7 @@ export function mount(el, context) {
               <table class="stbl" id="sc-tbl"></table>
               <p class="note" id="sc-note"></p>
             </details>
-            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn sm" id="sc-showonmap">${icon("map", 14)} Show these levers on the map</button>
-              <button class="btn sm ghost" id="sc-clear">Clear levers</button>
-            </div>
-            <p class="note" id="sc-leversnote"></p>
+            <p class="note" id="sc-leversnote" style="margin-top:12px"></p>
           </div>
         </div>
       </div>
@@ -350,23 +356,30 @@ function drawLeverRank() {
     ? `<td class="num ${hot ? "hot" : ""}">${x < 0.0005 ? "<0.1%" : "−" + (x * 100).toFixed(1) + "%"}</td>`
     : `<td class="num ${hot ? "hot" : ""} nil">—</td>`);
 
-  box.innerHTML = `<h5>What helps ${name} · levers ranked</h5><div class="lead2">${lead}</div>
-    <div class="tblwrap"><table class="stbl">
-      <tr><th></th><th>Lever</th>${RES.map(([r, lab]) => `<th class="${r === worst ? "hot" : ""}">${lab} cut</th>`).join("")}<th>Reach</th><th>Cost</th></tr>
-      ${rows.map(({ l, cut, reach }) => {
-        const on = ctx.state.levers.has(l.id), ct = costTier(l);
+  root.querySelector("#sc-rankh").textContent = `What helps ${ctx.isAll() ? "all 11 hosts" : ctx.cityName()}`;
+  root.querySelector("#sc-rankchip").textContent = !card ? "ranked by biggest single cut"
+    : worst ? `ranked by ${rl(worst) === "CO₂e" ? "CO₂e" : rl(worst).toLowerCase()} cut · the worst driver here`
+    : "nothing stands out · ranked by biggest cut";
+  const tier = ct => (ct ? ct.t.split(" · ") : ["not set", ""]);
+  box.innerHTML = `<p class="lead2">${lead}</p>
+    <div class="tblwrap"><table class="rank">
+      <thead><tr><th></th><th class="n">Lever</th>${RES.map(([r, lab]) => `<th class="num ${r === worst ? "hot" : ""}">${lab}</th>`).join("")}<th>Reach</th><th>Cost</th></tr></thead>
+      <tbody>${rows.map(({ l, cut, reach }) => {
+        const on = ctx.state.levers.has(l.id), [tag, cost] = tier(costTier(l));
         return `<tr class="${on ? "on" : ""}">
-          <td><input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""} aria-label="switch on ${esc(l.title)}"></td>
+          <td class="tick"><input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""} aria-label="switch on ${esc(l.title)}"></td>
           <td class="n">${esc(l.title)}${l.custom ? `<span class="ev">your estimate</span>` : ""}${l.offmap ? `<span class="tag">match card</span>` : ""}</td>
           ${RES.map(([r]) => pct(cut[r], r === worst)).join("")}
-          <td>${l.offmap ? (ms.length ? `${ms.length} fixture${ms.length > 1 ? "s" : ""} · ${full(seats)} fans` : "no fixtures here") : `${(reach * 100).toFixed(0)}% of visits`}</td>
-          <td class="cost" title="${esc(l.cost || "")}">${ct ? esc(ct.t) : "not set"}</td></tr>`;
-      }).join("")}
+          <td class="reach">${l.offmap ? (ms.length ? `${ms.length} fixture${ms.length > 1 ? "s" : ""} · ${full(seats)} fans` : "no fixtures here") : `${(reach * 100).toFixed(0)}% of visits`}</td>
+          <td class="cost" title="${esc(l.cost || "")}"><b>${esc(tag)}</b><small>${esc(cost)}</small></td></tr>`;
+      }).join("")}</tbody>
     </table></div>
-    <p class="note">Each cut is that lever alone, middle value, as a share of ${name}'s June–July total for that one resource;
-      the three are kept apart on purpose. Reach is the share of the city's summer visits at the shops the lever touches.
-      Match-day levers are attendance × per-fan against the same totals. Cost is the tier on the lever's card; hover for the
-      sourced figure. Not scored: whether people will accept it and what lasts after the tournament. That is judgement, not data.</p>`;
+    <details><summary>How this ranking works</summary>
+      <p class="note">Each cut is that lever alone, middle value, as a share of ${name}'s June–July total for that one resource;
+      the three are kept apart on purpose, because a city can be fine on energy and bad on water. Reach is the share of the
+      city's summer visits at the shops the lever touches. Match-day levers are attendance × per-fan against the same totals.
+      Cost is the tier on the lever's card; hover for the sourced figure. Not scored: whether people will accept it and what
+      lasts after the tournament. That is judgement, not data.</p></details>`;
   box.querySelectorAll("input[type=checkbox]").forEach(cb => cb.onchange = () => {
     if (cb.checked) ctx.state.levers.add(cb.dataset.id); else ctx.state.levers.delete(cb.dataset.id);
     changed(false);

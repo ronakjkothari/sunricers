@@ -193,21 +193,27 @@ table.stbl th { color: var(--ink-3); font-weight: 500; font-size: 11.5px; }
 .offbox .u { font-size: 11px; color: var(--ink-3); margin-top: 6px; }
 
 /* ------------------------------------------------- what helps this city */
-.leverrank { margin-bottom: 22px; }
-.leverrank h5 { margin: 0 0 4px; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
-.leverrank .lead2 { font-size: 13px; color: var(--ink-2); margin-bottom: 8px; line-height: 1.5; }
+.leverrank .lead2 { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; margin: 0 0 14px; max-width: 90ch; }
 .leverrank .lead2 b { color: var(--ink); }
-.leverrank .tblwrap { overflow-x: auto; }
-.leverrank table.stbl { font-size: 12px; margin-top: 0; }
-.leverrank th, .leverrank td { padding: 5px 8px; white-space: nowrap; }
-.leverrank th:nth-child(2), .leverrank td.n { text-align: left; }
-.leverrank td.n { white-space: normal; min-width: 180px; }
-.leverrank th.hot, .leverrank td.hot { background: color-mix(in srgb, var(--c-venue) 16%, transparent); color: var(--ink); font-weight: 600; }
-.leverrank td.nil { color: var(--ink-3); font-weight: 400; }
-.leverrank tr.on td { background: color-mix(in srgb, var(--ink) 5%, transparent); }
-.leverrank td.cost { color: var(--ink-2); white-space: normal; min-width: 170px; text-align: left; }
-.leverrank .tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: var(--r-pill); border: 1px solid var(--line); color: var(--ink-3); margin-left: 4px; }
-.leverrank input { margin: 0; cursor: pointer; accent-color: var(--accent); }
+.leverrank .tblwrap { overflow-x: auto; margin: 0 -4px; }
+table.rank { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.rank th, table.rank td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; text-align: left; }
+table.rank th { color: var(--ink-3); font-weight: 500; font-size: 11.5px; white-space: nowrap; }
+table.rank th.num, table.rank td.num { text-align: right; font-variant-numeric: tabular-nums; width: 84px; }
+table.rank td.tick { width: 28px; padding-right: 0; }
+table.rank td.tick input { margin: 0; display: block; cursor: pointer; accent-color: var(--accent); }
+table.rank td.n { font-weight: 500; min-width: 200px; }
+table.rank th.hot, table.rank td.hot { background: color-mix(in srgb, var(--c-venue) 14%, transparent); color: var(--ink); font-weight: 600; }
+table.rank td.nil { color: var(--ink-3); font-weight: 400; }
+table.rank tr.on td { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+table.rank tr.on td.hot { background: color-mix(in srgb, var(--c-venue) 22%, transparent); }
+table.rank td.reach { color: var(--ink-2); white-space: nowrap; width: 150px; }
+table.rank td.cost { color: var(--ink-2); min-width: 220px; }
+table.rank td.cost b { color: var(--ink); font-weight: 600; margin-right: 6px; }
+table.rank td.cost small { color: var(--ink-3); font-size: 12px; }
+table.rank .tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: var(--r-pill); border: 1px solid var(--line); color: var(--ink-3); margin-left: 6px; vertical-align: 1px; }
+.leverrank details { margin-top: 10px; }
+.leverrank details .note { margin-top: 4px; max-width: 90ch; }
 
 /* ------------------------------------------------------- your own lever */
 #sc-customlab { margin-top: 12px; }
