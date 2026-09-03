@@ -131,9 +131,20 @@ class PlaybookService:
                     "grain_note": (ops.get("meta") or {}).get("grain_note"),
                 },
                 "formula": {
-                    "stress": (
-                        "0.35*z(energy)+0.25*z(co2e)+0.20*z(water)"
-                        "+0.10*z(cdd)+0.10*z(uhi)"
+                    # Structured weights so the UI can render the score's
+                    # decomposition without parsing prose, and so revising the
+                    # weights stays a data change. The string is derived from
+                    # the same source, and can no longer drift from it.
+                    "weights": dict(self.config.weight_map()),
+                    "stress": "+".join(
+                        f"{w:g}*z({label})"
+                        for label, w in (
+                            ("energy", self.config.weight_energy),
+                            ("co2e", self.config.weight_food_co2e),
+                            ("water", self.config.weight_water),
+                            ("cdd", self.config.weight_cdd),
+                            ("uhi", self.config.weight_uhi),
+                        )
                     ),
                     "readiness": (
                         "min-max rescale of inverted stress to 0–100 across 11 hosts; "
