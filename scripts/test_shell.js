@@ -299,6 +299,8 @@ async function main() {
     /drawLevers/.test(scSrc) && /drawLeverRank/.test(scSrc) && /customFormHtml/.test(scSrc));
   const cmSrc = fs.readFileSync(path.join(APP, "js/views/compare.js"), "utf8");
   ok("compare's plays come from levers.json", /rankLevers/.test(cmSrc) && /levers\.json/.test(cmSrc));
+  const ovSrc = fs.readFileSync(path.join(APP, "js/views/overview.js"), "utf8");
+  ok("the Overview's plays come from levers.json too", /rankLevers/.test(ovSrc) && /drawLeverPlays/.test(ovSrc));
   const spatialHtml = fs.readFileSync(path.join(APP, "spatial.html"), "utf8");
   ok("spatial.html still exposes setLevers / setCustomLevers and calls back",
     /window\.setLevers\s*=/.test(spatialHtml) && /window\.setCustomLevers\s*=/.test(spatialHtml) &&

@@ -13,6 +13,7 @@ import { fmt, esc, pretty, isSummer, niceMax, ordinal, slug } from "../lib/forma
 import { icon, DRIVER_ICON } from "../lib/icons.js";
 import { c, METRIC_COLOR, DRIVER_COLOR, LAYER_COLOR } from "../lib/palette.js";
 import { METRIC_ABS, verdict, rankLabel, pctLabel, polarRank } from "../lib/stats.js";
+import { RES, DRIVER_RES, rankLevers, costTier } from "../lib/levers.js";
 
 const METRICS = {
   v: { label: "Visits", unit: "visits", icon: "visits", input: true },
@@ -772,6 +773,7 @@ function drawSeries() {
 /* ------------------------------------------------------- C. the plays */
 
 function drawPlays() {
+  if (ctx.lev) { drawLeverPlays(); return; }
   const k = card();
   const focus = ctx.state.driver;
   const all = k.recommended_plays || [];
@@ -803,6 +805,82 @@ function drawPlays() {
       ${icon("download", 15)} One-pager</a>`;
   root.querySelector("#ov-go-compare").onclick = () => ctx.goCompare(null);
   root.querySelector("#ov-go-map").onclick = () => ctx.setTab("spatial");
+}
+
+/**
+ * The plays are the intervention lab's levers (data/levers.json, measured
+ * studies), ranked for this city exactly as the lab and Compare rank them, so
+ * the same play never shows two different numbers on two tabs. A focused
+ * driver narrows to the levers that cut that resource; the two heat drivers
+ * narrow to energy, since that is what cooling burns.
+ */
+function drawLeverPlays() {
+  const k = card();
+  const focus = ctx.state.driver;
+  const R = rankLevers(ctx.lev, [k], k, ctx.matchesHere());
+  const res = focus ? (DRIVER_RES[focus] || "kwh") : null;
+  const rows = (res ? R.rows.filter(x => x.cut[res] > 1e-6).sort((a, b) => b.cut[res] - a.cut[res]) : R.pressing).slice(0, 2);
+  const box = root.querySelector("#ov-plays");
+  const RL = Object.fromEntries(RES.map(([r, l]) => [r, l]));
+
+  root.querySelector("#ov-playcap").textContent = rows.length
+    ? (focus ? `levers that cut ${PLAIN_DRIVER[focus].toLowerCase()}` : R.worst
+      ? `levers that cut ${RL[R.worst] === "CO₂e" ? "CO₂e" : RL[R.worst].toLowerCase()}, ${k.host_city}'s worst driver`
+      : `biggest single cuts on ${k.host_city}'s own totals`)
+    : "";
+
+  box.innerHTML = rows.length
+    ? rows.map(x => leverCard(x, R)).join("")
+    : `<div class="empty" style="grid-column:1/-1">${focus
+        ? `No lever cuts <b>${PLAIN_DRIVER[focus].toLowerCase()}</b> in ${esc(k.host_city)}. Clear the focus to see the rest.`
+        : `No lever moves ${esc(k.host_city)}'s totals. The full list is on Compare.`}</div>`;
+
+  box.querySelectorAll("[data-lab]").forEach(b => {
+    b.onclick = () => { ctx.state.levers.add(b.dataset.lab); ctx.leversChanged(); ctx.setTab("scenarios"); };
+  });
+  drawExits(k);
+}
+
+function drawExits(k) {
+  root.querySelector("#ov-exits").innerHTML = `
+    <button class="btn primary" id="ov-go-compare">${icon("book", 15)} Open the full playbook</button>
+    <button class="btn" id="ov-go-map">${icon("map", 15)} See ${esc(k.host_city)} on the map</button>
+    <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.md" download>
+      ${icon("download", 15)} One-pager</a>`;
+  root.querySelector("#ov-go-compare").onclick = () => ctx.goCompare(null);
+  root.querySelector("#ov-go-map").onclick = () => ctx.setTab("spatial");
+}
+
+/** A lever drawn as one of Ronak's play cards: the city's total with the cut carved out of it. */
+function leverCard(x, R) {
+  const { l, cut } = x, ct = costTier(l);
+  const MK = { kwh: "e", water: "w", co2: "co2" };
+  const bars = RES.filter(([r]) => cut[r] > 1e-6).map(([r]) => {
+    const mk = MK[r], m = METRICS[mk], col = c(METRIC_COLOR[mk]);
+    const now = R.tot[r], after = now * (1 - cut[r]);
+    const keep = Math.max(0, Math.min(100, (1 - cut[r]) * 100));
+    return `<div class="pbar">
+      <div class="ph">
+        <span class="pn">${icon(m.icon, 14)} ${m.label}</span>
+        <span class="pd num" style="color:${col}">${cut[r] < 0.0005 ? "<0.1" : "−" + (cut[r] * 100).toFixed(1)}%</span>
+      </div>
+      <div class="ptrack"><span class="pfill" style="width:${keep.toFixed(1)}%;background:${col}"></span></div>
+      <div class="pf num">
+        <span>${fmt(now)} → <b>${fmt(after)}</b> ${esc(m.unit)}</span>
+        <span class="psaved">${fmt(now - after)} avoided</span>
+      </div>
+    </div>`;
+  }).join("");
+  const scope = l.offmap
+    ? `Attendance × per fan over ${R.ms.length} fixture${R.ms.length === 1 ? "" : "s"} here.`
+    : `Middle value, this lever alone; the range and sources are in the lab.`;
+  return `<article class="play">
+    <h3>${esc(l.title)} <span class="ev${l.custom ? " mine" : ""}">${esc(l.evidence)}</span></h3>
+    <div class="pbars">${bars || `<span class="muted">No measurable cut in ${esc(card().host_city)}</span>`}</div>
+    <p class="why">${esc(l.plain)} ${scope}</p>
+    <div class="foot"><span>Owner: ${esc(l.owner || "you")}</span><span>Cost: ${esc(ct ? ct.t : "not set")}</span>
+      <button class="lnk" data-lab="${esc(l.id)}">Try it in the lab ${icon("arrow", 12)}</button></div>
+  </article>`;
 }
 
 /**
