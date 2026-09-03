@@ -125,7 +125,8 @@ function setTheme(theme) {
 function buildRail() {
   const rail = document.getElementById("rail");
   rail.innerHTML =
-    `<div class="mark"><img src="assets/img/icon-64.png" alt="Nexus Pulse" width="64" height="64"></div>` +
+    `<button class="mark" id="railhome" data-label="Overview" aria-label="Nexus Pulse — go to Overview"
+       ><img src="assets/img/icon-64.png" alt="" width="64" height="64"></button>` +
     TABS.map(t => `<button data-tab="${t.id}" data-label="${t.label}"
       aria-label="${t.label}">${icon(t.icon, 19)}</button>`).join("") +
     `<div class="sp"></div>
@@ -135,6 +136,7 @@ function buildRail() {
   rail.querySelectorAll("[data-tab]").forEach(b => {
     b.onclick = () => setTab(b.dataset.tab);
   });
+  document.getElementById("railhome").onclick = () => setTab("overview");
   document.getElementById("themebtn").onclick =
     () => setTheme(state.theme === "light" ? "dark" : "light");
 

@@ -17,6 +17,12 @@ plain ground. ES modules load natively over a static server.
 > the tiles. Their **vector** style is still keyless, so that is what the map
 > uses.
 
+One encoding note worth keeping: the metric buttons used to change only dot
+size, and because each metric is normalised by its own 95th percentile the median
+shop landed near 6 px whichever you picked — the buttons looked inert. Opacity
+now carries the contrast, so choosing Water dims the map to the lodging that
+actually drives it while the fuel stations that dominate Energy recede.
+
 ```bash
 cd app && python3 -m http.server 8000     # then open http://localhost:8000
 ```
@@ -150,6 +156,39 @@ map and as plain JS for the pills. `test_shell.js` evaluates the expressions
 against the JS across 360 combinations, because if the two ever disagree the map
 is showing one number while the pills show another.
 
+### Time is a first-class axis, not a row of boxes
+
+The scrubber is 61 identical grey bars, which is impossible to aim at, so an axis
+under it ticks each January and names the year **from the tick rightwards**. A
+centred year label reads as "the year starts here" and would put *2024* over the
+summer of 2024.
+
+Clicking a shop opens a card carrying that shop's whole history for the metric on
+screen — baseline dashed, scenario solid, the saving shaded between them, and a
+marker on the month you are on. One month tells you a shop is large; the series
+tells you whether it is seasonal, whether it is growing, and how wide a play's
+saving actually opens over five years. Leave the card open and press play and the
+marker walks the shop through the tournament analog.
+
+The card is live in both directions: scrubbing a month, moving a lever and
+switching the driver all redraw it, and the shop it describes wears an accent
+ring on the map (`shop-sel`, filtered to the open index) so you cannot lose one
+dot among twenty thousand. Switching to Districts closes the card rather than
+leaving it pointing at a dot that is no longer drawn.
+
+Because the controls float on the map, a shop clicked in the bottom-right corner
+would open its card under the scrubber. `nudgeIntoClear()` slides the map instead
+of letting the two fight.
+
+### Swapping the basemap needs `diff: false`
+
+`map.setStyle(style, { diff: false })` in `applyTheme()` is load-bearing. With
+MapLibre's default diff, it works out how to turn positron into dark-matter and,
+since `shop-dots` / `heat` / `districts` are in the old style but not the new one,
+dutifully removes them — silently, and without firing `style.load`, so nothing
+puts them back. Dark mode rendered a correct basemap with zero data on it and no
+console error. A full reload fires `style.load`, which re-adds and repaints.
+
 ### The visitor surge is fitted, not assumed
 
 `scripts/build_surge_model.py` regresses `log(segment customers)` on
@@ -176,6 +215,13 @@ their R², because a fitted number that hides its fit is not evidence.
 **Fitted on observed monthly variation, not on a mega-event** — it says how a
 segment has responded when a host city got busier, which is the closest evidence
 available for how it would respond to a tournament.
+
+There is a **guide** behind the ⓘ on the map — what a dot is, what districts
+aggregate, what the heat index measures and why it has no dates, what the rings
+mean, and the two things this is not. A tool this dense is not guessable, and the
+explanation should be one click away rather than either absent or permanently in
+the way. The fitted surge coefficients sit behind a disclosure for the same
+reason: evidence, available, not blocking.
 
 **The heat threshold is a visible control, not a buried constant.** "High-UHI
 corridors" needs a cutoff, that cutoff is a judgement call, and burying it is

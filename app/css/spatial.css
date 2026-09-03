@@ -2,6 +2,10 @@
    above the map competes with it for width. */
 
 .mapstage {
+  /* One number for "how much room the bottom stack takes". Four hand-guessed
+     offsets used to approximate this and they disagreed, which is why the help
+     button sat on the legend and the scenario drawer sat on the scrubber. */
+  --map-bottom: 164px;
   position: relative;
   height: clamp(560px, 78vh, 940px);
   background: var(--surface-3);
@@ -20,8 +24,8 @@
 }
 /* MapLibre's own controls sit bottom-right by default, straight under the
    scrubber; lift them clear of the bottom stack */
-.mapcanvas .maplibregl-ctrl-bottom-right { bottom: 104px; }
-.mapcanvas .maplibregl-ctrl-bottom-left { bottom: 104px; }
+.mapcanvas .maplibregl-ctrl-bottom-right,
+.mapcanvas .maplibregl-ctrl-bottom-left { bottom: var(--map-bottom); }
 .mapcanvas .maplibregl-ctrl-attrib { font-size: 10px; }
 
 .maploading {
@@ -47,9 +51,10 @@
   gap: var(--sp-2);
   max-width: 300px;
 }
-.mapctl > * { box-shadow: var(--sh-3); }
+.mapctl > *:not(.pickwrap) { box-shadow: var(--sh-3); }
+.mapctl .mpick { box-shadow: var(--sh-3); }
 
-.mcity select, .mmatch {
+.mmatch {
   font: 600 12.5px/1 var(--font);
   color: var(--ink);
   background: var(--surface);
@@ -93,6 +98,68 @@
   cursor: pointer;
 }
 .mtog.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+
+/* the city picker, styled for the light control cluster rather than a photo */
+.mapctl .pickwrap { position: relative; margin-left: 0; }
+.mpick {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 600 13px/1 var(--font);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-1);
+  padding: 7px 11px 7px 7px;
+  cursor: pointer;
+  max-width: 290px;
+}
+.mpick:hover { border-color: var(--ink-3); }
+.mpick img { width: 30px; height: 24px; object-fit: cover; border-radius: 6px; flex: none; }
+.mpick .mpn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mapctl .citymenu {
+  top: calc(100% + 8px);
+  left: 0;
+  right: auto;
+  width: min(430px, 62vw);
+  grid-template-columns: 1fr;
+  max-height: 50vh;
+}
+
+/* the guide — one click away, never uninvited. It rides in the bottom stack
+   rather than floating at a guessed offset, so it cannot land on the legend. */
+.helpbtn {
+  flex: none;
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  box-shadow: var(--sh-3);
+}
+.helpbtn:hover, .helpbtn.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.helppanel {
+  position: absolute;
+  left: var(--sp-4);
+  top: var(--sp-4);
+  bottom: var(--map-bottom);
+  z-index: 7;
+  width: min(430px, calc(100% - 32px));
+  overflow-y: auto;
+  padding: var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-3);
+  box-shadow: var(--sh-4);
+}
+.helppanel[hidden] { display: none; }
+.helpdl { margin: var(--sp-4) 0 0; font-size: 12.5px; line-height: 1.6; }
+.helpdl dt { font-weight: 700; color: var(--ink); margin-top: var(--sp-4); }
+.helpdl dt:first-child { margin-top: 0; }
+.helpdl dd { margin: 3px 0 0; color: var(--ink-2); }
+.helpdl dd b { color: var(--ink); }
 
 /* --- stat pills, top-right (the reference's black tiles) -------------- */
 .mapright {
@@ -160,7 +227,7 @@
   position: absolute;
   top: var(--sp-4);
   right: var(--sp-4);
-  bottom: 92px;
+  bottom: var(--map-bottom);
   z-index: 6;
   width: min(340px, calc(100% - 32px));
   overflow-y: auto;
@@ -226,6 +293,53 @@
 }
 .difftog input { accent-color: var(--accent); width: 16px; height: 16px; }
 
+/* the fitted response is evidence, available rather than in the way */
+.scendisc > summary {
+  cursor: pointer; font-size: 11.5px; font-weight: 600; color: var(--ink-2);
+  padding: var(--sp-1) 0; list-style: none;
+}
+.scendisc > summary::-webkit-details-marker { display: none; }
+.scendisc > summary::before { content: "▸ "; color: var(--ink-3); }
+.scendisc[open] > summary::before { content: "▾ "; }
+.scenlabel em { font-style: normal; font-weight: 500; color: var(--ink-3); font-size: 11px; }
+
+/* popup rows, which update live as the month and the scenario move */
+.maplibregl-popup-content .phead { display: flex; align-items: center; gap: 7px; }
+.maplibregl-popup-content .pdot {
+  width: 8px; height: 8px; border-radius: 50%; flex: none;
+}
+.maplibregl-popup-content .psub {
+  color: var(--ink-3); font-size: 11.5px; margin: 2px 0 var(--sp-3);
+}
+.maplibregl-popup-content .pspark {
+  margin-bottom: var(--sp-3);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--line);
+}
+.maplibregl-popup-content .psparkhead {
+  display: flex; justify-content: space-between; gap: var(--sp-3);
+  font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 4px;
+}
+.maplibregl-popup-content .pspark svg { display: block; width: 100%; height: 44px; }
+.maplibregl-popup-content .pr {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: var(--sp-4);
+  font-variant-numeric: tabular-nums; padding: 3px 0;
+}
+.maplibregl-popup-content .pr > span:first-child {
+  display: flex; align-items: center; gap: 6px; color: var(--ink-3);
+}
+.maplibregl-popup-content .pr i { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+.maplibregl-popup-content .pr.on > span:first-child { color: var(--ink-2); font-weight: 600; }
+.maplibregl-popup-content .pv { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.maplibregl-popup-content .pv u { text-decoration: none; color: var(--ink-3); font-weight: 500; }
+.maplibregl-popup-content .pr em { font-style: normal; font-weight: 700; margin-left: 4px; }
+.maplibregl-popup-content .pfoot {
+  margin-top: var(--sp-2); padding-top: var(--sp-2);
+  border-top: 1px solid var(--line); color: var(--ink-3); font-size: 11px;
+}
+
 /* the fitted surge response, shown rather than asserted */
 .surgetbl { width: 100%; border-collapse: collapse; font-size: 11.5px; }
 .surgetbl td { padding: 3px 0; color: var(--ink-2); }
@@ -250,9 +364,10 @@
   z-index: 3;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   gap: var(--sp-3);
 }
+.maprow { display: flex; align-items: center; gap: var(--sp-3); }
 .maplegend {
   display: flex;
   flex-wrap: wrap;
@@ -307,7 +422,22 @@
   font-size: 14px; font-weight: 700;
   min-width: 92px; flex: none;
 }
-.scrubsvg { flex: 1; height: 46px; cursor: pointer; }
+.scrubtrack { flex: 1; min-width: 0; display: block; position: relative; }
+.scrubsvg { display: block; width: 100%; height: 46px; cursor: pointer; }
+/* an axis under the bars, ticked at each January and named from the tick
+   rightwards, so the label marks where the year begins rather than its middle */
+.scrubax {
+  display: block; position: relative; height: 15px;
+  margin-top: 2px;
+  border-top: 1px solid var(--line-2);
+  font-size: 10.5px; letter-spacing: 0.04em;
+  color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.scrubax span { position: absolute; top: 3px; padding-left: 5px; white-space: nowrap; }
+.scrubax span::before {
+  content: ""; position: absolute; left: 0; top: -4px;
+  width: 1px; height: 6px; background: var(--ink-3); opacity: 0.5;
+}
 
 /* --- what sits under the map ------------------------------------------ */
 .mapdetail {
@@ -347,6 +477,9 @@
 .applyrow.on .arto { color: var(--accent); }
 
 /* --- map popups inherit the app's card language ----------------------- */
+/* Above the legend and the scrubber (both z-index 3), below the drawers, which
+   a popup is nudged clear of rather than allowed to fight with. */
+.maplibregl-popup { z-index: 5; }
 .maplibregl-popup-content {
   background: var(--surface);
   color: var(--ink);
@@ -357,10 +490,20 @@
   font: 12px/1.55 var(--font);
 }
 .maplibregl-popup-content b {
-  display: block; font-family: var(--display); font-size: 13px; margin-bottom: 3px;
+  display: block; font-family: var(--display); font-size: 13px; line-height: 1.3;
 }
+.maplibregl-popup-content .phead b { margin-bottom: 0; padding-right: 18px; }
 .maplibregl-popup-content div { color: var(--ink-2); }
 .maplibregl-popup-tip { display: none; }
+.maplibregl-popup-close-button {
+  top: 4px; right: 4px;
+  width: 22px; height: 22px;
+  border-radius: var(--r-1);
+  color: var(--ink-3);
+  font-size: 15px; line-height: 1;
+  background: transparent; border: 0; cursor: pointer;
+}
+.maplibregl-popup-close-button:hover { background: var(--surface-3); color: var(--ink); }
 
 @media (max-width: 1080px) {
   .mapdetail { grid-template-columns: 1fr; }

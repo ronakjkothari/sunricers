@@ -371,6 +371,43 @@ async function main() {
   ok("no debug handles left on window", !/__probeMap/.test(spSrc));
   ok("no probe page left behind", !fs.existsSync(path.join(APP, "probe.html")));
 
+  // Normalising each metric by its own p95 put the median shop at ~6px whichever
+  // metric you picked, so the buttons looked inert. Opacity carries the contrast.
+  ok("metric choice changes opacity, not only size",
+    /circle-stroke-opacity/.test(spSrc) && /const fade =/.test(spSrc));
+  // an open popup shows the month and scenario it was opened in; both move
+  ok("the popup re-renders when month or scenario changes",
+    /function refreshPopup/.test(spSrc) &&
+    (spSrc.match(/refreshPopup\(\)/g) || []).length >= 3);
+  ok("difference mode keeps dots clickable",
+    /const floor = view\.diff \? 5 : 2/.test(spSrc));
+  ok("the heat threshold is never disabled",
+    !/id="sp-heatmin"[^>]*disabled/.test(spSrc));
+  ok("the surge elasticities are behind a disclosure", /scendisc/.test(spSrc));
+  ok("a guide is reachable from the map", /function toggleHelp/.test(spSrc) &&
+    /sp-helpbtn/.test(spSrc));
+  ok("the guide explains the heat index", /Urban heat, 1 \(cool\) to 11/.test(spSrc));
+  // both pickers render the same row from one function, so they cannot drift
+  const citySrc = fs.readFileSync(path.join(APP, "js/lib/city.js"), "utf8");
+  ok("the picker row is defined once and shared",
+    /export function cityOption/.test(citySrc) &&
+    /cityOption\(/.test(spSrc) &&
+    /cityOption\(/.test(fs.readFileSync(path.join(APP, "js/views/overview.js"), "utf8")));
+  ok("the picker row carries rank and readiness",
+    /rank/.test(citySrc) && /readiness_score/.test(citySrc) && /scoreColour/.test(citySrc));
+  // four hand-guessed bottom offsets used to disagree and overlap each other
+  ok("map chrome clears the bottom stack from one token",
+    /--map-bottom:/.test(spCss) &&
+    (spCss.match(/var\(--map-bottom\)/g) || []).length >= 3);
+  ok("the basemap follows the theme",
+    /function applyTheme/.test(spSrc) && /setStyle/.test(spSrc));
+  ok("the day chart shows the scenario against the baseline",
+    /function layerRatios/.test(spSrc) && /with the scenario/.test(spSrc));
+  const baseCss = fs.readFileSync(path.join(APP, "css/base.css"), "utf8");
+  ok("the city picker styles are shared, not duplicated",
+    /\.citymenu \{/.test(baseCss) &&
+    !/\.citymenu \{/.test(fs.readFileSync(path.join(APP, "css/overview.css"), "utf8")));
+
   /* ------------------------------------------------------------------ */
   section("assets");
   const IMG_SLUG = {

@@ -13,7 +13,7 @@ import { fmt, esc, pretty, isSummer, niceMax, ordinal, slug } from "../lib/forma
 import { icon, DRIVER_ICON } from "../lib/icons.js";
 import { c, METRIC_COLOR, DRIVER_COLOR, LAYER_COLOR } from "../lib/palette.js";
 import { METRIC_ABS, verdict, rankLabel, pctLabel, polarRank } from "../lib/stats.js";
-import { photo, scoreColour, loadBlurs, blur } from "../lib/city.js";
+import { photo, scoreColour, loadBlurs, blur, cityOption, byRank } from "../lib/city.js";
 
 const METRICS = {
   v: { label: "Visits", unit: "visits", icon: "visits", input: true },
@@ -231,21 +231,10 @@ function drawBanner() {
 
 /** The eleven hosts, revealed only on demand — a grid, so nothing scrolls sideways. */
 function drawCityMenu() {
-  const { stats, state } = ctx;
   const menu = root.querySelector("#ov-citymenu");
-  menu.innerHTML = [...stats.cities]
-    .sort((a, b) => stats.byCity[a].rank - stats.byCity[b].rank)
-    .map(city => {
-      const k = stats.byCity[city];
-      return `<button class="cityopt ${city === state.city ? "on" : ""}" data-city="${esc(city)}">
-        <img src="${photo(city, 320)}" alt="" loading="lazy" width="320" height="214">
-        <span class="con">
-          <span class="cn">${esc(city)}</span>
-          <span class="cr">#${k.rank} · readiness ${k.readiness_score.toFixed(1)}</span>
-        </span>
-      </button>`;
-    }).join("");
-
+  menu.setAttribute("role", "listbox");
+  menu.innerHTML = byRank(ctx.stats)
+    .map(name => cityOption(name, ctx.stats, name === ctx.state.city)).join("");
   menu.querySelectorAll(".cityopt").forEach(b => {
     b.onclick = () => { menu.hidden = true; ctx.setCity(b.dataset.city); };
   });

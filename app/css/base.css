@@ -189,7 +189,13 @@ img { max-width: 100%; display: block; }
   width: 32px; height: 32px;
   margin-bottom: var(--sp-4);
   display: grid; place-items: center;
+  padding: 0; border: 0; cursor: pointer;
+  transition: transform var(--fast);
 }
+/* the mark is the logo, not a nav chip: it takes no tint on hover, only lift */
+.rail button.mark,
+.rail button.mark:hover { background: none; }
+.rail .mark:hover { transform: scale(1.07); }
 .rail .mark img { width: 100%; height: 100%; object-fit: contain; }
 
 .rail button {
@@ -555,6 +561,60 @@ img { max-width: 100%; display: block; }
   cursor: pointer;
 }
 .lnk:hover { text-decoration: underline; }
+
+/* ----------------------------------------------- city picker (shared) ---
+   The Overview banner and the Impact map both offer the same choice, so they
+   offer it the same way: photo, rank, readiness. */
+.citymenu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 70;
+  width: min(560px, calc(100vw - 120px));
+  max-height: 62vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-3);
+  box-shadow: var(--sh-4);
+}
+.citymenu[hidden] { display: none; }
+.cityopt {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-2);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background var(--fast), border-color var(--fast);
+}
+.cityopt:hover { background: var(--surface-3); }
+.cityopt.on { border-color: var(--accent); background: var(--accent-soft); }
+.cityopt img {
+  width: 56px; height: 42px; object-fit: cover; border-radius: var(--r-1);
+  flex: none; background: var(--surface-3) center/cover;
+}
+.cityopt .con { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+.cityopt .cn { font-size: 13.5px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+.cityopt .cr { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.cityopt .cr b { font-weight: 700; }
+.cityopt .cbar {
+  height: 4px; border-radius: var(--r-pill); background: var(--surface-3);
+  overflow: hidden; margin-top: 2px;
+}
+.cityopt .cbar i { display: block; height: 100%; border-radius: var(--r-pill); }
+
+@media (max-width: 860px) {
+  .citymenu { grid-template-columns: 1fr; width: min(340px, calc(100vw - 40px)); }
+}
 
 /* ------------------------------------------------------------------ misc */
 .muted { color: var(--ink-3); }

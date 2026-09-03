@@ -35,3 +35,33 @@ export function loadBlurs() {
 }
 
 export const blur = city => lqip[city] || "";
+
+/* --- the host picker row, rendered identically wherever it appears ------- */
+
+const esc = x => String(x).replace(/[&<>"]/g,
+  ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+/**
+ * One option in a host picker: photo, rank, readiness and a bar for it.
+ * The Overview banner and the Impact map both offer this choice, so they offer
+ * it the same way rather than each inventing a row.
+ */
+export function cityOption(name, stats, selected) {
+  const k = stats.byCity[name];
+  const col = scoreColour(k.readiness_score);
+  return `<button class="cityopt ${selected ? "on" : ""}" data-city="${esc(name)}"
+      role="option" aria-selected="${!!selected}">
+    <img src="${photo(name, 320)}" alt="" loading="lazy" width="320" height="214"
+         ${blur(name) ? `style="background-image:url('${blur(name)}')"` : ""}>
+    <span class="con">
+      <span class="cn">${esc(name)}</span>
+      <span class="cr">#${k.rank} of ${stats.n}
+        · <b style="color:${col}">${k.readiness_score.toFixed(1)}</b> readiness</span>
+      <span class="cbar"><i style="width:${Math.max(3, k.readiness_score)}%;background:${col}"></i></span>
+    </span>
+  </button>`;
+}
+
+/** Hosts in rank order, best first. */
+export const byRank = stats =>
+  [...stats.cities].sort((a, b) => stats.byCity[a].rank - stats.byCity[b].rank);

@@ -20,6 +20,7 @@
 import { fmt, full, esc, pretty } from "../lib/format.js";
 import { icon } from "../lib/icons.js";
 import { c } from "../lib/palette.js";
+import { photo, cityOption, byRank } from "../lib/city.js";
 import {
   FACTORS, METRICS, buildLevers, scenarioValue, deltaValue,
   shopMultiplier, totals, km, setSurgeModel, surgeModel,
@@ -83,6 +84,7 @@ let libs = null;            // promise for the MapLibre script
 
 /** Per-city bundle, rebuilt only when the city changes. */
 let city = null;
+let styledTheme = null;   // which basemap the map is currently wearing
 
 /** View state, local to this tab. */
 const view = {
@@ -122,9 +124,15 @@ export function mount(el, context) {
       <aside class="scenpanel" id="sp-scen" hidden></aside>
 
       <div class="mapbottom">
-        <div class="maplegend" id="sp-legend"></div>
+        <div class="maprow">
+          <button class="helpbtn" id="sp-helpbtn" aria-label="How to read this map"
+            title="How to read this map">${icon("info", 16)}</button>
+          <div class="maplegend" id="sp-legend"></div>
+        </div>
         <div class="mapscrub" id="sp-scrub"></div>
       </div>
+
+      <aside class="helppanel" id="sp-help" hidden></aside>
 
       <div class="maploading" id="sp-loading">Loading the map…</div>
     </div>
@@ -157,6 +165,72 @@ export function mount(el, context) {
     view.panel = !view.panel;
     drawScenario();
   };
+  root.querySelector("#sp-helpbtn").onclick = () => toggleHelp();
+  document.addEventListener("click", ev => {
+    const menu = root.querySelector("#sp-citymenu");
+    if (menu && !menu.hidden && !menu.contains(ev.target) && !ev.target.closest(".mpick")) {
+      menu.hidden = true;
+    }
+  });
+}
+
+/**
+ * The guide. This tool packs a lot in — a heat index nobody has seen before, two
+ * ways of aggregating the same shops, levers with spatial scopes — and none of
+ * that is guessable. It is one click away and never on screen uninvited.
+ */
+function toggleHelp(force) {
+  const el = root.querySelector("#sp-help");
+  const open = force != null ? force : el.hidden;
+  el.hidden = !open;
+  root.querySelector("#sp-helpbtn").classList.toggle("on", open);
+  if (!open) return;
+
+  el.innerHTML = `
+    <div class="scenhead">
+      <h3>How to read this map</h3>
+      <button class="drop" id="sp-helpclose" aria-label="Close">${icon("close", 14)}</button>
+    </div>
+
+    <dl class="helpdl">
+      <dt>Every dot is one shop</dt>
+      <dd>20,569 food, fuel, lodging and venue businesses across the eleven hosts,
+        from five years of card-spend data. Size is the metric you picked; colour is
+        the type of shop. Faded dots contribute little to that metric — switch to
+        Water and the map dims to the lodging that actually drives it.</dd>
+
+      <dt>Districts</dt>
+      <dd>The same shops summed into 1.1 km squares. Use it to see where load
+        concentrates rather than which business carries it.</dd>
+
+      <dt>Heat index</dt>
+      <dd>Urban heat, 1 (cool) to 11 (hot), from surface-temperature readings averaged
+        into the same 1.1 km squares. It matters because cooling load rides on it: a
+        hot corridor full of hotels and kitchens costs more energy to run for the same
+        trade. <b>It has no dates</b>, so unlike everything else here it does not change
+        as you move through time.</dd>
+
+      <dt>The month scrubber</dt>
+      <dd>61 months, Dec 2019 to Dec 2024. Press play to watch demand move. The dot
+        scale is fixed across all months, so growth is real growth and not a rescale.</dd>
+
+      <dt>Matches</dt>
+      <dd>Picking one of the 78 fixtures flies to that stadium and draws the 2 km and
+        5 km rings. The measured match-day effect is <b>+30%</b> within 2 km — from 566
+        NFL games and 19 Copa América matches, not a forecast.</dd>
+
+      <dt>Scenario</dt>
+      <dd>A visitor surge, and the plays from the playbook. Each play acts only on the
+        shops it names — "hotel linen reuse" touches lodging, not all 20,569 — and the
+        pills at the top show what moves. <b>Show the change only</b> turns the map into
+        a difference view: what the scenario avoids, and where.</dd>
+
+      <dt>Two things this is not</dt>
+      <dd>Not a forecast — a 2026 match is shown against the same calendar month of
+        2024. And the sample data are transformed, so these demonstrate a method rather
+        than ground truth for any real city.</dd>
+    </dl>`;
+  root.querySelector("#sp-helpclose").onclick = () => toggleHelp(false);
 }
 
 export function activate(context) {
@@ -166,6 +240,7 @@ export function activate(context) {
   // the pane was hidden when the map was built if the user landed elsewhere
   // first; resizing on every activation is cheap and avoids a 0x0 canvas
   map.resize();
+  applyTheme();
   refreshCity();
 }
 
@@ -308,6 +383,7 @@ async function initMap() {
 
   const first = city.shops[0] || { x: -98, y: 39 };
   const style = await resolveStyle(ctx.state.theme);
+  styledTheme = ctx.state.theme;
   map = new maplibregl.Map({
     container: root.querySelector("#sp-map"),
     style,
@@ -335,16 +411,28 @@ async function initMap() {
       paint: { "fill-color": ["get", "col"], "fill-opacity": 0.72,
                "fill-outline-color": "rgba(0,0,0,0.12)" } });
     map.addLayer({ id: "ring-line", type: "line", source: "rings",
-      paint: { "line-color": c("--ink"), "line-width": 1.4, "line-dasharray": [2, 2],
-               "line-opacity": 0.6 } });
+      paint: { "line-color": c("--ink"), "line-width": 1.6, "line-dasharray": [2, 2],
+               "line-opacity": 0.7 } });
     map.addLayer({ id: "shop-dots", type: "circle", source: "shops",
       paint: { "circle-color": ["get", "col"], "circle-opacity": 0.82,
-               "circle-stroke-width": 0.6, "circle-stroke-color": "rgba(255,255,255,0.7)" } });
+               "circle-stroke-width": 0.7, "circle-stroke-color": c("--surface") } });
+    // a ring around whichever shop has its card open, so you do not lose it in
+    // 20,000 dots the moment you look away
+    map.addLayer({ id: "shop-sel", type: "circle", source: "shops",
+      filter: ["==", ["get", "i"], -1],
+      paint: { "circle-color": "rgba(0,0,0,0)",
+               "circle-stroke-width": 2, "circle-stroke-color": c("--accent") } });
     map.addLayer({ id: "stadium-pt", type: "circle", source: "stadium",
       paint: { "circle-radius": 7, "circle-color": c("--accent"),
                "circle-stroke-width": 2.5, "circle-stroke-color": "#fff" } });
 
-    if (ready) { buildSources(); drawAll(); return; }   // a re-style, not first load
+    if (ready) {
+      // a re-style (theme swap): the layers above were just re-added, so the
+      // data and paint have to go back on with them
+      buildSources();
+      drawAll();
+      return;
+    }
 
     map.on("click", "shop-dots", e => popup(e.features[0], e.lngLat));
     map.on("click", "district-fill", e => popup(e.features[0], e.lngLat, true));
@@ -366,7 +454,7 @@ const empty = () => ({ type: "FeatureCollection", features: [] });
 /** Built once per city. Month, metric and scenario are all expressions on top. */
 function buildSources() {
   const feats = city.shops.map((s, n) => {
-    const props = { l: s.l, u: s.u ?? 0, n: s.n, d: s.d ?? 1e9,
+    const props = { i: n, l: s.l, u: s.u ?? 0, n: s.n, d: s.d ?? 1e9,
                     col: c(LAYER_TOKEN[s.l] || "--c-other") };
     const row = city.monthly[n];
     for (let j = 0; j < row.length; j++) if (row[j]) props["m" + j] = row[j];
@@ -428,17 +516,36 @@ function paint() {
     ? deltaValue(mk, view.i, act, view.heatMin, view.surge)
     : scenarioValue(mk, view.i, act, view.heatMin, view.surge);
 
-  // area-proportional: radius on sqrt so a dot twice the area means twice the
-  // load, clamped at both ends so nothing is sub-pixel or swallows the city
-  const dot = k => ["max", 2, ["min", 30,
+  // Area-proportional: radius on sqrt so a dot twice the area means twice the
+  // load. In difference mode the floor is higher — the changed shops are the
+  // only ones drawn, and they still have to be clickable.
+  const floor = view.diff ? 5 : 2;
+  const dot = k => ["max", floor, ["min", 30,
     ["*", k, ["sqrt", ["/", ["abs", val], scale]]]]];
   const size = ["interpolate", ["linear"], ["zoom"], 8, dot(7), 13, dot(20)];
+  // the zoom curve has to stay the outermost expression, so the ring's 4 px of
+  // clearance is added inside each stop rather than around the whole thing
+  const ringSize = ["interpolate", ["linear"], ["zoom"],
+    8, ["+", dot(7), 4], 13, ["+", dot(20), 4]];
+
+  // Size alone barely moved when the metric changed: normalising each metric by
+  // its own p95 puts the median shop at ~6 px whichever one you pick. Fading
+  // the small contributors is what makes "which shops drive water" legible —
+  // pick Water and the map dims to the lodging that actually drives it.
+  const share = ["min", 1, ["^", ["/", ["abs", val], scale], 0.45]];
+  const fade = ["+", 0.14, ["*", 0.76, share]];
 
   map.setPaintProperty("shop-dots", "circle-radius", size);
   map.setPaintProperty("shop-dots", "circle-color",
     view.diff ? ["case", ["<", val, 0], c("--c-carbon"), c("--c-energy")] : ["get", "col"]);
   map.setPaintProperty("shop-dots", "circle-opacity",
-    view.mode === "shops" ? (view.diff ? 0.9 : 0.82) : 0);
+    view.mode === "shops" ? (view.diff ? 0.92 : fade) : 0);
+  map.setPaintProperty("shop-dots", "circle-stroke-opacity",
+    view.mode === "shops" ? (view.diff ? 0.9 : ["*", 0.8, share]) : 0);
+  // the ring sits just outside the dot, whatever the dot's current size
+  map.setPaintProperty("shop-sel", "circle-radius", ringSize);
+  map.setPaintProperty("shop-sel", "circle-stroke-opacity", view.mode === "shops" ? 1 : 0);
+  markSelected();
   map.setLayoutProperty("heat-fill", "visibility", view.heat ? "visible" : "none");
   map.setLayoutProperty("district-fill", "visibility", view.mode === "districts" ? "visible" : "none");
 
@@ -521,16 +628,141 @@ function ring(x, y, kmR, n = 64) {
   return { type: "Polygon", coordinates: [pts] };
 }
 
+/* The open popup is live: scrubbing a month or moving a lever changes the very
+   numbers it is showing, so it re-renders rather than going stale. */
+let openPopup = null, openShop = -1;
+
+/**
+ * One shop's whole history for the metric on screen, baseline against scenario,
+ * with the month you are on marked. A single month tells you a shop is large;
+ * the series tells you whether it is seasonal, whether it is growing, and how
+ * wide the play's saving actually opens over five years. It re-renders on every
+ * scrub, so leaving the popup open and pressing play traces the shop through.
+ */
+function shopSpark(n) {
+  const s = city.shops[n];
+  const mk = view.metric, m = METRICS[mk];
+  const f = mk === "c" ? 1 : (FACTORS[s.l] || FACTORS.Other_EFW)[mk];
+  const row = city.monthly[n] || [];
+  const base = ctx.months.map((_, j) => (row[j] || 0) * f);
+  if (!base.some(v => v > 0)) return "";
+
+  const mult = shopMultiplier(s, activeLevers(), mk, view.heatMin, view.surge);
+  const changed = Math.abs(mult - 1) > 1e-6;
+  const scen = base.map(v => v * mult);
+
+  const W = 258, H = 44, pad = 3;
+  const top = Math.max(...base, ...scen) || 1;
+  const X = j => (j / Math.max(1, base.length - 1)) * W;
+  const Y = v => H - pad - (v / top) * (H - pad * 2);
+  const pts = a => a.map((v, j) => `${X(j).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+
+  let out = "";
+  if (changed) {
+    out += `<polygon points="${pts(base)} ${pts(scen).split(" ").reverse().join(" ")}"
+      fill="${c("--c-carbon")}" opacity="0.18"/>`;
+    out += `<polyline points="${pts(base)}" fill="none" stroke="${c("--ink-3")}"
+      stroke-width="1.2" stroke-dasharray="4 3"/>`;
+  }
+  out += `<polyline points="${pts(changed ? scen : base)}" fill="none"
+    stroke="${c(m.token)}" stroke-width="1.8" stroke-linejoin="round"/>`;
+
+  const j = view.i, cx = X(j).toFixed(1);
+  out += `<line x1="${cx}" y1="0" x2="${cx}" y2="${H}" stroke="${c(m.token)}"
+    stroke-width="1" opacity="0.35"/>`;
+  out += `<circle cx="${cx}" cy="${Y((changed ? scen : base)[j]).toFixed(1)}" r="3"
+    fill="${c(m.token)}" stroke="${c("--surface")}" stroke-width="1.5"/>`;
+
+  return `<div class="pspark">
+    <div class="psparkhead"><span>${esc(m.label)} over time</span>
+      <span>${esc(pretty(ctx.months[0]))} – ${esc(pretty(ctx.months[ctx.months.length - 1]))}</span></div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${out}</svg>
+  </div>`;
+}
+
+function shopPopupHtml(n) {
+  const s = city.shops[n];
+  const cust = (city.monthly[n] || [])[view.i] || 0;
+  const act = activeLevers();
+  const rows = ["e", "w", "co2"].map(mk => {
+    const m = METRICS[mk];
+    const f = (FACTORS[s.l] || FACTORS.Other_EFW)[mk];
+    const base = cust * f;
+    const after = base * shopMultiplier(s, act, mk, view.heatMin, view.surge);
+    const moved = Math.abs(after - base) > 0.5;
+    return `<div class="pr ${mk === view.metric ? "on" : ""}">
+      <span><i style="background:${c(m.token)}"></i>${esc(m.label)}</span>
+      <span class="pv">${fmt(after)} <u>${esc(m.unit)}</u>
+      ${moved ? `<em style="color:${after < base ? c("--c-carbon") : c("--c-energy")}">
+        ${after < base ? "−" : "+"}${fmt(Math.abs(after - base))}</em>` : ""}</span></div>`;
+  }).join("");
+
+  return `<div class="phead">
+      <i class="pdot" style="background:${c(LAYER_TOKEN[s.l] || "--c-other")}"></i>
+      <b>${esc(s.n || "Shop")}</b>
+    </div>
+    <div class="psub">${esc(LAYER_LABEL[s.l] || s.l)} · heat ${(+(s.u || 0)).toFixed(1)}${
+      s.d != null && s.d < 1e8 ? ` · ${s.d.toFixed(1)} km from the stadium` : ""}</div>
+    ${shopSpark(n)}
+    <div class="prows">
+      <div class="pr"><span>Customers</span><span class="pv">${fmt(cust)}</span></div>
+      ${rows}
+    </div>
+    <div class="pfoot">${pretty(ctx.months[view.i])}${
+      act.length || view.surge !== 1
+        ? ` · ${act.length} lever${act.length === 1 ? "" : "s"} applied`
+        : " · no scenario applied"}</div>`;
+}
+
+function refreshPopup() {
+  if (!openPopup || openShop < 0) return;
+  openPopup.setHTML(shopPopupHtml(openShop));
+}
+
+/** Ring the shop whose card is open; -1 matches nothing, which clears it. */
+function markSelected() {
+  if (ready && map.getLayer("shop-sel")) {
+    map.setFilter("shop-sel", ["==", ["get", "i"], openShop]);
+  }
+}
+
 function popup(f, lngLat, isCell) {
   const p = f.properties;
-  const mk = view.metric, m = METRICS[mk];
+  const m = METRICS[view.metric];
+  if (openPopup) { openPopup.remove(); openPopup = null; openShop = -1; markSelected(); }
+
   const html = isCell
-    ? `<b>District</b><div>${fmt(Math.abs(p.v))} ${esc(m.unit)}${view.diff ? " avoided" : ""}</div>`
-    : `<b>${esc(p.n || "Shop")}</b>
-       <div>${esc(LAYER_LABEL[p.l] || p.l)} · heat ${(+p.u).toFixed(1)}</div>
-       <div>${fmt(p["m" + view.i] || 0)} customers in ${pretty(ctx.months[view.i])}</div>`;
-  new maplibregl.Popup({ closeButton: false, offset: 10 })
+    ? `<b>District</b><div class="pr"><span>${esc(m.label)}</span><span>${fmt(Math.abs(p.v))}
+        ${esc(m.unit)}${view.diff ? " avoided" : ""}</span></div>
+       <div class="pfoot">${pretty(ctx.months[view.i])}</div>`
+    : shopPopupHtml(p.i);
+
+  openPopup = new maplibregl.Popup({ closeButton: true, offset: 12, maxWidth: "302px", focusAfterOpen: false })
     .setLngLat(lngLat).setHTML(html).addTo(map);
+  openShop = isCell ? -1 : p.i;
+  openPopup.on("close", () => { openPopup = null; openShop = -1; markSelected(); });
+  markSelected();
+  nudgeIntoClear(lngLat);
+}
+
+/* The controls float on the map, so a shop clicked in the bottom-right corner
+   would open its card underneath the scrubber or behind the drawer. Rather than
+   let them fight, slide the map a little so the shop sits in open water. */
+function nudgeIntoClear(lngLat) {
+  const box = map.getContainer().getBoundingClientRect();
+  const at = map.project(lngLat);
+  const chrome = parseFloat(
+    getComputedStyle(root.querySelector("#sp-stage")).getPropertyValue("--map-bottom")) || 164;
+
+  const top = 210;                                   // control cluster + pills
+  const right = view.panel ? 380 : 24;               // the open scenario drawer
+  const bottom = chrome + 40;                        // legend + scrubber + room
+
+  let dx = 0, dy = 0;
+  if (at.y > box.height - bottom) dy = at.y - (box.height - bottom);
+  else if (at.y < top) dy = at.y - top;
+  if (at.x > box.width - right) dx = at.x - (box.width - right);
+  if (Math.abs(dx) > 4 || Math.abs(dy) > 4) map.panBy([dx, dy], { duration: 320 });
 }
 
 /* ---------------------------------------------------------- the chrome */
@@ -581,10 +813,14 @@ function drawCaption() {
 function drawControls() {
   const cities = ctx.stats.cities;
   root.querySelector("#sp-ctl").innerHTML = `
-    <label class="mcity">
-      <select id="sp-city">${cities.map(x =>
-        `<option ${x === city.name ? "selected" : ""}>${esc(x)}</option>`).join("")}</select>
-    </label>
+    <div class="pickwrap">
+      <button class="mpick" id="sp-citypick" aria-haspopup="true" aria-expanded="false">
+        <img src="${photo(city.name, 320)}" alt="">
+        <span class="mpn">${esc(city.name)}</span>
+        ${icon("chevDown", 15)}
+      </button>
+      <div class="citymenu" id="sp-citymenu" hidden></div>
+    </div>
     <div class="mseg" id="sp-metric">${Object.entries(METRICS).map(([k, m]) =>
       `<button data-m="${k}" class="${view.metric === k ? "on" : ""}"
          title="${m.label}">${icon(m.icon, 15)}</button>`).join("")}</div>
@@ -600,15 +836,27 @@ function drawControls() {
           >${m.d.slice(5)} · ${esc(m.t1)} v ${esc(m.t2)}</option>`).join("")}
     </select>`;
 
-  root.querySelector("#sp-city").onchange = e => ctx.setCity(e.target.value);
+  root.querySelector("#sp-citypick").onclick = ev => {
+    ev.stopPropagation();
+    const menu = root.querySelector("#sp-citymenu");
+    const opening = menu.hidden;
+    if (opening) drawCityMenu();
+    menu.hidden = !opening;
+    root.querySelector("#sp-citypick").setAttribute("aria-expanded", String(opening));
+  };
   root.querySelectorAll("#sp-metric button").forEach(b => {
     b.onclick = () => {
       view.metric = b.dataset.m;
       drawControls(); paint(); drawPills(); drawDay(); drawLegend(); drawCaption();
+      refreshPopup();   // the shop card charts the metric on screen
     };
   });
   root.querySelectorAll("#sp-mode button").forEach(b => {
-    b.onclick = () => { view.mode = b.dataset.v; drawControls(); paint(); drawLegend(); };
+    b.onclick = () => {
+      view.mode = b.dataset.v;
+      if (openPopup) { openPopup.remove(); openPopup = null; openShop = -1; }
+      drawControls(); paint(); drawLegend();
+    };
   });
   root.querySelector("#sp-heat").onclick = () => { view.heat = !view.heat; drawControls(); paint(); };
   root.querySelector("#sp-match").onchange = e => {
@@ -621,6 +869,16 @@ function drawControls() {
     }
     drawAll();
   };
+}
+
+function drawCityMenu() {
+  const menu = root.querySelector("#sp-citymenu");
+  menu.setAttribute("role", "listbox");
+  menu.innerHTML = byRank(ctx.stats)
+    .map(name => cityOption(name, ctx.stats, name === city.name)).join("");
+  menu.querySelectorAll(".cityopt").forEach(b => {
+    b.onclick = () => { menu.hidden = true; ctx.setCity(b.dataset.city); };
+  });
 }
 
 function drawPills() {
@@ -660,8 +918,17 @@ function drawScrub() {
     return `<rect x="${(j * bw).toFixed(2)}" y="${(H - h).toFixed(1)}"
       width="${(bw - 1).toFixed(2)}" height="${h.toFixed(1)}" rx="1"
       fill="${j === view.i ? c("--accent") : c("--ink-3")}"
-      opacity="${j === view.i ? 1 : 0.42}"/>`;
+      opacity="${j === view.i ? 1 : 0.42}"><title>${esc(pretty(months[j]))}</title></rect>`;
   }).join("");
+
+  // 61 identical grey boxes are impossible to aim at. Rule an axis under them
+  // and tick each January, with the year named just to the right of its tick —
+  // a centred year label would put "2024" over the summer of 2024.
+  let ticks = "";
+  months.forEach((m, j) => {
+    if (!m.endsWith("-01")) return;
+    ticks += `<span style="left:${((j / months.length) * 100).toFixed(3)}%">${esc(m.slice(0, 4))}</span>`;
+  });
 
   box.innerHTML = `
     <button class="tbtn" id="sp-play" aria-label="${view.playing ? "Pause" : "Play"}">
@@ -669,8 +936,12 @@ function drawScrub() {
     <button class="tbtn" id="sp-prev" aria-label="Previous month">←</button>
     <button class="tbtn" id="sp-next" aria-label="Next month">→</button>
     <span class="tnow num">${pretty(months[view.i])}</span>
-    <svg class="scrubsvg" id="sp-scrubsvg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"
-         role="slider" aria-label="Month" aria-valuenow="${view.i}">${bars}</svg>`;
+    <span class="scrubtrack">
+      <svg class="scrubsvg" id="sp-scrubsvg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"
+           role="slider" aria-label="Month" aria-valuenow="${view.i}"
+           aria-valuetext="${esc(pretty(months[view.i]))}">${bars}</svg>
+      <span class="scrubax" aria-hidden="true">${ticks}</span>
+    </span>`;
 
   root.querySelector("#sp-play").onclick = togglePlay;
   root.querySelector("#sp-prev").onclick = () => step(-1);
@@ -688,12 +959,15 @@ function drawScrub() {
 function setMonth(j) {
   view.i = j;
   paint();
+  refreshPopup();
   drawPills();
   drawDay();
   drawCaption();
   // only the bars and the label change; redrawing the whole bar is cheap enough
   const svg = root.querySelector("#sp-scrubsvg");
   if (svg) {
+    svg.setAttribute("aria-valuenow", String(j));
+    svg.setAttribute("aria-valuetext", pretty(ctx.months[j]));
     svg.querySelectorAll("rect").forEach((r, n) => {
       r.setAttribute("fill", n === j ? c("--accent") : c("--ink-3"));
       r.setAttribute("opacity", n === j ? "1" : "0.42");
@@ -727,7 +1001,7 @@ function drawScenario() {
   badge.textContent = String(n);
   if (!view.panel) return;
 
-  const heatUsed = activeLevers().some(l => l.scope.minHeat);
+  const gated = levers.filter(l => l.scope.minHeat).map(l => l.title);
 
   el.innerHTML = `
     <div class="scenhead">
@@ -739,7 +1013,10 @@ function drawScenario() {
       <label class="scenlabel">Visitor surge
         <span class="num">${view.surge.toFixed(2)}×</span></label>
       <input type="range" id="sp-surge" min="1" max="2" step="0.05" value="${view.surge}">
-      ${surgeTable()}
+      <details class="scendisc">
+        <summary>How a surge is distributed</summary>
+        ${surgeTable()}
+      </details>
     </div>
 
     <div class="scenblock">
@@ -758,13 +1035,14 @@ function drawScenario() {
       }).join("")}
     </div>
 
-    <div class="scenblock ${heatUsed ? "" : "muted"}">
+    <div class="scenblock">
       <label class="scenlabel">Heat threshold
-        <span class="num">${view.heatMin.toFixed(1)}</span></label>
-      <input type="range" id="sp-heatmin" min="1" max="11" step="0.5" value="${view.heatMin}"
-        ${heatUsed ? "" : "disabled"}>
-      <p class="scennote">"High-UHI corridors" needs a cutoff. It is a judgement call, so it
-        is yours to set rather than ours to bury.</p>
+        <span class="num">${view.heatMin.toFixed(1)} <em>of 11</em></span></label>
+      <input type="range" id="sp-heatmin" min="1" max="11" step="0.5" value="${view.heatMin}">
+      <p class="scennote">A shop counts as a "high-UHI corridor" above this urban-heat
+        index. It is a judgement call, so it is yours to set rather than ours to bury.
+        Gates <b>${esc(gated.join(", ") || "no play")}</b> — and the shop counts below
+        move as you drag it.</p>
     </div>
 
     <label class="difftog">
@@ -831,6 +1109,7 @@ function surgeTable() {
 function scenarioChanged() {
   drawScenario();
   paint();
+  refreshPopup();
   drawLegend();
   drawPills();
   drawDay();
@@ -848,11 +1127,39 @@ function countScope(l) {
 
 /* ------------------------------------------------------- the day chart */
 
+/**
+ * Per-layer effect of the current scenario, customer-weighted for this month.
+ * The daily table is city x layer x day, so a lever scoped by heat or distance
+ * cannot be applied to it shop by shop — but the ratio of scenario to baseline
+ * within each layer can, and that is exact in aggregate.
+ */
+function layerRatios(metric) {
+  const act = activeLevers();
+  const base = {}, scen = {};
+  for (let n = 0; n < city.shops.length; n++) {
+    const sh = city.shops[n];
+    const cust = (city.monthly[n] || [])[view.i] || 0;
+    if (!cust) continue;
+    const f = metric === "c" ? 1 : (FACTORS[sh.l] || FACTORS.Other_EFW)[metric];
+    const v = cust * f;
+    base[sh.l] = (base[sh.l] || 0) + v;
+    scen[sh.l] = (scen[sh.l] || 0) + v * shopMultiplier(sh, act, metric, view.heatMin, view.surge);
+  }
+  const out = {};
+  for (const l in base) out[l] = base[l] ? scen[l] / base[l] : 1;
+  return out;
+}
+
 function drawDay() {
   const svg = root.querySelector("#sp-day");
   const month = ctx.months[view.i];
   const rows = city.daily.filter(r => r.d.slice(0, 7) === month);
-  root.querySelector("#sp-daycap").textContent = `${pretty(month)} · card customers, by day`;
+  const mk = view.metric, m = METRICS[mk];
+  const act = activeLevers();
+  const changed = act.length > 0 || view.surge !== 1;
+
+  root.querySelector("#sp-daycap").textContent =
+    `${pretty(month)} · ${m.label.toLowerCase()} per day`;
 
   if (!rows.length) {
     svg.innerHTML = "";
@@ -861,46 +1168,74 @@ function drawDay() {
     return;
   }
 
-  const byDay = new Map();
-  for (const r of rows) byDay.set(r.d, (byDay.get(r.d) || 0) + r.c);
-  const days = [...byDay.keys()].sort();
+  const ratio = layerRatios(mk);
+  const dayBase = new Map(), dayScen = new Map();
+  for (const r of rows) {
+    const f = mk === "c" ? 1 : (FACTORS[r.l] || FACTORS.Other_EFW)[mk];
+    const v = r.c * f;
+    dayBase.set(r.d, (dayBase.get(r.d) || 0) + v);
+    dayScen.set(r.d, (dayScen.get(r.d) || 0) + v * (ratio[r.l] ?? 1));
+  }
+  const days = [...dayBase.keys()].sort();
+
   // card spend lands on the settlement day, so raw days show a Monday spike;
   // a centred 7-day mean is the honest shape
-  const raw = days.map(d => byDay.get(d));
-  const sm = raw.map((_, i) => {
-    let s = 0, n = 0;
-    for (let j = Math.max(0, i - 3); j <= Math.min(raw.length - 1, i + 3); j++) { s += raw[j]; n++; }
-    return s / n;
+  const smooth = arr => arr.map((_, i) => {
+    let sum = 0, n = 0;
+    for (let j = Math.max(0, i - 3); j <= Math.min(arr.length - 1, i + 3); j++) { sum += arr[j]; n++; }
+    return sum / n;
   });
+  const rawB = days.map(d => dayBase.get(d));
+  const base = smooth(rawB);
+  const scen = smooth(days.map(d => dayScen.get(d)));
 
-  const W = 1000, H = 240, pad = { l: 62, r: 18, t: 16, b: 30 };
+  const W = 1000, H = 240, pad = { l: 66, r: 18, t: 16, b: 30 };
   const iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
-  const mx = Math.max(...raw, 1);
+  const mx = Math.max(...rawB, ...scen, 1);
   const X = i => pad.l + (i / Math.max(1, days.length - 1)) * iw;
   const Y = v => pad.t + ih - (v / mx) * ih;
+  const line = a => a.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
 
-  let s = "";
+  let out = "";
   for (let g = 0; g <= 3; g++) {
     const y = pad.t + ih - (g / 3) * ih;
-    s += `<line class="gline" x1="${pad.l}" y1="${y.toFixed(1)}" x2="${W - pad.r}" y2="${y.toFixed(1)}"/>`;
-    s += `<text class="glabel" x="${pad.l - 10}" y="${(y + 4).toFixed(1)}" text-anchor="end">${fmt(mx * g / 3)}</text>`;
+    out += `<line class="gline" x1="${pad.l}" y1="${y.toFixed(1)}" x2="${W - pad.r}" y2="${y.toFixed(1)}"/>`;
+    out += `<text class="glabel" x="${pad.l - 10}" y="${(y + 4).toFixed(1)}" text-anchor="end">${fmt(mx * g / 3)}</text>`;
   }
-  s += `<polyline points="${raw.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")}"
-    fill="none" stroke="${c("--ink-3")}" stroke-width="1" opacity="0.45"/>`;
-  s += `<polyline points="${sm.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")}"
-    fill="none" stroke="${c(METRICS[view.metric].token)}" stroke-width="2.4"
-    stroke-linejoin="round"/>`;
+
+  // the saving is the band between the two lines — the point of the panel
+  if (changed) {
+    const top = base.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`);
+    const bot = scen.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).reverse();
+    out += `<polygon points="${top.concat(bot).join(" ")}"
+      fill="${c("--c-carbon")}" opacity="0.16"/>`;
+  }
+  out += `<polyline points="${line(rawB)}" fill="none" stroke="${c("--ink-3")}"
+    stroke-width="1" opacity="0.35"/>`;
+  if (changed) {
+    out += `<polyline points="${line(base)}" fill="none" stroke="${c("--ink-3")}"
+      stroke-width="1.8" stroke-dasharray="5 4"/>`;
+  }
+  out += `<polyline points="${line(changed ? scen : base)}" fill="none"
+    stroke="${c(m.token)}" stroke-width="2.6" stroke-linejoin="round"/>`;
   days.forEach((d, i) => {
     if (+d.slice(8) % 7 === 1) {
-      s += `<text class="glabel" x="${X(i).toFixed(1)}" y="${H - 10}" text-anchor="middle">${+d.slice(8)}</text>`;
+      out += `<text class="glabel" x="${X(i).toFixed(1)}" y="${H - 10}" text-anchor="middle">${+d.slice(8)}</text>`;
     }
   });
-  svg.innerHTML = s;
+  svg.innerHTML = out;
 
-  root.querySelector("#sp-daylegend").innerHTML = `
-    <span><i style="background:${c(METRICS[view.metric].token)}"></i>7-day mean</span>
-    <span><i style="background:${c("--ink-3")};opacity:.5"></i>as recorded</span>
-    <span class="muted">Card spend is stamped on the settlement day, so raw days spike on Mondays.</span>`;
+  const totB = base.reduce((a, b) => a + b, 0), totS = scen.reduce((a, b) => a + b, 0);
+  const delta = totS - totB;
+  root.querySelector("#sp-daylegend").innerHTML = changed
+    ? `<span><i style="background:${c(m.token)}"></i>with the scenario</span>
+       <span><i class="dash"></i>baseline</span>
+       <span><i class="box" style="background:${c("--c-carbon")};opacity:.3"></i>
+         ${delta < 0 ? "avoided" : "added"} — <b>${fmt(Math.abs(delta))} ${esc(m.unit)}</b>
+         across ${days.length} days (${(Math.abs(delta) / (totB || 1) * 100).toFixed(1)}%)</span>`
+    : `<span><i style="background:${c(m.token)}"></i>7-day mean</span>
+       <span><i style="background:${c("--ink-3")};opacity:.4"></i>as recorded</span>
+       <span class="muted">Card spend is stamped on the settlement day, so raw days spike on Mondays.</span>`;
 }
 
 /* ----------------------------------------------------- plays that apply */
@@ -936,11 +1271,26 @@ function drawPlays() {
 
 /* ------------------------------------------------------- city switching */
 
+/** Swap positron for dark-matter when the theme flips. Our layers are added on
+    style.load, so they survive the swap without being re-registered here. */
+async function applyTheme() {
+  if (!ready || ctx.state.theme === styledTheme) return;
+  styledTheme = ctx.state.theme;
+  const style = await resolveStyle(styledTheme);
+  // diff:false is load-bearing. With the default diff, MapLibre works out how to
+  // turn positron into dark-matter and, since shop-dots/heat/districts are in the
+  // old style but not the new one, dutifully removes them — silently, and without
+  // firing style.load, so nothing puts them back. A full reload fires style.load,
+  // which re-adds the layers and repaints them.
+  map.setStyle(style, { diff: false });
+}
+
 async function refreshCity() {
   if (!ready || !city) return;
   if (city.name === ctx.state.city) { drawAll(); return; }
   root.querySelector("#sp-loading").hidden = false;
   root.querySelector("#sp-loading").textContent = `Loading ${ctx.state.city}…`;
+  if (openPopup) { openPopup.remove(); openPopup = null; openShop = -1; }
   await loadCity(ctx.state.city);
   districtCache = null;
   buildSources();
