@@ -1,0 +1,46 @@
+{
+ "role": "visitor_surge_response",
+ "method": "log(segment customers) ~ log(city total customers), OLS per host over 24+ monthly observations, pooled by median across hosts, then shrunk toward 1 in proportion to R^2",
+ "reading": "elasticity 1.0 means the segment moves proportionally with citywide demand; above 1 it amplifies. A surge of S multiplies a shop by S^elasticity.",
+ "caveat": "Fitted on observed monthly variation, not on a mega-event. It says how a segment has responded when the city got busier, which is the closest evidence available for how it would respond to a tournament.",
+ "layers": {
+  "Energy": {
+   "elasticity": 0.972,
+   "raw": 0.953,
+   "r2": 0.607,
+   "hosts": 11
+  },
+  "Food": {
+   "elasticity": 0.981,
+   "raw": 0.98,
+   "r2": 0.991,
+   "hosts": 11
+  },
+  "Other_EFW": {
+   "elasticity": 1.049,
+   "raw": 1.32,
+   "r2": 0.155,
+   "hosts": 11
+  },
+  "Venue": {
+   "elasticity": 1.124,
+   "raw": 1.382,
+   "r2": 0.324,
+   "hosts": 11
+  },
+  "Water": {
+   "elasticity": 1.08,
+   "raw": 1.332,
+   "r2": 0.242,
+   "hosts": 11
+  }
+ },
+ "near_stadium": {
+  "within_km": 5.0,
+  "extra": 0.13,
+  "raw": 1.236,
+  "r2": 0.551,
+  "hosts": 9,
+  "shops": 1318
+ }
+}

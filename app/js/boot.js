@@ -16,8 +16,7 @@ import * as stats from "./lib/stats.js";
 const TABS = [
   { id: "overview", label: "Overview", icon: "grid" },
   { id: "compare", label: "Compare hosts", icon: "layers" },
-  { id: "spatial", label: "Spatial map", icon: "map" },
-  { id: "scenarios", label: "Scenarios", icon: "sliders" },
+  { id: "spatial", label: "Impact map", icon: "map" },
 ];
 
 const state = {
@@ -25,9 +24,10 @@ const state = {
   tab: "overview",
   theme: initialTheme(),
   metric: "e",
-  surge: 1,
   filter: null,
-  driver: null,   // focused readiness driver on the Overview
+  driver: null,          // focused readiness driver on the Overview
+  partners: [],          // hosts compared against state.city on Compare
+  compareScroll: null,   // one-shot landing target for Compare
 };
 
 const views = {};      // id -> loaded module
@@ -100,8 +100,15 @@ function setTab(tab) {
   render();
 }
 
-function goCompare(driverKey) {
+/**
+ * @param {string|null} driverKey  pre-filter the leaderboard to hosts elevated on it
+ * @param {string|null} scrollTo   section for Compare to land on ("playbook"),
+ *   so "open the full playbook" does not dump you at the top of a page whose
+ *   first two bands are a leaderboard and a comparison you did not ask for
+ */
+function goCompare(driverKey, scrollTo) {
   state.filter = driverKey || null;
+  state.compareScroll = scrollTo || null;
   state.tab = "compare";
   render();
 }

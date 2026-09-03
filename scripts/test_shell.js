@@ -205,6 +205,173 @@ async function main() {
     `${matched} matching pairs across ${cards.length} hosts`);
 
   /* ------------------------------------------------------------------ */
+  section("compare");
+  const cmp = await mod("views/compare.js");
+  ok("compare exports mount/update",
+    typeof cmp.mount === "function" && typeof cmp.update === "function");
+
+  // the leaderboard, matrix and decomposition all key off these
+  const cityHelpers = await mod("lib/city.js");
+  ok("photo() points at a derivative that exists",
+    S.cities.every(c2 => fs.existsSync(path.join(APP, cityHelpers.photo(c2, 320)))),
+    S.cities.map(c2 => cityHelpers.photo(c2, 320)).find(
+      f => !fs.existsSync(path.join(APP, f))));
+  ok("scoreColour is a function", typeof cityHelpers.scoreColour === "function");
+
+  // Compare's matrix labels every driver; a missing unit renders "undefined"
+  const cmpSrc = fs.readFileSync(path.join(APP, "js/views/compare.js"), "utf8");
+  const unitBlock = cmpSrc.split("const UNIT")[1].slice(0, 260);
+  const plainBlock = cmpSrc.split("const PLAIN")[1].slice(0, 260);
+  for (const d of cards[0].drivers) {
+    ok(`compare names and units "${d.key}"`,
+      unitBlock.includes(`${d.key}:`) && plainBlock.includes(`${d.key}:`));
+  }
+  ok("compare no longer emits the unstyled .eff markup", !/class="eff"/.test(cmpSrc));
+  ok("no ad-hoc inline padding survives on Compare",
+    !/style="padding|style="margin-top:1[0-9]px/.test(cmpSrc));
+
+  // the transfer matrix needs every play tagged with an id to dedupe rows
+  ok("every play carries an id",
+    cards.every(k => [...(k.recommended_plays || []), ...(k.general_options || [])]
+      .every(p2 => typeof p2.id === "string" && p2.id.length > 0)));
+
+  /* ------------------------------------------------------------------ */
+  section("impact map");
+  const sc = await mod("lib/scenario.js");
+  const lv = sc.buildLevers(contract);
+  ok("every scoped play became a lever", lv.length === Object.keys(sc.SCOPE).length,
+    `${lv.length} levers vs ${Object.keys(sc.SCOPE).length} scopes`);
+  ok("every lever names a real scope",
+    lv.every(l => l.scope && (l.scope.layers || l.scope.ring || l.scope.minHeat)));
+  ok("lever effects came from the contract, not hard-coded",
+    lv.every(l => ["e", "w", "co2"].some(k => l.effect[k] !== 0)));
+  ok("scoped layers are real shop types",
+    lv.every(l => !l.scope.layers ||
+      l.scope.layers.every(x => Object.keys(sc.FACTORS).includes(x))));
+
+  // the fitted surge response — the slider is only defensible if it is measured
+  const surgeModel = readJSON("data/surge_model.json");
+  sc.setSurgeModel(surgeModel);
+  ok("surge model covers every shop layer",
+    Object.keys(sc.FACTORS).every(l => surgeModel.layers[l]),
+    Object.keys(surgeModel.layers).join(","));
+  ok("elasticities are plausible", Object.values(surgeModel.layers)
+    .every(v => v.elasticity > 0.5 && v.elasticity < 2), JSON.stringify(surgeModel.layers));
+  ok("noisy estimates are shrunk toward proportional", Object.values(surgeModel.layers)
+    .every(v => Math.abs(v.elasticity - 1) <= Math.abs(v.raw - 1) + 1e-9));
+  ok("lodging and venues amplify a surge more than fuel retail",
+    surgeModel.layers.Water.elasticity > surgeModel.layers.Energy.elasticity &&
+    surgeModel.layers.Venue.elasticity > surgeModel.layers.Energy.elasticity);
+  ok("near-stadium shops carry extra elasticity", surgeModel.near_stadium.extra > 0,
+    JSON.stringify(surgeModel.near_stadium));
+  ok("a surge moves a lodging shop more than a fuel shop", (() => {
+    const hotel = sc.shopMultiplier({ l: "Water", u: 5, d: 99 }, [], "e", 8, 1.5);
+    const gas = sc.shopMultiplier({ l: "Energy", u: 5, d: 99 }, [], "e", 8, 1.5);
+    return hotel > gas;
+  })());
+  ok("a surge lands harder inside the stadium ring", (() => {
+    const near = sc.shopMultiplier({ l: "Food", u: 5, d: 1 }, [], "e", 8, 1.5);
+    const far = sc.shopMultiplier({ l: "Food", u: 5, d: 40 }, [], "e", 8, 1.5);
+    return near > far;
+  })());
+  ok("no surge means no change", sc.shopMultiplier({ l: "Food", u: 5, d: 1 }, [], "e", 8, 1) === 1);
+
+
+  // A minimal evaluator for the expression subset the map paints with. The
+  // whole design rests on the expressions and the JS totals agreeing; if they
+  // drift, the map shows one number and the pills show another.
+  const ev = (e, f) => {
+    if (!Array.isArray(e)) return e;
+    const [op, ...a] = e;
+    switch (op) {
+      case "get": return f[a[0]];
+      case "literal": return a[0];
+      case "coalesce": { for (const x of a) { const v = ev(x, f); if (v != null) return v; } return null; }
+      case "*": return a.reduce((n, x) => n * ev(x, f), 1);
+      case "+": return a.reduce((n, x) => n + ev(x, f), 0);
+      case "-": return ev(a[0], f) - ev(a[1], f);
+      case "^": return Math.pow(ev(a[0], f), ev(a[1], f));
+      case "all": return a.every(x => ev(x, f));
+      case "in": return ev(a[1], f).includes(ev(a[0], f));
+      case ">=": return ev(a[0], f) >= ev(a[1], f);
+      case "<=": return ev(a[0], f) <= ev(a[1], f);
+      case "case": {
+        for (let i = 0; i + 1 < a.length; i += 2) if (ev(a[i], f)) return ev(a[i + 1], f);
+        return ev(a[a.length - 1], f);
+      }
+      case "match": {
+        const v = ev(a[0], f);
+        for (let i = 1; i + 1 < a.length; i += 2) if (a[i] === v) return a[i + 1];
+        return a[a.length - 1];
+      }
+      default: throw new Error("unhandled expression op: " + op);
+    }
+  };
+
+  const shops = [
+    { l: "Food", u: 9.5, d: 1.2 }, { l: "Water", u: 4, d: 20 },
+    { l: "Venue", u: 8.5, d: 3 }, { l: "Energy", u: 6, d: 4 },
+    { l: "Other_EFW", u: 10, d: 90 },
+  ];
+  let agreed = 0, checked = 0;
+  for (const metric of ["e", "w", "co2"]) {
+    for (const combo of [[], [lv[0]], [lv[0], lv[1]], lv]) {
+      for (const heatMin of [1, 8, 11]) {
+        for (const surge of [1, 1.35]) {
+          const expr = sc.multiplier(combo, metric, heatMin, surge);
+          for (const sh of shops) {
+            checked++;
+            const fromExpr = ev(expr, { ...sh, m0: 1 });
+            const fromJs = sc.shopMultiplier(sh, combo, metric, heatMin, surge);
+            if (Math.abs(fromExpr - fromJs) < 1e-9) agreed++;
+          }
+        }
+      }
+    }
+  }
+  ok(`map expressions match the JS totals (${checked} combinations)`, agreed === checked,
+    `${checked - agreed} disagreed`);
+
+  ok("a lever with no scope match leaves a shop untouched",
+    sc.shopMultiplier({ l: "Energy", u: 1, d: 99 },
+      lv.filter(l => l.id === "hotel_water_reuse"), "w", 8) === 1);
+  ok("hotel reuse does hit a lodging shop",
+    sc.shopMultiplier({ l: "Water", u: 1, d: 99 },
+      lv.filter(l => l.id === "hotel_water_reuse"), "w", 8) < 1);
+
+  // the split tables the map now loads instead of the 11.7 MB all-city set
+  const mapIndex = readJSON("data/index.json").cities;
+  ok("index.json covers all 11 hosts", Object.keys(mapIndex).length === 11);
+  for (const [cityName, meta] of Object.entries(mapIndex)) {
+    ok(`${cityName}: split tables exist`,
+      ["places", "heat", "daily"].every(d =>
+        fs.existsSync(path.join(APP, "data", d, `${meta.slug}.json`))),
+      meta.slug);
+  }
+  ok("the largest city bundle is under 2 MB",
+    Math.max(...Object.values(mapIndex).map(m => m.bytes)) < 2e6,
+    `${(Math.max(...Object.values(mapIndex).map(m => m.bytes)) / 1e6).toFixed(2)} MB`);
+
+  ok("MapLibre is vendored, not pulled from a CDN at runtime",
+    fs.existsSync(path.join(APP, "vendor/maplibre-gl.js")) &&
+    fs.existsSync(path.join(APP, "vendor/maplibre-gl.css")));
+  const spSrc = fs.readFileSync(path.join(APP, "js/views/spatial.js"), "utf8");
+  ok("no CDN script URL survives in the map view", !/unpkg\.com/.test(spSrc));
+  // MapLibre's own stylesheet is injected after ours and sets
+  // `.maplibregl-map { position: relative }` on the very element we position —
+  // a plain `.mapcanvas` rule loses the cascade and the map collapses to 0px
+  const spCss = fs.readFileSync(path.join(APP, "css/spatial.css"), "utf8");
+  ok("the map container outranks MapLibre's own positioning",
+    /\.mapstage\s*>\s*\.mapcanvas\s*\{[^}]*position:\s*absolute/.test(spCss) &&
+    /\.mapstage\s*>\s*\.mapcanvas\s*\{[^}]*height:\s*100%/.test(spCss));
+  ok("the map waits for a sized container before it is built",
+    /whenSized/.test(spSrc) && /ResizeObserver/.test(spSrc));
+  ok("the basemap falls back to a local style when unreachable",
+    /function fallbackStyle/.test(spSrc) && /resolveStyle/.test(spSrc));
+  ok("no debug handles left on window", !/__probeMap/.test(spSrc));
+  ok("no probe page left behind", !fs.existsSync(path.join(APP, "probe.html")));
+
+  /* ------------------------------------------------------------------ */
   section("assets");
   const IMG_SLUG = {
     "New York/New Jersey": "new-york",
@@ -233,8 +400,14 @@ async function main() {
   section("wiring");
   const html = fs.readFileSync(path.join(APP, "index.html"), "utf8");
   ok("index.html has no iframe", !/<iframe/i.test(html));
+  const bootSrc = fs.readFileSync(path.join(APP, "js/boot.js"), "utf8");
+  ok("the rail is three tabs — Scenarios folded into the map",
+    (bootSrc.match(/\{ id: "/g) || []).length === 3 && !/scenarios/.test(bootSrc));
+  for (const gone of ["spatial.html", "pulse.css", "css/pages.css", "js/views/scenarios.js"]) {
+    ok(`${gone} is gone`, !fs.existsSync(path.join(APP, gone)));
+  }
   ok("index.html loads boot.js as a module", /type="module"[^>]*js\/boot\.js/.test(html));
-  for (const css of ["css/base.css", "css/overview.css", "css/pages.css"]) {
+  for (const css of ["css/base.css", "css/overview.css", "css/compare.css", "css/spatial.css"]) {
     ok(`${css} is linked and present`,
       html.includes(css) && fs.existsSync(path.join(APP, css)));
   }

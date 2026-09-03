@@ -1,0 +1,333 @@
+/* Compare hosts — three bands:
+     A  leaderboard   where all eleven stand, and the selector for B and C
+     B  head to head  how the chosen hosts differ, and on what
+     C  playbook      the full, data-backed recommendation set for the anchor
+
+   Everything is inset by --sp-6; no block sets its own ad-hoc padding. */
+
+/* ---------------------------------------------------- A. the leaderboard */
+.filterrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+  margin-bottom: var(--sp-5);
+}
+.filterrow .eyebrow { margin-right: var(--sp-1); }
+
+.board { display: grid; gap: 2px; }
+
+.lrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px;
+  align-items: center;
+  border-radius: var(--r-1);
+  transition: background var(--fast);
+}
+.lrow:hover { background: var(--surface-2); }
+.lrow.anchor { background: var(--accent-soft); }
+.lrow.partner { background: var(--surface-3); }
+
+.lmain {
+  display: grid;
+  grid-template-columns: 34px 44px minmax(126px, 1.15fr) minmax(0, 2.6fr) 62px;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+.lrank {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.lthumb {
+  width: 44px; height: 30px;
+  object-fit: cover;
+  border-radius: var(--r-1);
+  background: var(--surface-3);
+}
+.lname {
+  font-size: 13.5px; font-weight: 600; color: var(--ink); line-height: 1.2;
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+}
+/* set membership rides beside the name, so the bar keeps meaning readiness */
+.lname .slot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.lrow.anchor .lname { color: var(--accent); }
+
+/* the bar is the chart: fill to the score, band drawn behind it */
+.lbar {
+  position: relative;
+  height: 10px;
+  background: var(--surface-3);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.lbar em {
+  position: absolute; top: 0; bottom: 0;
+  background: var(--ink);
+  opacity: 0.13;
+}
+.lbar i {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  border-radius: var(--r-pill);
+  transition: width var(--med);
+}
+.lscore {
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: right;
+}
+
+.ladd {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-1);
+  background: var(--surface);
+  color: var(--ink-3);
+  cursor: pointer;
+  margin-right: var(--sp-2);
+  transition: all var(--fast);
+}
+.ladd:hover { border-color: var(--accent); color: var(--accent); }
+.ladd.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.ladd[disabled] {
+  cursor: default;
+  border-color: transparent;
+  background: transparent;
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+/* ---------------------------------------------------- B. the comparison */
+.setbar { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.setchip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 4px 4px 4px 8px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  border: 1px solid transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.setchip img { width: 22px; height: 22px; object-fit: cover; border-radius: 50%; }
+.setchip i { width: 9px; height: 9px; border-radius: 50%; flex: none; margin-left: 2px; }
+.setchip.is-anchor { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
+.setchip .drop {
+  width: 22px; height: 22px;
+  display: grid; place-items: center;
+  border: 0; border-radius: 50%;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+.setchip .drop:hover { background: var(--surface-4); color: var(--ink); }
+.setchip .tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  padding-right: var(--sp-2);
+}
+
+/* --- driver matrix: read across a row to compare, down a column for a profile */
+.matrix {
+  display: grid;
+  gap: var(--sp-2) var(--sp-4);
+  align-items: center;
+}
+.matrix .mhead {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--line);
+}
+.matrix .mcity {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--mc, var(--line));
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0;
+  text-transform: none;
+  min-width: 0;
+}
+.matrix .mcity img { width: 22px; height: 22px; object-fit: cover; border-radius: 50%; flex: none; }
+.matrix .mcity span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.matrix .mlabel {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  padding: var(--sp-2) 0;
+}
+.matrix .mlabel svg { color: var(--dc, var(--ink-3)); flex: none; }
+.matrix .mlabel em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-left: auto;
+  padding-left: var(--sp-2);
+}
+.mcell { display: grid; gap: 5px; padding: var(--sp-2) 0; }
+.mcell .mv {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.mcell .mv em { font-style: normal; font-weight: 500; font-size: 11px; color: var(--ink-3); }
+.mcell .mv .off { margin-left: auto; font-weight: 600; }
+
+.h2hsplit {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: var(--sp-7);
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--line);
+}
+.h2hsplit h3, .matrix + .cap, .h2hsplit .cap { font-size: 13px; }
+.subhead { font-size: 14.5px; font-weight: 600; margin-bottom: var(--sp-1); }
+.subcap { font-size: 12.5px; color: var(--ink-3); line-height: 1.55; margin-bottom: var(--sp-4); }
+.h2hsplit svg { width: 100%; height: auto; }
+
+.dlegend { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); margin-top: var(--sp-3); }
+.dlegend span { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-2); }
+.dlegend i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+
+/* ------------------------------------------------------- C. the playbook */
+.pbbody { padding: var(--sp-6); display: grid; gap: var(--sp-4); }
+/* auto-fit rather than a fixed pair: most hosts have three pressing plays, and
+   a hard 2-up orphans the third in an empty half-row */
+.pbbody .plays2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: var(--sp-4);
+}
+
+/* the evidence strip: which of this host's drivers the play acts on */
+.ptargets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--r-1);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.ptargets .eyebrow { font-size: 10.5px; }
+.ptag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+}
+.ptag svg { color: var(--dc, var(--ink-3)); }
+.ptag b { font-variant-numeric: tabular-nums; }
+
+.pbdetails { margin-top: var(--sp-2); }
+.pbdetails > summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: var(--sp-3) 0;
+  list-style: none;
+}
+.pbdetails > summary::-webkit-details-marker { display: none; }
+.pbdetails > summary::before { content: "▸ "; color: var(--ink-3); }
+.pbdetails[open] > summary::before { content: "▾ "; }
+.pbdetails .plays2 { margin-top: var(--sp-3); }
+
+/* --- play x host: where each play is indicated across the eleven ------- */
+.pmatrix { display: grid; gap: 3px var(--sp-2); align-items: center; }
+.pmatrix .pmh {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--line);
+}
+.pmatrix .pmh.on { color: var(--accent); }
+.pmatrix .pmt {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) 0;
+}
+.pmatrix .pmt small { display: block; font-weight: 500; color: var(--ink-3); font-size: 11px; }
+.pmcell {
+  height: 30px;
+  display: grid; place-items: center;
+  border: 0; border-radius: var(--r-1);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--fast);
+}
+.pmcell:hover { background: var(--surface-3); }
+.pmcell.col { background: var(--accent-soft); }
+.pmcell b { width: 13px; height: 13px; border-radius: 50%; display: block; }
+.pmcell b.press { background: var(--accent); }
+.pmcell b.opt { background: transparent; border: 2px solid var(--ink-3); opacity: 0.7; }
+.pmcell b.none { width: 8px; height: 2px; border-radius: 1px; background: var(--line-2); }
+
+.pmkey { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-5); margin-top: var(--sp-4); }
+.pmkey span { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ink-2); }
+
+/* SVG text inside the comparison charts */
+.cname { font: 700 11.5px var(--font); }
+.cscore { font: 700 13px var(--display); font-variant-numeric: tabular-nums; }
+
+/* legend swatches mirror the matrix cells */
+.pmkey b.pmk { width: 13px; height: 13px; border-radius: 50%; display: block; }
+.pmkey b.pmk.press { background: var(--accent); }
+.pmkey b.pmk.opt { background: transparent; border: 2px solid var(--ink-3); opacity: 0.7; }
+.pmkey b.pmk.none { width: 10px; height: 2px; border-radius: 1px; background: var(--line-2); }
+
+/* ------------------------------------------------------------ responsive */
+@media (max-width: 1080px) {
+  .h2hsplit { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .pbbody .plays2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+  .lmain { grid-template-columns: 30px 38px minmax(0, 1fr) 54px; gap: var(--sp-2); }
+  .lmain .lbar { display: none; }
+  .matrix { gap: var(--sp-2) var(--sp-3); }
+  .pmatrix .pmt { font-size: 11.5px; }
+}

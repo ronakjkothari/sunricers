@@ -203,7 +203,10 @@ img { max-width: 100%; display: block; }
   transition: background var(--fast), color var(--fast);
 }
 .rail button:hover { background: var(--surface-3); color: var(--ink); }
-.rail button.on { background: var(--accent); color: var(--accent-ink); }
+/* a soft tint carries the active state; a solid accent block out-shouted
+   everything it was meant to be navigation for */
+.rail button.on { background: var(--accent-soft); color: var(--accent); }
+.rail button.on:hover { background: var(--accent-soft); color: var(--accent); }
 .rail .sp { flex: 1; }
 
 /* rail tooltip — labels on hover, so icons stay unlabelled but not opaque */
@@ -345,7 +348,7 @@ img { max-width: 100%; display: block; }
   transition: all var(--fast);
 }
 .fchip:hover { border-color: var(--ink-3); color: var(--ink); }
-.fchip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.fchip.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
 
 /* ---------------------------------------------------------------- tooltip */
 .tip {
@@ -408,6 +411,150 @@ img { max-width: 100%; display: block; }
 }
 .pop dt { color: var(--ink-3); }
 .pop dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+/* ----------------------------------------------------- play card (shared)
+   Overview shows the top two; Compare shows the whole playbook. Same card. */
+.play {
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  padding: var(--sp-5);
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.play h3 { font-size: 16px; font-weight: 600; line-height: 1.32; }
+.play .why { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+.play .foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin-top: auto;
+  align-items: center;
+}
+.play .foot .lnk {
+  color: var(--accent); background: none; border: 0; padding: 0;
+  cursor: pointer; font: 600 12.5px var(--font);
+}
+.play .foot .lnk:hover { text-decoration: underline; }
+
+/* before/after: the current total, with the avoided share carved out of it */
+.pbars { display: grid; gap: var(--sp-4); }
+.pbar { display: grid; gap: var(--sp-2); }
+.pbar .ph { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.pbar .pn {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+}
+.pbar .pd { font-family: var(--display); font-size: 15px; font-weight: 700; }
+.pbar .ptrack {
+  position: relative;
+  height: 12px;
+  border-radius: var(--r-pill);
+  background: repeating-linear-gradient(
+    -45deg, var(--surface-4) 0 5px, var(--surface-3) 5px 10px);
+  overflow: hidden;
+}
+.pbar .pfill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  border-radius: var(--r-pill);
+  transition: width var(--med);
+}
+.pbar .pf {
+  display: flex; justify-content: space-between; gap: var(--sp-3);
+  font-size: 11.5px; color: var(--ink-3);
+}
+.pbar .pf b { color: var(--ink); font-weight: 700; }
+.pbar .psaved { color: var(--ink-2); font-weight: 600; }
+
+/* ------------------------------------------------- charts (shared) ------
+   Overview and Compare draw the same axes, bullets and metric switcher. */
+/* Bullet bar. The track spans the 11-host min..max, the tick marks the median,
+   and the fill runs from the tick to this city's value — so the distribution's
+   skew stays visible instead of being normalised away. */
+.bullet { position: relative; height: 7px; background: var(--surface-3); border-radius: var(--r-pill); }
+.bullet i {
+  position: absolute; top: 0; bottom: 0;
+  border-radius: var(--r-pill);
+  background: var(--dc, var(--ink-3));
+  transition: width var(--med), left var(--med);
+}
+.bullet .mid {
+  position: absolute;
+  top: -3px; bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--ink-2);
+  opacity: 0.55;
+  z-index: 1;   /* the tick sits before the fill in the DOM, so lift it */
+}
+
+.mswitch { display: flex; gap: var(--sp-1); flex-wrap: wrap; }
+.mswitch button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 600 12.5px/1 var(--font);
+  padding: 9px 13px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all var(--fast);
+}
+.mswitch button:hover { border-color: var(--m); color: var(--ink); }
+.mswitch button.on {
+  background: var(--m);
+  border-color: var(--m);
+  color: #fff;
+}
+
+.chartwrap { position: relative; padding: var(--sp-4) var(--sp-5) 0; }
+.chartwrap svg { width: 100%; height: auto; }
+.gline { stroke: var(--line); stroke-width: 1; }
+.axis { stroke: var(--line-2); stroke-width: 1; }
+.glabel { fill: var(--ink-3); font: 11px var(--mono); }
+.serie { fill: none; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.median { fill: none; stroke: var(--ink-2); stroke-width: 1.6; stroke-dasharray: 5 4; opacity: 0.8; }
+.iqr { fill: var(--ink-3); opacity: 0.15; }
+.win { fill: var(--c-cooling); opacity: 0.15; }
+.chartlegend {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  padding: var(--sp-3) var(--sp-6) var(--sp-5);
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.chartlegend span { display: inline-flex; align-items: center; gap: var(--sp-2); }
+.chartlegend i { width: 16px; height: 3px; border-radius: 2px; flex: none; }
+.chartlegend i.dash { background: repeating-linear-gradient(90deg, var(--ink-2) 0 5px, transparent 5px 9px); }
+.chartlegend i.box { height: 11px; border-radius: 3px; }
+
+/* ------------------------------------------------- text primitives ---- */
+.note { font-size: 12.5px; color: var(--ink-3); line-height: 1.55; }
+.note b { color: var(--ink-2); }
+.pre {
+  font: 12px/1.6 var(--mono);
+  background: var(--surface-3);
+  border-radius: var(--r-1);
+  padding: 12px 14px;
+  overflow-x: auto;
+  color: var(--ink-2);
+  margin: 10px 0 0;
+}
+.lnk {
+  color: var(--accent);
+  background: none; border: 0; padding: 0;
+  font: 500 inherit/1 var(--font);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.lnk:hover { text-decoration: underline; }
 
 /* ------------------------------------------------------------------ misc */
 .muted { color: var(--ink-3); }

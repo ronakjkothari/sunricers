@@ -8,15 +8,16 @@ Rice Urban Sustainability Hackathon — **Track 2: Energy–Food–Water Nexus**
 python -m engines.playbook.cli --source map --sync-app --validate   # D → app/data
 python scripts/build_overview_kpis.py                               # A Overview series
 python scripts/build_city_images.py                                 # city photo derivatives
+python scripts/split_map_data.py                                    # per-city map tables
 cd app && python -m http.server 8000                                # http://localhost:8000
 ```
 
 Check the shell still works after changing it: `node scripts/test_shell.js`
 (everything except pixels — layout, dark mode and the embedded map still need a browser).
 
-**Nexus Pulse** (`app/index.html`) is the front door: a left rail driving four tabs —
-Overview (the city dossier), Compare hosts (Plan D readiness + steal-this-play),
-Spatial map (Plan B, embedded), Scenarios (visitor surge; the full lever lab is next).
+**Nexus Pulse** (`app/index.html`) is the front door: a left rail driving three tabs —
+Overview (the city dossier), Compare hosts (leaderboard, head-to-head, full playbook),
+and the Impact map (where the load sits, and what moves it).
 
 The Overview reads verdict → evidence → action: who this city is and how it ranks,
 why it ranks there (a waterfall that *is* the scoring formula), and the plays that

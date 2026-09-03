@@ -13,6 +13,7 @@ import { fmt, esc, pretty, isSummer, niceMax, ordinal, slug } from "../lib/forma
 import { icon, DRIVER_ICON } from "../lib/icons.js";
 import { c, METRIC_COLOR, DRIVER_COLOR, LAYER_COLOR } from "../lib/palette.js";
 import { METRIC_ABS, verdict, rankLabel, pctLabel, polarRank } from "../lib/stats.js";
+import { photo, scoreColour, loadBlurs, blur } from "../lib/city.js";
 
 const METRICS = {
   v: { label: "Visits", unit: "visits", icon: "visits", input: true },
@@ -56,7 +57,6 @@ const SPARK = { W: 240, H: 58, padT: 7, padB: 15 };
 
 let root = null;
 let ctx = null;
-let lqip = {};
 let observer = null;
 
 /* ---------------------------------------------------------------- mount */
@@ -114,10 +114,7 @@ export function mount(el, context) {
       <div class="exits" id="ov-exits"></div>
     </section>`;
 
-  fetch("assets/img/lqip.json")
-    .then(r => (r.ok ? r.json() : {}))
-    .then(d => { lqip = d; drawBanner(); drawSticky(); })
-    .catch(() => { /* blur-up is a nicety, not a requirement */ });
+  loadBlurs().then(() => { drawBanner(); drawSticky(); });
 
   root.querySelector("#ov-methods").onclick = toggleMethods;
   document.addEventListener("click", onDocClick);
@@ -186,17 +183,6 @@ function onDocClick(ev) {
 /* ------------------------------------------------------------- helpers */
 
 const card = () => ctx.stats.byCity[ctx.state.city];
-const photo = (city, size) => `assets/img/${imgSlug(city)}-${size}.webp`;
-
-const IMG_SLUG = {
-  "New York/New Jersey": "new-york",
-  "San Francisco Bay Area": "san-francisco",
-  "Kansas City": "kansas-city",
-  "Los Angeles": "los-angeles",
-};
-const imgSlug = city => IMG_SLUG[city] || city.toLowerCase().replace(/[^a-z]+/g, "-");
-
-const scoreColour = s => (s < 33 ? c("--c-energy") : s < 66 ? c("--c-cooling") : c("--c-water"));
 
 /* ------------------------------------------------------ A. the banner */
 
@@ -209,7 +195,7 @@ function drawBanner() {
     <div class="bmedia">
       <img class="bphoto" src="${photo(k.host_city, 1200)}" alt=""
            width="1200" height="800" onload="this.classList.add('in')"
-           style="background-image:url('${lqip[k.host_city] || ""}')">
+           style="background-image:url('${blur(k.host_city)}')">
       <div class="bscrim"></div>
     </div>
 
@@ -756,7 +742,7 @@ function drawPlays() {
     <button class="btn" id="ov-go-map">${icon("map", 15)} See ${esc(k.host_city)} on the map</button>
     <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.md" download>
       ${icon("download", 15)} One-pager</a>`;
-  root.querySelector("#ov-go-compare").onclick = () => ctx.goCompare(null);
+  root.querySelector("#ov-go-compare").onclick = () => ctx.goCompare(null, "playbook");
   root.querySelector("#ov-go-map").onclick = () => ctx.setTab("spatial");
 }
 
