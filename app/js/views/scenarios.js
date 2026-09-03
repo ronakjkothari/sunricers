@@ -1,11 +1,12 @@
-/* Scenarios — the intervention lab.
+/* Scenarios — the intervention lab, on one screen.
 
-   Left: a visitor-surge slider, then the levers as checkboxes grouped by when
-   they happen (before / during / match day), plus the organiser's own lever.
-   Right (sticky): a plain sentence, one bar per resource (percent cut, black
-   whisker = low–high range), who does what, a match-card box for off-map
-   levers, and the number table folded away. Above both: the levers ranked for
-   the selected city ("What helps this city").
+   Left: the levers ranked for the selected city, one row each (tick, name,
+   the cut on energy / water / CO₂e, cost tier). Right: the answer — a plain
+   sentence and one bar per resource (percent cut, black whisker = low–high
+   range). Clicking a lever's name opens its detail (what a person does, the
+   evidence, the dials, the source) under the answer, one at a time. Who does
+   what, the match card and the number table fold under "Details". The
+   organiser's own lever is typed into a pop-over, not an inline form.
 
    All arithmetic lives in ../lib/levers.js; this file only draws. Without
    data/levers.json the tab falls back to the plain surge table. */
@@ -15,19 +16,22 @@ import { icon } from "../lib/icons.js";
 import { c, METRIC_COLOR } from "../lib/palette.js";
 import { METRIC_ABS } from "../lib/stats.js";
 import {
-  RES, RES_COLOR, RES_LABEL, RES_UNIT, BUCKETS, COST_TIERS, FOOD_WASTE_CO2, CSEGS, EQUIV,
+  RES, RES_COLOR, RES_LABEL, RES_UNIT, COST_TIERS, FOOD_WASTE_CO2, CSEGS, EQUIV,
   leverById, costTier, segLabel, segWord, segmentPiles, combinedCuts, totalCut, aloneCut,
   rankLevers, buildCustomLever, customId,
 } from "../lib/levers.js";
 
 const ROWS = [["v", "Visits", "visits"], ["e", "Energy", "kWh"], ["w", "Water", "L"], ["co2", "CO₂e", "kg CO₂e"]];
+const WHEN = { before: "before the tournament", during: "during the tournament", "match day": "match day" };
 
 let root = null, ctx = null;
+let detailId = null;    // the lever whose detail is open on the right
 let CF_TRIED = false;   // errors are listed only after the first Save press, so the form does not jump while typing
 
 const byId = id => leverById(ctx.lev, id);
 const onLevers = () => [...ctx.state.levers].map(byId).filter(Boolean);
 const piles = () => segmentPiles(ctx.lev, ctx.cardsOf());
+const rank = () => rankLevers(ctx.lev, ctx.cardsOf(), ctx.cardOf(), ctx.matchesHere());
 
 /* ---------------------------------------------------------------- mount */
 
@@ -36,155 +40,225 @@ export function mount(el, context) {
   ctx = context;
   root.innerHTML = `
     <section class="card panel" style="margin-top:0">
-      <header>
-        <h2 id="sc-rankh">What helps this city</h2>
-        <span class="chip" id="sc-rankchip"></span>
-        <span class="sp"></span>
-        <span class="eyebrow">each lever alone · middle value</span>
-      </header>
-      <div class="body leverrank" id="sc-rank"></div>
-    </section>
-
-    <section class="card panel">
-      <header>
+      <header class="labhead">
         <h2>Intervention lab</h2>
         <span class="chip" id="sc-city"></span>
         <span class="sp"></span>
+        <label class="hsurge" title="Scale tournament-window visitors against the summer baseline. The percent each lever saves stays the same; the kWh and litres move.">
+          <span>Visitor surge</span>
+          <input type="range" id="sc-surge" min="1" max="2" step="0.05" value="1" aria-label="Visitor surge multiplier">
+          <b class="num" id="sc-val">1.00×</b>
+        </label>
+        <button class="btn sm" id="sc-addlever">+ Your own lever</button>
         <button class="btn sm" id="sc-showonmap">${icon("map", 14)} Show on the map</button>
-        <button class="btn sm ghost" id="sc-clear">Clear levers</button>
+        <button class="btn sm ghost" id="sc-clear">Clear</button>
       </header>
-      <div class="body">
-        <p class="note" style="margin-bottom:18px;max-width:80ch">
-          Switch levers on and watch energy, water and CO₂e move against the summer baseline. Every cut is a
-          <b>range</b> (low / middle / high) from measured studies, never one number; the percent is the trustworthy part.</p>
-        <div class="lab">
-          <div>
-            <div class="eyebrow">Visitor surge</div>
-            <p class="note">Scale tournament-window visitors against the summer baseline. Levers apply on top of it.</p>
-            <div class="slider">
-              <input type="range" id="sc-surge" min="1" max="2" step="0.05" value="1"
-                     aria-label="Visitor surge multiplier">
-              <span class="sv num" id="sc-val">1.00×</span>
-            </div>
-            <p class="note" id="sc-hint">More visitors means bigger totals; the <b>percent</b> each lever saves stays
-              the same, so the bars on the right do not move — the kWh and litres under them do.</p>
-
-            <div class="eyebrow" style="margin-top:20px">Levers</div>
-            <div class="levers" id="sc-levers"></div>
-            <div id="sc-customlab">
-              <button class="addlever" id="sc-addlever" type="button"><b>+ Add your own lever</b>
-                <span>Type what one visit saves in kWh, litres and kg CO₂e (or kg of food waste). It joins the list and
-                the map like the studied levers, tagged “your estimate”.</span></button>
-              <div id="sc-customform" hidden></div>
-            </div>
-          </div>
-          <div>
-            <div class="eyebrow" id="sc-title">What changes</div>
-            <div class="impact" id="sc-impact"></div>
+      <div class="body lab2">
+        <div class="labpick">
+          <p class="lead2" id="sc-lead"></p>
+          <div id="sc-list"></div>
+        </div>
+        <div class="labans">
+          <div class="impact" id="sc-impact"></div>
+          <div id="sc-detail" hidden></div>
+          <details class="numbers" id="sc-more"><summary>Details · who does what, the match card, the numbers</summary>
+            <div id="sc-bylever"></div>
             <div id="sc-offmap"></div>
-            <details class="numbers"><summary>The numbers behind the bars</summary>
-              <table class="stbl" id="sc-tbl"></table>
-              <p class="note" id="sc-note"></p>
-            </details>
-            <p class="note" id="sc-leversnote" style="margin-top:12px"></p>
-          </div>
+            <table class="stbl" id="sc-tbl"></table>
+            <p class="note" id="sc-note"></p>
+          </details>
         </div>
       </div>
-    </section>`;
+    </section>
+    <div class="modal" id="sc-modal" hidden><div class="modalbox" id="sc-customform"></div></div>`;
 
   const sl = root.querySelector("#sc-surge");
-  sl.oninput = () => { ctx.state.surge = +sl.value; drawSurge(); };
+  sl.oninput = () => { ctx.state.surge = +sl.value; drawAnswer(); };
   root.querySelector("#sc-showonmap").onclick = () => ctx.showOnMap();
-  root.querySelector("#sc-clear").onclick = () => { ctx.state.levers.clear(); changed(true); };
+  root.querySelector("#sc-clear").onclick = () => { ctx.state.levers.clear(); changed(); };
   root.querySelector("#sc-addlever").onclick = () => openCustomForm(null);
+  root.querySelector("#sc-modal").onclick = ev => { if (ev.target.id === "sc-modal") closeCustomForm(); };
 }
 
 export function update(context) {
   ctx = context;
   root.querySelector("#sc-surge").value = ctx.state.surge;
   root.querySelector("#sc-city").textContent = ctx.cityName();
-  drawLevers();
-  drawSurge();
+  if (detailId && !byId(detailId)) detailId = null;
+  drawList();
+  drawAnswer();
+  drawDetail();
 }
 
-/** a lever was switched on or off: redraw the numbers, tell the shell (link + map) */
-function changed(rebuildList) {
-  if (rebuildList) drawLevers();
-  else syncCards();
-  drawSurge();
+/** a lever was switched on or off: redraw, tell the shell (link + map) */
+function changed() {
+  drawList();
+  drawAnswer();
+  drawDetail();
   ctx.leversChanged();
 }
 
-/* ----------------------------------------------------------- the levers */
+/* ------------------------------------------------------- the ranked list */
 
-/** one line on a ticked card: what this lever alone does to the selected city's totals */
-function hereLine(l) {
-  const { seg, tot } = piles();
-  const a = aloneCut(l, seg, tot);
-  const parts = RES.filter(([r]) => a[r]).map(([r, label]) => `${label} −${(a[r] * 100).toFixed(1)}%`);
-  return parts.length
-    ? `In ${ctx.cityName()}: ${parts.join(" · ")}`
-    : `Touches shop types with almost no data in ${ctx.cityName()}`;
-}
-
-function drawLevers() {
-  const box = root.querySelector("#sc-levers"), LEV = ctx.lev;
-  if (!LEV) {
+function drawList() {
+  const lead = root.querySelector("#sc-lead"), box = root.querySelector("#sc-list");
+  if (!ctx.lev) {
+    lead.textContent = "";
     box.innerHTML = `<p class="note">No <code>data/levers.json</code>. Run <code>python3 scripts/build_levers.py</code>.</p>`;
-    root.querySelector("#sc-customlab").hidden = true;
     return;
   }
-  box.innerHTML = BUCKETS.map(([b, label]) => {
-    const ls = LEV.levers.filter(l => l.bucket === b);
-    return `<div class="bucket">${esc(label)}</div>` + ls.map(l => {
-      const on = ctx.state.levers.has(l.id);
-      if (l.custom) return customCardHtml(l, on);
-      const eff = l.offmap
-        ? Object.entries(l.offmap.per_fan).filter(([k]) => k !== "gal")
-            .map(([k, v]) => `${RES_LABEL[k]} <b>${v[1]}</b> ${RES_UNIT[k]} per fan (${v[0]}–${v[2]})`).join(" · ")
-        : Object.entries(l.cuts).map(([seg, cuts]) => `${LEV.segments[seg].label}: ` +
-            Object.entries(cuts).map(([k, v]) =>
-              `${RES_LABEL[k]} <b>−${(v[1] * 100).toFixed(1)}%</b> <span class="lowhigh">(${(v[0] * 100).toFixed(1)}–${(v[2] * 100).toFixed(1)})</span>`
-            ).join(", ")).join(" · ");
-      return `<label class="lever ${on ? "on" : ""}">
-        <input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""}>
-        <div>
-          <div class="lt">${esc(l.title)}<span class="ev" title="evidence grade">${esc(l.evidence)}</span></div>
-          <div class="lp">${esc(l.plain)}</div>
-          <div class="lm">${eff}</div>
-          <div class="here">${on && !l.offmap ? esc(hereLine(l)) : ""}</div>
-        </div>
-        <details><summary>evidence, dials, source</summary>
-          <div style="margin-top:4px">${esc(l.evidence_plain)}</div>
-          <div style="margin-top:4px"><b>What an organiser can turn:</b> ${l.dials.map(esc).join("; ")}.</div>
-          ${l.cost ? `<div style="margin-top:4px"><b>What it costs:</b> ${esc(l.cost)}</div>` : ""}
-          <div style="margin-top:4px"><b>Best source:</b>
-            <a href="${esc(l.best_source.u)}" target="_blank" rel="noopener">${esc(l.best_source.t)}</a>
-            · card <code>${esc(l.card)}</code> · ${esc(l.placeholder)}</div>
-        </details>
-      </label>`;
-    }).join("");
-  }).join("");
+  const { card, rows, worst, top, z, heat, ms, zWord } = rank();
+  const rl = r => RES_LABEL[r], low = r => (rl(r) === "CO₂e" ? "CO₂e" : rl(r).toLowerCase());
+  const name = esc(ctx.cityName());
+  const heatNote = heat.length
+    ? ` Heat is a driver too, so energy cuts that touch cooling matter more than the number shows.` : "";
+  lead.innerHTML = !card
+    ? `Ranked by the biggest single cut across all 11 hosts. Pick a city to rank against its own problem.`
+    : !worst
+    ? `${name} is ${zWord(z[top])} on energy, water and CO₂e, so nothing stands out; ranked by the biggest single cut.${heatNote}`
+    : `${name}'s worst of the three is <b>${rl(worst)}</b> (${zWord(z[worst])}), so levers are ranked by their ${low(worst)} cut.${heatNote}`;
+
+  const live = rows.filter(x => x.best > 1e-6), dead = rows.filter(x => !(x.best > 1e-6));
+  const tr = ({ l, cut }) => {
+    const on = ctx.state.levers.has(l.id), ct = costTier(l), tag = ct ? ct.t.split(" · ")[0] : "?";
+    const pct = r => (cut[r] > 1e-6
+      ? `<td class="num ${r === worst ? "hot" : ""}">${cut[r] < 0.0005 ? "<0.1%" : "−" + (cut[r] * 100).toFixed(1) + "%"}</td>`
+      : `<td class="num nil ${r === worst ? "hot" : ""}">—</td>`);
+    return `<tr class="${on ? "on" : ""} ${l.id === detailId ? "sel" : ""}">
+      <td class="tick"><input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""} aria-label="switch on ${esc(l.title)}"></td>
+      <td class="n"><button class="lname" data-open="${esc(l.id)}">${esc(l.title)}</button>
+        <span class="when">${esc(WHEN[l.bucket] || l.bucket)}${l.custom ? " · your estimate" : ""}${l.offmap ? " · match card" : ""}</span></td>
+      ${RES.map(([r]) => pct(r)).join("")}
+      <td class="cost" title="${esc(ct ? ct.t : "")}">${esc(tag)}</td></tr>`;
+  };
+  const head = `<thead><tr><th></th><th class="n">Lever</th>${RES.map(([r, lab]) =>
+    `<th class="num ${r === worst ? "hot" : ""}">${lab}</th>`).join("")}<th>Cost</th></tr></thead>`;
+  box.innerHTML = `<div class="tblwrap"><table class="rank">${head}<tbody>${live.map(tr).join("")}</tbody></table></div>` +
+    (dead.length ? `<details class="deadlevers" ${dead.some(x => x.l.id === detailId || ctx.state.levers.has(x.l.id)) ? "open" : ""}>
+        <summary>${dead.length} more lever${dead.length > 1 ? "s" : ""} with no measurable effect in ${name}${ms.length || !dead.some(x => x.l.offmap) ? "" : " (no fixtures here)"}</summary>
+        <div class="tblwrap"><table class="rank"><tbody>${dead.map(tr).join("")}</tbody></table></div></details>` : "") +
+    `<p class="note" style="margin-top:10px">Each cut is that lever alone, middle value, as a share of ${name}'s June–July total for that resource.
+      Click a lever for what a person does, the evidence and the range. Cost is the tier on its card.</p>`;
+
   box.querySelectorAll("input[type=checkbox]").forEach(cb => cb.onchange = () => {
     if (cb.checked) ctx.state.levers.add(cb.dataset.id); else ctx.state.levers.delete(cb.dataset.id);
-    changed(false);   // update in place: a rebuilt list would move the box under the cursor
+    changed();
   });
-  bindCustomButtons(box);
-}
-
-/** tick state and the "here" line on every card, without rebuilding the list */
-function syncCards() {
-  root.querySelectorAll("#sc-levers .lever").forEach(card => {
-    const input = card.querySelector("input"), id = input.dataset.id, l = byId(id);
-    const on = ctx.state.levers.has(id);
-    input.checked = on;
-    card.classList.toggle("on", on);
-    const h = card.querySelector(".here");
-    if (h) h.textContent = on && l && !l.offmap ? hereLine(l) : "";
+  box.querySelectorAll("[data-open]").forEach(b => b.onclick = () => {
+    detailId = detailId === b.dataset.open ? null : b.dataset.open;
+    box.querySelectorAll("tr").forEach(r => r.classList.toggle("sel", !!r.querySelector(`[data-open="${detailId}"]`)));
+    drawDetail();
   });
 }
 
 /* ------------------------------------------------------------ the answer */
+
+function drawAnswer() {
+  const k = ctx.state.surge;
+  root.querySelector("#sc-val").textContent = k.toFixed(2) + "×";
+  const tbl = root.querySelector("#sc-tbl"), note = root.querySelector("#sc-note"), impact = root.querySelector("#sc-impact");
+
+  if (!ctx.lev) {   // levers file missing: fall back to the plain surge table
+    const a = ctx.absolutes();
+    impact.innerHTML = `<div class="empty">Run <code>python3 scripts/build_levers.py</code> to enable the levers.</div>`;
+    tbl.innerHTML = `<tr><th>Resource</th><th>Baseline summer</th><th>At ${k.toFixed(2)}×</th><th>Change</th></tr>` +
+      ROWS.map(([mk, label, unit]) => {
+        const base = a[METRIC_ABS[mk]] || 0, out = base * k;
+        return `<tr><td><span class="dotc" style="background:${c(METRIC_COLOR[mk])}"></span>${label}</td>
+          <td class="num">${fmt(base)}</td><td class="num">${fmt(out)}</td>
+          <td class="num" style="color:${k > 1 ? c("--v-up") : "var(--ink-3)"}">${k > 1 ? "+" : ""}${fmt(out - base)} ${esc(unit)}</td></tr>`;
+      }).join("");
+    note.textContent = "Linear scaling only.";
+    root.querySelector("#sc-more").open = true;
+    return;
+  }
+
+  const { seg, tot } = piles();
+  const keep = combinedCuts(ctx.lev, ctx.state.levers);
+  const on = onLevers().filter(l => !l.offmap), onOff = onLevers().filter(l => l.offmap);
+  const cut = totalCut(seg, tot, keep);   // fractions: the surge cancels out
+  const axisMax = Math.max(0.05, niceMax(Math.max(...RES.map(([r]) => cut[r][2]))));
+
+  // the sentence and the bars
+  if (!on.length) {
+    impact.innerHTML = `<div class="empty">${onOff.length
+      ? "Only match-day levers are on — their numbers are under Details, on the match card."
+      : "Tick a lever on the left. The bars here show how much it cuts, and the range."}</div>`;
+  } else {
+    const moved = RES.filter(([r]) => cut[r][1] > 1e-6);
+    const still = RES.filter(([r]) => !(cut[r][1] > 1e-6)).map(([r, l]) => (r === "co2" ? l : l.toLowerCase()));
+    const parts = moved.map(([r, label, unit]) =>
+      `<b>${r === "co2" ? label : label.toLowerCase()} down ${(cut[r][1] * 100).toFixed(1)}%</b>
+       (${(cut[r][0] * 100).toFixed(1)} to ${(cut[r][2] * 100).toFixed(1)}), about ${fmt(cut[r][1] * tot[r] * k)} ${unit},
+       or ${EQUIV[r](cut[r][1] * tot[r] * k)}`);
+    const who = (on.length === 1 ? on[0].title : `${on.length} levers`) +
+      (onOff.length ? ` (plus ${onOff.length} match-day lever${onOff.length > 1 ? "s" : ""}, on the match card under Details)` : "");
+    const hl = moved.length
+      ? `${esc(who)} in ${esc(ctx.cityName())} over the summer: ${parts.join("; ")}.${still.length ? ` No measured effect on ${still.join(" or ")}.` : ""}`
+      : `${esc(who)} touch shop types that barely exist in ${esc(ctx.cityName())}'s data, so nothing moves here.`;
+    const W = 100, ink = c("--ink");
+    const bars = RES.map(([r, label, unit]) => {
+      const [lo, mid, hi] = cut[r].map(v => v / axisMax * W), col = c(RES_COLOR[r]);
+      const whisker = cut[r][2] > 1e-6 ? `
+        <line x1="${lo.toFixed(2)}" x2="${hi.toFixed(2)}" y1="11" y2="11" stroke="${ink}" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+        <line x1="${lo.toFixed(2)}" x2="${lo.toFixed(2)}" y1="7" y2="15" stroke="${ink}" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+        <line x1="${hi.toFixed(2)}" x2="${hi.toFixed(2)}" y1="7" y2="15" stroke="${ink}" stroke-width="1.2" vector-effect="non-scaling-stroke"/>` : "";
+      return `<div class="cutrow">
+        <div class="lab">${label}</div>
+        <div class="cutbar"><svg viewBox="0 0 ${W} 22" preserveAspectRatio="none">
+          <rect x="0" y="5" width="${W}" height="12" rx="2" fill="${c("--surface-3")}"/>
+          <rect x="0" y="5" width="${Math.max(0, mid).toFixed(2)}" height="12" rx="2" fill="${col}">
+            <title>${label}: −${(cut[r][1] * 100).toFixed(1)}% middle; range ${(cut[r][0] * 100).toFixed(1)}–${(cut[r][2] * 100).toFixed(1)}%</title></rect>
+          ${whisker}
+        </svg></div>
+        <div class="val">${cut[r][1] > 1e-6
+          ? `−${(cut[r][1] * 100).toFixed(1)}%<small>${fmt(cut[r][1] * tot[r] * k)} ${esc(unit)} · range ${(cut[r][0] * 100).toFixed(1)}–${(cut[r][2] * 100).toFixed(1)}%</small>`
+          : `0%<small>no measured effect</small>`}</div>
+      </div>`;
+    }).join("");
+    const ticks = [0, 0.2, 0.4, 0.6, 0.8, 1].map(f =>
+      `<span>${f ? "−" + (f * axisMax * 100).toFixed(axisMax < 0.1 ? 1 : 0) + "%" : "0"}</span>`).join("");
+    impact.innerHTML = `<div class="hl">${hl}</div>${bars}
+      <div class="axis"><span></span><div class="ticks">${ticks}</div><span></span></div>
+      <p class="note">Share of ${esc(ctx.cityName())}'s June–July total. The black whisker is the low–high range: 8 in 10 chance the truth is inside.</p>`;
+  }
+
+  // under Details: who does what, the match card, the numbers
+  const alone = on.map(l => { const out = aloneCut(l, seg, tot); return { l, out, max: Math.max(0, ...Object.values(out)) }; })
+    .sort((a, b) => b.max - a.max);
+  root.querySelector("#sc-bylever").innerHTML = alone.length ? `<div class="bylever"><h5>Who does what (each lever on its own, middle value)</h5>${
+    alone.map(({ l, out }) => `<div class="lvrow">
+      <div class="n">${esc(l.title)}<br><small>${Object.keys(l.cuts).map(sg => ctx.lev.segments[sg].label).join(", ")}</small></div>
+      <div class="bars">${RES.filter(([r]) => out[r]).map(([r, label]) =>
+        `<div class="b"><span>${label}</span><i style="--w:${Math.min(100, out[r] / axisMax * 100).toFixed(1)}%;--c:${c(RES_COLOR[r])}"></i><span>−${(out[r] * 100).toFixed(1)}%</span></div>`).join("")
+        || `<div class="b"><span></span><span style="grid-column:2/4">nothing measurable here</span></div>`}</div>
+    </div>`).join("")}
+    <p class="note">Levers on the same shop type compound, so the bars above can be a little less than the sum of these rows.</p></div>` : "";
+  root.querySelector("#sc-offmap").innerHTML = offmapHtml();
+
+  const rows = RES.map(([r, label, unit]) => {
+    const base = tot[r] * k;
+    const after = [0, 1, 2].map(i => {
+      let s = 0;
+      for (const sg in seg) s += seg[sg][r] * k * ((keep[sg] && keep[sg][r]) ? keep[sg][r][i] : 1);
+      return s;
+    });
+    const d = after.map(v => v - base), pcts = d.map(v => (base ? v / base * 100 : 0));
+    const col = d[1] < -1e-9 ? c("--c-water") : "var(--ink-3)";
+    return `<tr><td>${label}</td><td class="num">${fmt(base)}</td><td class="num">${fmt(after[1])}</td>
+      <td class="num" style="color:${col}">${d[1] <= 0 ? "" : "+"}${fmt(d[1])} ${esc(unit)}<br>
+        <span class="lowhigh">${pcts[1].toFixed(1)}% (${pcts[0].toFixed(1)} to ${pcts[2].toFixed(1)})</span></td></tr>`;
+  }).join("");
+  const visits = ctx.absolutes().visits || 0;
+  tbl.innerHTML =
+    `<tr><th>Resource</th><th>Baseline summer${k > 1 ? ` × ${k.toFixed(2)}` : ""}</th><th>With levers (middle)</th><th>Δ middle (low to high)</th></tr>${rows}
+     <tr><td>Visits</td><td class="num">${fmt(visits)}</td><td class="num">${fmt(visits * k)}</td>
+       <td class="num" style="color:var(--ink-3)">${k > 1 ? "+" + fmt(visits * (k - 1)) : "—"}</td></tr>`;
+  note.innerHTML = `Baseline is the June–July total for ${esc(ctx.cityName())} (store-visits × intensity factors, the same numbers
+    as the Overview), split into shop types by visit mix. Each lever cuts only the shop types it touches; levers on the same type
+    compound. Low and high are the 10th and 90th percentiles of each lever's simulation. The percent is what to trust; the absolute
+    kWh and litres inherit the baseline's noise. On the map the touched shops get a dark ring; match-day levers appear on the match card.`;
+}
 
 function offmapHtml() {
   const on = onLevers().filter(l => l.offmap);
@@ -207,193 +281,58 @@ function offmapHtml() {
   }).join("");
 }
 
-/** The visible answer: a sentence, one bar per resource showing the % cut (whisker = low–high), and who does what. */
-function drawImpact(seg, tot, keep, k) {
-  const box = root.querySelector("#sc-impact");
-  const on = onLevers().filter(l => !l.offmap);
-  const onOff = onLevers().filter(l => l.offmap);
-  if (!on.length) {
-    box.innerHTML = `<div class="empty">${onOff.length
-      ? "Only match-day levers are on — their numbers are in the match card below."
-      : "Switch a lever on at the left. The bars here will show how much it cuts, and the range."}</div>`;
-    return;
-  }
-  const cut = totalCut(seg, tot, keep);   // fractions: the surge cancels out
-  const axisMax = Math.max(0.05, niceMax(Math.max(...RES.map(([r]) => cut[r][2]))));
-  const moved = RES.filter(([r]) => cut[r][1] > 1e-6);
-  const still = RES.filter(([r]) => !(cut[r][1] > 1e-6)).map(([r, l]) => (r === "co2" ? l : l.toLowerCase()));
-  const parts = moved.map(([r, label, unit]) =>
-    `<b>${r === "co2" ? label : label.toLowerCase()} down ${(cut[r][1] * 100).toFixed(1)}%</b>
-     (${(cut[r][0] * 100).toFixed(1)} to ${(cut[r][2] * 100).toFixed(1)}), about ${fmt(cut[r][1] * tot[r] * k)} ${unit},
-     or ${EQUIV[r](cut[r][1] * tot[r] * k)}`);
-  const who = (on.length === 1 ? on[0].title : `${on.length} levers`) +
-    (onOff.length ? ` (plus ${onOff.length} match-day lever${onOff.length > 1 ? "s" : ""}, counted on the match card below)` : "");
-  const hl = moved.length
-    ? `${esc(who)} in ${esc(ctx.cityName())} over the summer: ${parts.join("; ")}.${still.length ? ` No measured effect on ${still.join(" or ")}.` : ""}`
-    : `${esc(who)} touch shop types that barely exist in ${esc(ctx.cityName())}'s data, so nothing moves here.`;
+/* ------------------------------------------------------- one lever's detail */
 
-  const W = 100;
-  const rows = RES.map(([r, label, unit]) => {
-    const [lo, mid, hi] = cut[r].map(v => v / axisMax * W);
-    const col = c(RES_COLOR[r]), ink = c("--ink");
-    const whisker = cut[r][2] > 1e-6 ? `
-        <line x1="${lo.toFixed(2)}" x2="${hi.toFixed(2)}" y1="11" y2="11" stroke="${ink}" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
-        <line x1="${lo.toFixed(2)}" x2="${lo.toFixed(2)}" y1="7" y2="15" stroke="${ink}" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
-        <line x1="${hi.toFixed(2)}" x2="${hi.toFixed(2)}" y1="7" y2="15" stroke="${ink}" stroke-width="1.2" vector-effect="non-scaling-stroke"/>` : "";
-    return `<div class="cutrow">
-      <div class="lab">${label}</div>
-      <div class="cutbar"><svg viewBox="0 0 ${W} 22" preserveAspectRatio="none">
-        <rect x="0" y="5" width="${W}" height="12" rx="2" fill="${c("--surface-3")}"/>
-        <rect x="0" y="5" width="${Math.max(0, mid).toFixed(2)}" height="12" rx="2" fill="${col}">
-          <title>${label}: −${(cut[r][1] * 100).toFixed(1)}% middle; range ${(cut[r][0] * 100).toFixed(1)}–${(cut[r][2] * 100).toFixed(1)}%</title></rect>
-        ${whisker}
-      </svg></div>
-      <div class="val">${cut[r][1] > 1e-6
-        ? `−${(cut[r][1] * 100).toFixed(1)}%<small>${fmt(cut[r][1] * tot[r] * k)} ${esc(unit)} · range ${(cut[r][0] * 100).toFixed(1)}–${(cut[r][2] * 100).toFixed(1)}%</small>`
-        : `0%<small>no measured effect</small>`}</div>
-    </div>`;
-  }).join("");
-  const ticks = [0, 0.2, 0.4, 0.6, 0.8, 1].map(f =>
-    `<span>${f ? "−" + (f * axisMax * 100).toFixed(axisMax < 0.1 ? 1 : 0) + "%" : "0"}</span>`).join("");
-
-  // who does what: each lever alone, on the same city pile
-  const alone = on.map(l => { const out = aloneCut(l, seg, tot); return { l, out, max: Math.max(0, ...Object.values(out)) }; })
-    .sort((a, b) => b.max - a.max);
-  const byl = alone.map(({ l, out }) => `<div class="lvrow">
-      <div class="n">${esc(l.title)}<br><small>${Object.keys(l.cuts).map(sg => ctx.lev.segments[sg].label).join(", ")}</small></div>
-      <div class="bars">${RES.filter(([r]) => out[r]).map(([r, label]) =>
-        `<div class="b"><span>${label}</span><i style="--w:${Math.min(100, out[r] / axisMax * 100).toFixed(1)}%;--c:${c(RES_COLOR[r])}"></i><span>−${(out[r] * 100).toFixed(1)}%</span></div>`).join("")
-        || `<div class="b"><span></span><span style="grid-column:2/4">nothing measurable here</span></div>`}</div>
-    </div>`).join("");
-
-  box.innerHTML = `<div class="hl">${hl}</div>${rows}
-    <div class="axis"><span></span><div class="ticks">${ticks}</div><span></span></div>
-    <div class="bylever"><h5>Who does what (each lever on its own, middle value)</h5>${byl}</div>
-    <p class="note">Bars are the cut as a share of ${esc(ctx.cityName())}'s June–July total; the black whisker is the
-      low–high range (8 in 10 chance the truth is inside). Levers on the same shop type compound, so the top bars can be a
-      little less than the sum of the rows below.</p>`;
-}
-
-function drawSurge() {
-  const k = ctx.state.surge;
-  root.querySelector("#sc-val").textContent = k.toFixed(2) + "×";
-  root.querySelector("#sc-title").textContent = `What changes · ${ctx.cityName()}`;
-  const tbl = root.querySelector("#sc-tbl"), note = root.querySelector("#sc-note");
-
-  if (!ctx.lev) {   // levers file missing: fall back to the plain surge table
-    const a = ctx.absolutes();
-    tbl.innerHTML = `<tr><th>Resource</th><th>Baseline summer</th><th>At ${k.toFixed(2)}×</th><th>Change</th></tr>` +
-      ROWS.map(([mk, label, unit]) => {
-        const base = a[METRIC_ABS[mk]] || 0, out = base * k;
-        return `<tr><td><span class="dotc" style="background:${c(METRIC_COLOR[mk])}"></span>${label}</td>
-          <td class="num">${fmt(base)}</td><td class="num">${fmt(out)}</td>
-          <td class="num" style="color:${k > 1 ? c("--v-up") : "var(--ink-3)"}">${k > 1 ? "+" : ""}${fmt(out - base)} ${esc(unit)}</td></tr>`;
-      }).join("");
-    note.textContent = "Linear scaling only.";
-    root.querySelector("#sc-impact").innerHTML = `<div class="empty">Run <code>python3 scripts/build_levers.py</code> to enable the levers.</div>`;
-    root.querySelector("#sc-rank").innerHTML = "";
-    return;
-  }
-
-  const { seg, tot } = piles();
-  const keep = combinedCuts(ctx.lev, ctx.state.levers);
-  drawImpact(seg, tot, keep, k);
-
-  const nOn = onLevers().length;
-  const rows = RES.map(([r, label, unit]) => {
-    const base = tot[r] * k;
-    const after = [0, 1, 2].map(i => {
-      let s = 0;
-      for (const sg in seg) s += seg[sg][r] * k * ((keep[sg] && keep[sg][r]) ? keep[sg][r][i] : 1);
-      return s;
-    });
-    const d = after.map(v => v - base);   // low cut = index 0 → smallest saving
-    const pcts = d.map(v => (base ? v / base * 100 : 0));
-    const col = d[1] < -1e-9 ? c("--c-water") : "var(--ink-3)";
-    return `<tr><td>${label}</td><td class="num">${fmt(base)}</td><td class="num">${fmt(after[1])}</td>
-      <td class="num" style="color:${col}">${d[1] <= 0 ? "" : "+"}${fmt(d[1])} ${esc(unit)}<br>
-        <span class="lowhigh">${pcts[1].toFixed(1)}% (${pcts[0].toFixed(1)} to ${pcts[2].toFixed(1)})</span></td></tr>`;
-  }).join("");
-  const visits = ctx.absolutes().visits || 0;
-  tbl.innerHTML =
-    `<tr><th>Resource</th><th>Baseline summer${k > 1 ? ` × ${k.toFixed(2)}` : ""}</th><th>With levers (middle)</th><th>Δ middle (low to high)</th></tr>${rows}
-     <tr><td>Visits</td><td class="num">${fmt(visits)}</td><td class="num">${fmt(visits * k)}</td>
-       <td class="num" style="color:var(--ink-3)">${k > 1 ? "+" + fmt(visits * (k - 1)) : "—"}</td></tr>`;
-  note.innerHTML = nOn
-    ? `Baseline is the June–July total for ${esc(ctx.cityName())} (store-visits × intensity factors, the same numbers as the
-       Overview tab), split into shop types by visit mix. Each lever cuts only the shop types it touches; levers on the same
-       type compound. Low and high are the 10th and 90th percentiles of each lever's simulation, combined end to end. The
-       percent is what to trust; the absolute kWh and litres inherit the baseline's noise.`
-    : `Switch a lever on to see its cut. Baseline is the June–July total for ${esc(ctx.cityName())}; a ${k.toFixed(2)}× surge scales it linearly.`;
-  root.querySelector("#sc-offmap").innerHTML = offmapHtml();
-  drawLeverRank();
-
-  const nShop = onLevers().filter(l => !l.offmap).length, nOff = nOn - nShop;
-  root.querySelector("#sc-leversnote").textContent = nOn
-    ? `${nShop ? `${nShop} shop lever${nShop > 1 ? "s" : ""}` : ""}${nShop && nOff ? " and " : ""}${nOff ? `${nOff} match-day lever${nOff > 1 ? "s" : ""}` : ""} on.
-       On the map the touched shops get a dark ring and the tiles show the after-numbers; match-day levers appear on the match card.`
-    : "";
-}
-
-/* ------------------------------------------------- what helps this city */
-
-function drawLeverRank() {
-  const box = root.querySelector("#sc-rank");
-  const { card, rows, worst, top, z, heat, ms, seats, zWord } = rankLevers(ctx.lev, ctx.cardsOf(), ctx.cardOf(), ctx.matchesHere());
-  const rl = r => RES_LABEL[r], name = esc(ctx.cityName());
-  const heatNote = heat.length
-    ? ` Heat is a driver here too (${heat.map(d => `${d.label.toLowerCase()} z +${d.z.toFixed(2)}`).join(", ")}), so energy cuts that touch cooling matter more than the number shows.`
-    : "";
-  const lead = !card
-    ? `Levers ranked by their biggest single cut across all 11 hosts. Pick a city to rank against that city's own problem.`
-    : !worst
-    ? `${name} is ${zWord(z[top])} on all three (energy z ${z.kwh.toFixed(2)}, water ${z.water.toFixed(2)}, CO₂e ${z.co2.toFixed(2)}),
-       so nothing stands out and levers are ranked by their biggest single cut.${heatNote}`
-    : `${name}'s worst of the three is <b>${rl(worst)}</b> (${zWord(z[worst])}, z ${z[worst] >= 0 ? "+" : ""}${z[worst].toFixed(2)}),
-       so levers are ranked by their ${rl(worst) === "CO₂e" ? "CO₂e" : rl(worst).toLowerCase()} cut. ` +
-      RES.filter(([r]) => r !== worst).map(([r, lab]) => `${lab}: ${zWord(z[r])}`).join("; ") + "." + heatNote;
-  const pct = (x, hot) => (x > 1e-6
-    ? `<td class="num ${hot ? "hot" : ""}">${x < 0.0005 ? "<0.1%" : "−" + (x * 100).toFixed(1) + "%"}</td>`
-    : `<td class="num ${hot ? "hot" : ""} nil">—</td>`);
-
-  root.querySelector("#sc-rankh").textContent = `What helps ${ctx.isAll() ? "all 11 hosts" : ctx.cityName()}`;
-  root.querySelector("#sc-rankchip").textContent = !card ? "ranked by biggest single cut"
-    : worst ? `ranked by ${rl(worst) === "CO₂e" ? "CO₂e" : rl(worst).toLowerCase()} cut · the worst driver here`
-    : "nothing stands out · ranked by biggest cut";
-  const tier = ct => (ct ? ct.t.split(" · ") : ["not set", ""]);
-  box.innerHTML = `<p class="lead2">${lead}</p>
-    <div class="tblwrap"><table class="rank">
-      <thead><tr><th></th><th class="n">Lever</th>${RES.map(([r, lab]) => `<th class="num ${r === worst ? "hot" : ""}">${lab}</th>`).join("")}<th>Reach</th><th>Cost</th></tr></thead>
-      <tbody>${rows.map(({ l, cut, reach }) => {
-        const on = ctx.state.levers.has(l.id), [tag, cost] = tier(costTier(l));
-        return `<tr class="${on ? "on" : ""}">
-          <td class="tick"><input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""} aria-label="switch on ${esc(l.title)}"></td>
-          <td class="n">${esc(l.title)}${l.custom ? `<span class="ev">your estimate</span>` : ""}${l.offmap ? `<span class="tag">match card</span>` : ""}</td>
-          ${RES.map(([r]) => pct(cut[r], r === worst)).join("")}
-          <td class="reach">${l.offmap ? (ms.length ? `${ms.length} fixture${ms.length > 1 ? "s" : ""} · ${full(seats)} fans` : "no fixtures here") : `${(reach * 100).toFixed(0)}% of visits`}</td>
-          <td class="cost" title="${esc(l.cost || "")}"><b>${esc(tag)}</b><small>${esc(cost)}</small></td></tr>`;
-      }).join("")}</tbody>
-    </table></div>
-    <details><summary>How this ranking works</summary>
-      <p class="note">Each cut is that lever alone, middle value, as a share of ${name}'s June–July total for that one resource;
-      the three are kept apart on purpose, because a city can be fine on energy and bad on water. Reach is the share of the
-      city's summer visits at the shops the lever touches. Match-day levers are attendance × per-fan against the same totals.
-      Cost is the tier on the lever's card; hover for the sourced figure. Not scored: whether people will accept it and what
-      lasts after the tournament. That is judgement, not data.</p></details>`;
-  box.querySelectorAll("input[type=checkbox]").forEach(cb => cb.onchange = () => {
-    if (cb.checked) ctx.state.levers.add(cb.dataset.id); else ctx.state.levers.delete(cb.dataset.id);
-    changed(false);
-  });
-}
-
-/* ------------------------------------------------------- your own lever */
-
-function customCardHtml(l, on) {
-  const c0 = l.inputs || {}, rng = v => v[0] !== v[2];
+function drawDetail() {
+  const box = root.querySelector("#sc-detail"), l = detailId && byId(detailId);
+  if (!l) { box.hidden = true; box.innerHTML = ""; return; }
+  const LEV = ctx.lev, on = ctx.state.levers.has(l.id);
+  const { seg, tot } = piles(), here = aloneCut(l, seg, tot);
+  const hereTxt = l.offmap ? "" : (RES.filter(([r]) => here[r]).map(([r, label]) => `${label} −${(here[r] * 100).toFixed(1)}%`).join(" · ")
+    || `touches shop types with almost no data in ${esc(ctx.cityName())}`);
+  const rng = v => v[0] !== v[2];
   const eff = l.offmap
-    ? Object.entries(l.offmap.per_fan).map(([k, v]) => `${RES_LABEL[k]} <b>${v[1]}</b> ${RES_UNIT[k]} per fan${rng(v) ? ` (${v[0]}–${v[2]})` : ""}`).join(" · ")
-    : Object.entries(l.cuts).map(([seg, cuts]) => `${ctx.lev.segments[seg].label}: ` + Object.entries(cuts).map(([k, v]) =>
+    ? Object.entries(l.offmap.per_fan).filter(([k]) => k !== "gal")
+        .map(([k, v]) => `${RES_LABEL[k]} <b>${v[1]}</b> ${RES_UNIT[k]} per fan${rng(v) ? ` (${v[0]}–${v[2]})` : ""}`).join(" · ")
+    : Object.entries(l.cuts).map(([sg, cuts]) => `${LEV.segments[sg].label}: ` + Object.entries(cuts).map(([k, v]) =>
         `${RES_LABEL[k]} <b>−${(v[1] * 100).toFixed(1)}%</b>${rng(v) ? ` <span class="lowhigh">(${(v[0] * 100).toFixed(1)}–${(v[2] * 100).toFixed(1)})</span>` : ""}`).join(", ")).join(" · ");
+  const custom = l.custom ? customDetailHtml(l) : `
+      <div class="dr"><b>Evidence</b> ${esc(l.evidence_plain)}</div>
+      <div class="dr"><b>What an organiser can turn</b> ${l.dials.map(esc).join("; ")}.</div>
+      ${l.cost ? `<div class="dr"><b>What it costs</b> ${esc(l.cost)}</div>` : ""}
+      <div class="dr"><b>Best source</b> <a href="${esc(l.best_source.u)}" target="_blank" rel="noopener">${esc(l.best_source.t)}</a>
+        · card <code>${esc(l.card)}</code> · ${esc(l.placeholder)}</div>`;
+  box.hidden = false;
+  box.innerHTML = `<div class="ldetail">
+    <div class="dh">
+      <label class="tch"><input type="checkbox" id="sc-dtick" ${on ? "checked" : ""}> <b>${esc(l.title)}</b></label>
+      <span class="ev${l.custom ? " mine" : ""}">${esc(l.evidence)}</span>
+      <span class="sp"></span>
+      <button class="lnk" id="sc-dclose">${icon("close", 12)} close</button>
+    </div>
+    <p class="lp">${esc(l.plain)}</p>
+    <div class="dr"><b>Per shop</b> ${eff || "no numbers"}</div>
+    ${hereTxt ? `<div class="dr"><b>In ${esc(ctx.cityName())}</b> ${hereTxt}</div>` : ""}
+    <div class="dr"><b>When</b> ${esc(WHEN[l.bucket] || l.bucket)} · <b>Owner</b> ${esc(l.owner || "you")} · <b>Cost</b> ${esc(costTier(l) ? costTier(l).t : "not set")}</div>
+    ${custom}
+  </div>`;
+  box.querySelector("#sc-dclose").onclick = () => { detailId = null; drawList(); drawDetail(); };
+  box.querySelector("#sc-dtick").onchange = ev => {
+    if (ev.target.checked) ctx.state.levers.add(l.id); else ctx.state.levers.delete(l.id);
+    changed();
+  };
+  if (l.custom) {
+    box.querySelector("[data-edit]").onclick = () => openCustomForm(l.id);
+    const del = box.querySelector("[data-del]");
+    del.onclick = () => {
+      if (!del.dataset.armed) { del.dataset.armed = "1"; del.textContent = "Sure? Delete"; return; }   // two clicks, no blocking dialog
+      deleteCustomLever(l.id);
+    };
+  }
+}
+
+function customDetailHtml(l) {
+  const c0 = l.inputs || {}, rng = v => v[0] !== v[2];
   const typedRows = (obj, word) => RES.filter(([k]) => obj && obj[k]).map(([k, lab, unit]) => {
     const food = k === "co2" && obj.co2unit === "food", v = food ? obj.co2typed : obj[k];
     return `${food ? "Food waste" : lab} <b>${v[1]}</b>${rng(v) ? ` (${v[0]}–${v[2]})` : ""} ${food ? "kg" : unit} per ${word}${food ? ` (= ${obj[k][1]} kg CO₂e)` : ""}`;
@@ -401,54 +340,36 @@ function customCardHtml(l, on) {
   const typed = c0.fans ? typedRows(c0.pf, "fan")
     : (c0.segs || []).map(seg => `${segLabel(seg)}: ${typedRows((c0.pv || {})[seg], segWord(seg)) || "nothing"}`).join(" · ");
   const usesFood = c0.fans ? (c0.pf && c0.pf.co2unit === "food") : Object.values(c0.pv || {}).some(o => o && o.co2unit === "food");
-  return `<label class="lever custom ${on ? "on" : ""}">
-    <input type="checkbox" data-id="${esc(l.id)}" ${on ? "checked" : ""}>
-    <div>
-      <div class="lt">${esc(l.title)}<span class="ev mine" title="your own estimate, not a study">your estimate</span></div>
-      <div class="lp">${esc(l.plain)}</div>
-      <div class="lm">${eff || "no numbers"}</div>
-      <div class="here">${on && !l.offmap ? esc(hereLine(l)) : ""}</div>
-    </div>
-    <details><summary>your numbers, edit, delete</summary>
-      <div style="margin-top:4px"><b>You typed:</b> ${typed}.</div>
-      <div style="margin-top:4px"><b>Cost:</b> ${esc(COST_TIERS[c0.cost ?? 1])}.</div>
-      <div style="margin-top:4px">The percent is your saving per ${c0.fans ? "fan" : "visit"}${c0.fans ? "" : " divided by what a visit uses today (<code>data/curated/intensity_factors.csv</code>)"}${usesFood ? `; food waste is counted at ${FOOD_WASTE_CO2} kg CO₂e per kg (FAO 2013)` : ""}. Saved in this browser only.</div>
-      <div class="cbtns"><button type="button" class="btn sm" data-edit="${esc(l.id)}">Edit</button><button type="button" class="btn sm ghost" data-del="${esc(l.id)}">Delete</button></div>
-    </details>
-  </label>`;
+  return `<div class="dr"><b>You typed</b> ${typed}.</div>
+    <div class="dr">The percent is your saving per ${c0.fans ? "fan" : "visit"}${c0.fans ? "" : " divided by what a visit uses today (<code>data/curated/intensity_factors.csv</code>)"}${usesFood ? `; food waste is counted at ${FOOD_WASTE_CO2} kg CO₂e per kg (FAO 2013)` : ""}. Saved in this browser only.</div>
+    <div class="cbtns"><button type="button" class="btn sm" data-edit>Edit</button><button type="button" class="btn sm ghost" data-del>Delete</button></div>`;
 }
 
-function bindCustomButtons(box) {
-  box.querySelectorAll("button[data-edit]").forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation(); openCustomForm(b.dataset.edit); });
-  box.querySelectorAll("button[data-del]").forEach(b => b.onclick = e => {
-    e.preventDefault(); e.stopPropagation();
-    if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Sure? Delete"; return; }   // two clicks, no blocking dialog
-    deleteCustomLever(b.dataset.del);
-  });
-}
+/* ------------------------------------------------------- your own lever */
 
 function deleteCustomLever(id) {
   ctx.lev.levers = ctx.lev.levers.filter(l => l.id !== id);
   ctx.state.levers.delete(id);
-  ctx.saveCustomLevers(); closeCustomForm(); changed(true);
+  if (detailId === id) detailId = null;
+  ctx.saveCustomLevers(); closeCustomForm(); changed();
 }
 
 function closeCustomForm() {
-  const f = root.querySelector("#sc-customform"); f.hidden = true; f.innerHTML = "";
-  root.querySelector("#sc-addlever").hidden = false;
+  root.querySelector("#sc-modal").hidden = true;
+  root.querySelector("#sc-customform").innerHTML = "";
 }
 
 function openCustomForm(id) {
   if (!ctx.lev) return;
   const l = id ? byId(id) : null, c0 = l && l.inputs ? l.inputs : null;
   const f = root.querySelector("#sc-customform");
-  f.innerHTML = customFormHtml(c0); f.hidden = false; CF_TRIED = false;
-  root.querySelector("#sc-addlever").hidden = true;
+  f.innerHTML = customFormHtml(c0); CF_TRIED = false;
+  root.querySelector("#sc-modal").hidden = false;
   f.oninput = () => readCustomForm(); f.onchange = () => readCustomForm();
   f.querySelector("#cf_save").onclick = saveCustomForm;
   f.querySelector("#cf_cancel").onclick = closeCustomForm;
   readCustomForm();
-  try { f.scrollIntoView({ block: "nearest", behavior: "smooth" }); if (!c0) f.querySelector("#cf_title").focus(); } catch (_) { /* fine */ }
+  try { if (!c0) f.querySelector("#cf_title").focus(); } catch (_) { /* fine */ }
 }
 
 function customFormHtml(c0) {
@@ -473,7 +394,9 @@ function customFormHtml(c0) {
   const tick = (seg, lab) => `<label class="tch"><input type="checkbox" data-seg="${seg}" ${on(seg) ? "checked" : ""}>${lab}</label>`;
   return `<div class="cform ${c0 && c0.range ? "range" : ""}">
     <input type="hidden" id="cf_id" value="${esc(c0 ? c0.id : "")}">
-    <div class="ch">${c0 ? "Edit your lever" : "Your own lever"} <span class="ev mine">your estimate</span></div>
+    <div class="ch">${c0 ? "Edit your lever" : "Your own lever"} <span class="ev mine">your estimate</span>
+      <span class="sp"></span><button type="button" class="lnk" id="cf_cancel">${icon("close", 12)} close</button></div>
+    <p class="note" style="margin:0">Type what one visit (or one fan) saves. It joins the list and the map like the studied levers, tagged “your estimate”, and is saved in this browser only.</p>
     <label class="f"><span>Name</span><input type="text" id="cf_title" maxlength="60" placeholder="e.g. Hotel water pledge" value="${esc(c0 ? c0.title : "")}"></label>
     <label class="f"><span>What a person does</span><input type="text" id="cf_plain" maxlength="160" placeholder="one plain sentence" value="${esc(c0 ? c0.plain : "")}"></label>
     <label class="f"><span>Cost</span><select id="cf_cost">${COST_TIERS.map((tt, i) => `<option value="${i}" ${(c0 ? c0.cost : 1) === i ? "selected" : ""}>${tt}</option>`).join("")}</select></label>
@@ -482,8 +405,7 @@ function customFormHtml(c0) {
     <div class="f"><span>Range</span><label class="tch"><input type="checkbox" id="cf_range" ${c0 && c0.range ? "checked" : ""}>Not sure? give a low and a high too</label></div>
     ${CSEGS.map(([s, lab, word]) => segrow(s, lab, word)).join("")}${segrow("fans", "Fans at the match", "fan")}
     <div class="err" id="cf_err"></div>
-    <div class="cta2"><button type="button" class="btn sm primary" id="cf_save">Save lever</button><button type="button" class="btn sm ghost" id="cf_cancel">Cancel</button>
-      <span class="note">Saved in this browser only, tagged “your estimate”.</span></div>
+    <div class="cta2"><button type="button" class="btn sm primary" id="cf_save">Save lever</button></div>
   </div>`;
 }
 
@@ -544,6 +466,7 @@ function saveCustomForm() {
   if (!c0.id) c0.id = customId(c0.title);
   const l = buildCustomLever(ctx.lev, c0);
   ctx.lev.levers = ctx.lev.levers.filter(x => x.id !== c0.id).concat([l]);
-  ctx.state.levers.add(c0.id); ctx.saveCustomLevers(); closeCustomForm();
-  changed(true);
+  ctx.state.levers.add(c0.id); detailId = c0.id;
+  ctx.saveCustomLevers(); closeCustomForm();
+  changed();
 }

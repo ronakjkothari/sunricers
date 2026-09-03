@@ -119,7 +119,8 @@ table.stbl th { color: var(--ink-3); font-weight: 500; font-size: 11.5px; }
 
 @media (max-width: 1180px) {
   .strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .cmpgrid, .lab { grid-template-columns: 1fr; gap: 22px; }
+  .cmpgrid, .lab, .lab2 { grid-template-columns: 1fr; gap: 22px; }
+  .labans { position: static; }
 }
 @media (max-width: 560px) {
   .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -140,33 +141,39 @@ table.stbl th { color: var(--ink-3); font-weight: 500; font-size: 11.5px; }
 }
 .play .ev.mine, .lever .ev.mine, .cform .ev, .leverrank .ev { border-color: var(--c-venue); color: var(--c-venue); }
 
-/* ---------------------------------------------------------- the levers */
-.lab > div:last-child { position: sticky; top: 12px; align-self: start; }
-.levers { display: grid; gap: 8px; }
-.lever {
-  border: 1px solid var(--line); border-radius: var(--r-1); padding: 9px 12px;
-  display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: start;
-  background: var(--surface);
-}
-.lever input { margin-top: 3px; cursor: pointer; accent-color: var(--accent); }
-.lever.on { border-color: var(--ink-2); background: var(--surface-2); }
-.lever.custom { border-style: dashed; }
-.lever .lt { font-size: 13px; font-weight: 600; }
-.lever .lp { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
-.lever .lm { font-size: 12px; color: var(--ink-2); margin-top: 3px; }
-.lever .lm b { color: var(--ink-2); font-weight: 600; }
-.lever .here { font-size: 12px; color: var(--ink); margin-top: 3px; }
-.lever .here:empty { display: none; }
-.lever a { color: var(--ink-2); }
-.lever details { grid-column: 2; font-size: 12px; color: var(--ink-2); }
-.lever details summary { padding: 2px 0; }
-.lever .cbtns { display: flex; gap: 6px; margin-top: 8px; }
-.bucket { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 4px; }
-.bucket:first-child { margin-top: 0; }
+/* ------------------------------------------------- one screen: pick | answer */
+.labhead .hsurge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-3); margin-right: 6px; }
+.labhead .hsurge input[type=range] { width: 110px; accent-color: var(--accent); cursor: pointer; }
+.labhead .hsurge b { color: var(--ink); font-size: 13px; min-width: 44px; }
+.lab2 { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.labans { position: sticky; top: 12px; }
 .lowhigh { font-size: 12px; color: var(--ink-3); }
+.deadlevers { margin-top: 6px; }
+.deadlevers summary { font-size: 12.5px; color: var(--ink-3); }
+.deadlevers table.rank td { color: var(--ink-3); }
+
+/* one lever's detail, under the answer */
+.ldetail { border: 1px solid var(--accent-line); border-radius: var(--r-1); padding: 12px 14px; margin-top: 12px; background: var(--surface-2); font-size: 12.5px; }
+.ldetail .dh { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ldetail .dh b { font-size: 14px; color: var(--ink); }
+.ldetail .dh .tch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.ldetail .dh input { margin: 0; accent-color: var(--accent); }
+.ldetail .lp { margin: 8px 0 6px; color: var(--ink-2); font-size: 13px; line-height: 1.5; }
+.ldetail .dr { margin-top: 5px; color: var(--ink-2); line-height: 1.5; }
+.ldetail .dr b { color: var(--ink); font-weight: 600; margin-right: 4px; }
+.ldetail a { color: var(--accent); }
+.ldetail .cbtns { display: flex; gap: 6px; margin-top: 10px; }
+.ldetail .lnk, .cform .ch .lnk { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+.cform .ch { display: flex; align-items: center; gap: 8px; }
+.cform .ch .sp { flex: 1; }
+
+/* the pop-over for the organiser's own lever */
+.modal { position: fixed; inset: 0; z-index: 90; background: rgba(28, 25, 23, 0.45); display: grid; place-items: center; padding: 20px; }
+.modal[hidden] { display: none; }
+.modalbox { width: min(720px, 100%); max-height: 90vh; overflow-y: auto; border-radius: var(--r-3); box-shadow: var(--sh-4); }
 
 /* ---------------------------------------------------------- the answer */
-.impact { border: 1px solid var(--line); border-radius: var(--r-1); padding: 12px 14px; margin-top: 10px; }
+.impact { border: 1px solid var(--line); border-radius: var(--r-1); padding: 12px 14px; }
 .impact .hl { font-size: 15px; line-height: 1.45; color: var(--ink); }
 .impact .hl b { font-weight: 600; }
 .impact .empty { padding: 18px 0; }
@@ -199,16 +206,21 @@ table.stbl th { color: var(--ink-3); font-weight: 500; font-size: 11.5px; }
 table.rank { border-collapse: collapse; width: 100%; font-size: 13px; }
 table.rank th, table.rank td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; text-align: left; }
 table.rank th { color: var(--ink-3); font-weight: 500; font-size: 11.5px; white-space: nowrap; }
-table.rank th.num, table.rank td.num { text-align: right; font-variant-numeric: tabular-nums; width: 84px; }
+table.rank th.num, table.rank td.num { text-align: right; font-variant-numeric: tabular-nums; width: 72px; }
 table.rank td.tick { width: 28px; padding-right: 0; }
 table.rank td.tick input { margin: 0; display: block; cursor: pointer; accent-color: var(--accent); }
-table.rank td.n { font-weight: 500; min-width: 200px; }
+table.rank td.n { min-width: 180px; }
+table.rank .lname { background: none; border: 0; padding: 0; font: 500 13px/1.3 var(--font); color: var(--ink); cursor: pointer; text-align: left; }
+table.rank .lname:hover { color: var(--accent); text-decoration: underline; }
+table.rank .when { display: block; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+table.rank tr.sel td { background: var(--accent-soft); }
+table.rank tr.sel td.hot { background: color-mix(in srgb, var(--c-venue) 22%, transparent); }
 table.rank th.hot, table.rank td.hot { background: color-mix(in srgb, var(--c-venue) 14%, transparent); color: var(--ink); font-weight: 600; }
 table.rank td.nil { color: var(--ink-3); font-weight: 400; }
 table.rank tr.on td { background: color-mix(in srgb, var(--accent) 7%, transparent); }
 table.rank tr.on td.hot { background: color-mix(in srgb, var(--c-venue) 22%, transparent); }
 table.rank td.reach { color: var(--ink-2); white-space: nowrap; width: 150px; }
-table.rank td.cost { color: var(--ink-2); min-width: 220px; }
+table.rank td.cost { color: var(--ink); font-weight: 600; white-space: nowrap; width: 48px; cursor: help; }
 table.rank td.cost b { color: var(--ink); font-weight: 600; margin-right: 6px; }
 table.rank td.cost small { color: var(--ink-3); font-size: 12px; }
 table.rank .tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: var(--r-pill); border: 1px solid var(--line); color: var(--ink-3); margin-left: 6px; vertical-align: 1px; }

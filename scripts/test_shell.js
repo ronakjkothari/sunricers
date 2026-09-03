@@ -295,8 +295,8 @@ async function main() {
   ok("the map frame gets levers, custom levers and reports its height",
     /setLevers/.test(spSrc) && /setCustomLevers/.test(spSrc) && /__frameHeight/.test(spSrc));
   const scSrc = fs.readFileSync(path.join(APP, "js/views/scenarios.js"), "utf8");
-  ok("scenarios draws levers, the ranking and the custom form",
-    /drawLevers/.test(scSrc) && /drawLeverRank/.test(scSrc) && /customFormHtml/.test(scSrc));
+  ok("scenarios draws the ranked list, the answer, a lever's detail and the custom form",
+    /drawList/.test(scSrc) && /drawAnswer/.test(scSrc) && /drawDetail/.test(scSrc) && /customFormHtml/.test(scSrc));
   const cmSrc = fs.readFileSync(path.join(APP, "js/views/compare.js"), "utf8");
   ok("compare's plays come from levers.json", /rankLevers/.test(cmSrc) && /levers\.json/.test(cmSrc));
   const ovSrc = fs.readFileSync(path.join(APP, "js/views/overview.js"), "utf8");
