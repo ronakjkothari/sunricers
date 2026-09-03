@@ -76,8 +76,13 @@
   .cform .segrow { border-top:1px solid var(--grid); padding-top:8px; }
   .cform .segrow[hidden] { display:none; }
   .cform .sh { font-weight:600; margin-bottom:2px; }
-  .cform .cols, .cform .pvr { display:grid; grid-template-columns:76px 72px 72px 72px 1fr; gap:6px; align-items:center; }
-  .cform:not(.range) .cols, .cform:not(.range) .pvr { grid-template-columns:76px 72px 1fr; }
+  .cform .cols, .cform .pvr { display:grid; grid-template-columns:76px 72px 72px 72px minmax(120px,1fr); gap:6px; align-items:center; }
+  .cform:not(.range) .cols, .cform:not(.range) .pvr { grid-template-columns:76px 72px 120px 1fr; }
+  /* with a range there is no room for the hint beside the boxes, so it goes on its own line under them */
+  .cform.range .pvr .base { grid-column:2 / -1; }
+  .cform.range .cols > span:last-child { display:none; }
+  .cform .pvr span.un { color:var(--ink-2); font-size:12px; }
+  .cform .pvr select.un { width:100%; font:inherit; font-size:12px; color:var(--ink-1); background:var(--plane); border:1px solid var(--hairline); border-radius:6px; padding:5px 4px; }
   .cform:not(.range) .onlyrange, .cform:not(.range) .pvr input.lo, .cform:not(.range) .pvr input.hi { display:none; }
   .cform .cols { font-size:10px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
   .cform .pvr { margin-top:4px; }
@@ -221,7 +226,7 @@
           <h4 style="margin:18px 0 4px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">Levers</h4>
           <div class="levers" id="levers"><div class="note">Loading <code>data/levers.json</code>…</div></div>
           <div id="customlab">
-            <button class="addlever" id="addlever" type="button"><b>+ Add your own lever</b><span>Type what one visit saves in kWh, litres, kg CO₂e or kg of food waste. It joins the list and the map like the studied levers, tagged “your estimate”.</span></button>
+            <button class="addlever" id="addlever" type="button"><b>+ Add your own lever</b><span>Type what one visit saves in kWh, litres and kg CO₂e (or kg of food waste). It joins the list and the map like the studied levers, tagged “your estimate”.</span></button>
             <div id="customform" hidden></div>
           </div>
         </div>
@@ -1033,14 +1038,14 @@ function drawSurge() {
 }
 
 // --- Your own lever ----------------------------------------------------------
-// An organiser types a saving per visit (kWh, litres, kg CO₂e, kg food waste) for each shop type an idea
+// An organiser types a saving per visit (kWh, litres, kg CO₂e; food waste is typed in kg and converted) for each shop type an idea
 // touches, or per fan for a stadium idea. Dividing by the per-visit factor in data/curated/intensity_factors.csv
 // turns it into the same [low, mid, high] fraction the studied levers use, so compounding, bars, the map's
 // rings and the match card are all shared. Kept in this browser only, tagged "your estimate".
 const CUSTOM_KEY = "pulse_custom_levers";
 const FOOD_WASTE_CO2 = 2.5;   // kg CO₂e per kg of wasted food (FAO, Food Wastage Footprint, 2013)
 const CSEGS = [["restaurant","Restaurants","visit"], ["grocery","Grocery & convenience","visit"], ["hotel","Hotels","stay"], ["venue","Venues","visit"]];
-const CRES = [["kwh","Energy","kWh"], ["water","Water","L"], ["co2","CO₂e","kg CO₂e"], ["food","Food waste","kg"]];
+const CRES = [["kwh","Energy","kWh"], ["water","Water","L"], ["co2","CO₂e","kg CO₂e"]];
 const customLevers = () => LEV ? LEV.levers.filter(l => l.custom) : [];
 let CF_TRIED = false;   // errors are listed only after the first Save press, so the form does not jump while typing
 function loadCustomInputs() {
@@ -1049,7 +1054,6 @@ function loadCustomInputs() {
 }
 function saveCustomLevers() { try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(customLevers())); } catch (_) {} }
 function mergeCustomLevers() { LEV.levers = LEV.levers.filter(l => !l.custom).concat(loadCustomInputs().map(buildCustomLever)); }
-const addTri = (a, b, m) => [0,1,2].map(i => (a ? a[i] : 0) + m * (b ? b[i] : 0));
 const segLabel = seg => (CSEGS.find(s => s[0] === seg) || [seg, seg])[1];
 const segWord = seg => seg === "fans" ? "fan" : (CSEGS.find(s => s[0] === seg) || [0, 0, "visit"])[2];
 
@@ -1061,8 +1065,8 @@ function buildCustomLever(c) {
   if (c.fans) {
     const pf = c.pf || {}, per = {};
     if (pf.kwh) per.kwh = pf.kwh; if (pf.water) per.water = pf.water;
-    if (pf.co2 || pf.food) per.co2 = addTri(pf.co2, pf.food, FOOD_WASTE_CO2);
-    l.offmap = { per_fan: per, unit_note: "per attending fan, your estimate" + (pf.food ? `; food waste counted at ${FOOD_WASTE_CO2} kg CO₂e per kg` : "") };
+    if (pf.co2) per.co2 = pf.co2;   // already in kg CO₂e (food waste was converted when typed)
+    l.offmap = { per_fan: per, unit_note: "per attending fan, your estimate" + (pf.co2unit === "food" ? `; food waste counted at ${FOOD_WASTE_CO2} kg CO₂e per kg` : "") };
   } else {
     l.cuts = {};
     for (const seg of (c.segs || [])) {
@@ -1070,7 +1074,7 @@ function buildCustomLever(c) {
       const f = s.factor, pv = (c.pv || {})[seg] || {}, cuts = {};
       if (pv.kwh) cuts.kwh = pv.kwh.map(x => Math.min(1, x / f.kwh));
       if (pv.water) cuts.water = pv.water.map(x => Math.min(1, x / f.water));
-      if (pv.co2 || pv.food) cuts.co2 = addTri(pv.co2, pv.food, FOOD_WASTE_CO2).map(x => Math.min(1, x / f.co2));
+      if (pv.co2) cuts.co2 = pv.co2.map(x => Math.min(1, x / f.co2));
       if (Object.keys(cuts).length) l.cuts[seg] = cuts;
     }
   }
@@ -1084,7 +1088,9 @@ function customCardHtml(l, on) {
     ? Object.entries(l.offmap.per_fan).map(([k, v]) => `${rname(k)} <b>${v[1]}</b> ${runit(k)} per fan${rng(v) ? ` (${v[0]}–${v[2]})` : ""}`).join(" · ")
     : Object.entries(l.cuts).map(([seg, cuts]) => `${LEV.segments[seg].label}: ` + Object.entries(cuts).map(([k, v]) =>
         `${rname(k)} <b>−${(v[1]*100).toFixed(1)}%</b>${rng(v) ? ` <span class="lowhigh">(${(v[0]*100).toFixed(1)}–${(v[2]*100).toFixed(1)})</span>` : ""}`).join(", ")).join(" · ");
-  const typedRows = (obj, word) => CRES.filter(([k]) => obj && obj[k]).map(([k, lab, unit]) => `${lab} <b>${obj[k][1]}</b>${rng(obj[k]) ? ` (${obj[k][0]}–${obj[k][2]})` : ""} ${unit} per ${word}`).join(", ");
+  const typedRows = (obj, word) => CRES.filter(([k]) => obj && obj[k]).map(([k, lab, unit]) => {
+    const food = k === "co2" && obj.co2unit === "food", v = food ? obj.co2typed : obj[k];
+    return `${food ? "Food waste" : lab} <b>${v[1]}</b>${rng(v) ? ` (${v[0]}–${v[2]})` : ""} ${food ? "kg" : unit} per ${word}${food ? ` (= ${obj[k][1]} kg CO₂e)` : ""}`; }).join(", ");
   const typed = c.fans ? typedRows(c.pf, "fan")
     : (c.segs || []).map(seg => `${segLabel(seg)}: ${typedRows((c.pv || {})[seg], segWord(seg)) || "nothing"}`).join(" · ");
   return `<label class="lever custom ${on ? "on" : ""}">
@@ -1097,7 +1103,7 @@ function customCardHtml(l, on) {
     </div>
     <details><summary>your numbers, edit, delete</summary>
       <div style="margin-top:4px"><b>You typed:</b> ${typed}.</div>
-      <div style="margin-top:4px">The percent is your saving per ${c.fans ? "fan" : "visit"}${c.fans ? "" : " divided by what a visit uses today (<code>data/curated/intensity_factors.csv</code>)"}${(c.fans ? c.pf && c.pf.food : Object.values(c.pv || {}).some(o => o && o.food)) ? `; food waste is counted at ${FOOD_WASTE_CO2} kg CO₂e per kg (FAO 2013)` : ""}. Saved in this browser only.</div>
+      <div style="margin-top:4px">The percent is your saving per ${c.fans ? "fan" : "visit"}${c.fans ? "" : " divided by what a visit uses today (<code>data/curated/intensity_factors.csv</code>)"}${(c.fans ? c.pf && c.pf.co2unit === "food" : Object.values(c.pv || {}).some(o => o && o.co2unit === "food")) ? `; food waste is counted at ${FOOD_WASTE_CO2} kg CO₂e per kg (FAO 2013)` : ""}. Saved in this browser only.</div>
       <div class="cbtns"><button type="button" class="btn small" data-edit="${esc(l.id)}">Edit</button><button type="button" class="btn small" data-del="${esc(l.id)}">Delete</button></div>
     </details>
   </label>`;
@@ -1130,16 +1136,21 @@ function openCustomForm(id) {
 }
 function customFormHtml(c) {
   const v = (arr, i) => (arr && arr[i] != null) ? arr[i] : "";
-  const row = (seg, [r, lab], word) => {
-    const arr = seg === "fans" ? (c && c.pf ? c.pf[r] : null) : (c && c.pv && c.pv[seg] ? c.pv[seg][r] : null);
+  const row = (seg, [r, lab, unit], word) => {
+    const o = seg === "fans" ? (c && c.pf) : (c && c.pv && c.pv[seg]);
+    const food = r === "co2" && o && o.co2unit === "food";
+    const arr = o ? (food ? o.co2typed : o[r]) : null;
+    const un = r === "co2"
+      ? `<select class="un" aria-label="CO₂e unit"><option value="co2">kg CO₂e</option><option value="food" ${food ? "selected" : ""}>kg food waste</option></select>`
+      : `<span class="un">${unit}</span>`;
     return `<div class="pvr" data-seg="${seg}" data-r="${r}"><span class="rl">${lab}</span>
       <input type="number" min="0" step="any" class="lo" value="${v(arr,0)}" placeholder="low" aria-label="${lab} low">
       <input type="number" min="0" step="any" class="mid" value="${v(arr,1)}" placeholder="0" aria-label="${lab} saved per ${word}">
       <input type="number" min="0" step="any" class="hi" value="${v(arr,2)}" placeholder="high" aria-label="${lab} high">
-      <span class="base"></span></div>`;
+      ${un}<span class="base"></span></div>`;
   };
   const segrow = (seg, title, word) => `<div class="segrow" data-seg="${seg}" hidden><div class="sh">${title} · what one ${word} saves</div>
-    <div class="cols"><span></span><span class="onlyrange">low</span><span>your guess</span><span class="onlyrange">high</span><span>what a ${word} ${seg === "fans" ? "does" : "uses"} today</span></div>
+    <div class="cols"><span></span><span class="onlyrange">low</span><span>your guess</span><span class="onlyrange">high</span><span></span><span>what a ${word} ${seg === "fans" ? "does" : "uses"} today</span></div>
     ${CRES.map(r => row(seg, r, word)).join("")}</div>`;
   const on = seg => c && (seg === "fans" ? c.fans : (c.segs || []).includes(seg));
   const tick = (seg, lab) => `<label class="tch"><input type="checkbox" data-seg="${seg}" ${on(seg) ? "checked" : ""}>${lab}</label>`;
@@ -1176,8 +1187,9 @@ function readCustomForm() {
     const seg = row.dataset.seg, r = row.dataset.r; if (!segs.includes(seg)) return;
     const [, lab, unit] = CRES.find(x => x[0] === r), word = segWord(seg), plural = word + "s";
     const f = seg === "fans" ? null : LEV.segments[seg].factor;
-    const fr = f ? (r === "food" ? f.co2 : f[r]) : null;   // what a visit uses today; food waste is compared in CO₂e
-    const baseTxt = f ? (r === "food" ? `≈${f.co2} kg CO₂e of food; 1 kg waste = ${FOOD_WASTE_CO2} kg CO₂e` : `≈${fr} ${unit}`) : "no shop baseline for fans";
+    const unitSel = row.querySelector("select.un"), food = !!unitSel && unitSel.value === "food";   // CO₂e typed as kg of food waste
+    const fr = f ? f[r] : null;   // what a visit uses today, always in the resource's own unit
+    const baseTxt = f ? `≈${fr} ${unit}${food ? `; 1 kg waste ≈ ${FOOD_WASTE_CO2} kg CO₂e` : ""}` : (food ? `1 kg waste ≈ ${FOOD_WASTE_CO2} kg CO₂e; no shop baseline for fans` : "no shop baseline for fans");
     const base = row.querySelector(".base"); row.querySelectorAll("input").forEach(i => i.classList.remove("bad"));
     const mid = num(row.querySelector(".mid")), lo0 = num(row.querySelector(".lo")), hi0 = num(row.querySelector(".hi"));
     if (mid === null && (!range || (lo0 === null && hi0 === null))) { base.innerHTML = baseTxt; return; }
@@ -1185,22 +1197,21 @@ function readCustomForm() {
     const lo = range && lo0 !== null ? lo0 : mid, hi = range && hi0 !== null ? hi0 : mid, tri = [lo, mid, hi];
     if (tri.some(x => Number.isNaN(x) || x < 0)) { errors.push(`${lab} for ${plural}: numbers must be zero or more.`); row.querySelector(".mid").classList.add("bad"); base.innerHTML = baseTxt; return; }
     if (!(lo <= mid && mid <= hi)) { errors.push(`${lab} for ${plural}: low ≤ middle ≤ high.`); row.querySelectorAll(".lo,.hi").forEach(i => i.classList.add("bad")); }
-    const eq = r === "food" ? tri.map(x => x * FOOD_WASTE_CO2) : tri;
+    const eq = food ? tri.map(x => x * FOOD_WASTE_CO2) : tri;
     let pct = "";
     if (fr) {
       const p = eq[1] / fr;
       pct = ` → <b>−${(p*100).toFixed(1)}%</b>` + (range && hi !== lo ? ` (${(eq[0]/fr*100).toFixed(1)}–${(eq[2]/fr*100).toFixed(1)})` : "");
-      if (eq[2] > fr) { errors.push(`${lab} for ${plural}: a ${word} only ${r === "food" ? "makes" : "uses"} ${fr} ${r === "food" ? "kg CO₂e" : unit}, you cannot save more than that.`); row.querySelector(eq[1] > fr ? ".mid" : ".hi").classList.add("bad"); }
+      if (eq[2] > fr) { errors.push(`${lab} for ${plural}: a ${word} only makes ${fr} ${unit}${food ? ` (that is ${(fr / FOOD_WASTE_CO2).toFixed(1)} kg of food)` : ""}, you cannot save more than that.`); row.querySelector(eq[1] > fr ? ".mid" : ".hi").classList.add("bad"); }
       else if (p > 0.5) warns.push(`${lab} for ${plural}: −${(p*100).toFixed(0)}% is a very big cut, be sure.`);
     }
     base.innerHTML = baseTxt + pct;
     any++;
-    (seg === "fans" ? c.pf : (c.pv[seg] ||= {}))[r] = tri;
+    const o = seg === "fans" ? c.pf : (c.pv[seg] ||= {});
+    o[r] = eq;   // stored in the resource's own unit
+    if (r === "co2") { o.co2unit = food ? "food" : "co2"; o.co2typed = tri; }
   });
   if (segs.length && !any) errors.push("Type at least one saving.");
-  for (const seg of shopSegs) { const pv = c.pv[seg];
-    if (pv && pv.co2 && pv.food && addTri(pv.co2, pv.food, FOOD_WASTE_CO2)[2] > LEV.segments[seg].factor.co2)
-      errors.push(`${segLabel(seg)}: CO₂e plus food waste is more than a visit makes (${LEV.segments[seg].factor.co2} kg CO₂e).`); }
   q("#cf_err").innerHTML = (CF_TRIED ? errors.map(e => `<div>${esc(e)}</div>`).join("") : "") + warns.map(w => `<div class="warn">${esc(w)}</div>`).join("");
   return { c, errors };
 }
