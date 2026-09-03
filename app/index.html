@@ -72,6 +72,8 @@
   .leverrank .ev { display:inline-block; font-size:10px; font-weight:500; padding:1px 6px; border-radius:999px; border:1px solid var(--s-venue); color:var(--s-venue); margin-left:4px; }
   .leverrank input { margin:0; cursor:pointer; }
   .leverrank .note { margin:6px 0 4px; }
+  .playcard .ev { display:inline-block; font-size:10px; font-weight:500; padding:1px 6px; border-radius:999px; border:1px solid var(--hairline); color:var(--ink-muted); vertical-align:2px; }
+  .playcard .ev.mine { border-color:var(--s-venue); color:var(--s-venue); }
   /* your own lever: the add/edit form and the "your estimate" card */
   #customlab { margin-top:12px; }
   .addlever { display:block; width:100%; text-align:left; font:inherit; cursor:pointer; color:var(--ink-1); background:var(--surface-1);
@@ -322,7 +324,7 @@ Promise.all([
   Promise.all([opt("data/levers.json"), opt("data/matches.json")]).then(([lev, mt]) => {
     LEV = lev; MATCHES = mt || [];
     if (LEV) mergeCustomLevers();
-    readLeversHash(); drawLevers(); drawSurge(); pushToFrame();
+    readLeversHash(); drawLevers(); drawSurge(); pushToFrame(); drawCompare(); drawCta();
   });
 }).catch(err => {
   document.getElementById("kpis").innerHTML =
@@ -648,9 +650,10 @@ function drawStruct() {
 
 function drawCta() {
   const c = cardOf();
+  const nPlays = c ? (LEV ? rankLevers().pressing.length : c.recommended_plays.length) : 0;
   document.getElementById("ctalead").innerHTML = c
     ? `<b>${esc(c.host_city)}</b> ranks #${c.rank} of ${C.scorecards.length} on summer resource pressure, with
-       ${c.recommended_plays.length} pressing play${c.recommended_plays.length === 1 ? "" : "s"} on the board.`
+       ${nPlays} pressing play${nPlays === 1 ? "" : "s"} on the board.`
     : `Pick a host city to open its playbook, or compare all 11 side by side.`;
 }
 
@@ -729,6 +732,7 @@ function drawCompare() {
     </div>`;
   left.querySelectorAll("[data-peer]").forEach(b => b.onclick = () => setCity(b.dataset.peer));
 
+  if (LEV) { drawLeverPlays(right, c); return; }
   const plays = c.recommended_plays || [], gen = c.general_options || [];
   right.innerHTML =
     `<div style="font-size:13px;color:var(--ink-2)">Recommended plays for ${esc(c.host_city)}, matched to elevated drivers.
@@ -743,6 +747,38 @@ function drawCompare() {
            <div style="margin-top:9px">${gen.map(playCard).join("")}</div></details>`
       : "");
   right.querySelectorAll("[data-peer]").forEach(b => b.onclick = () => setCity(b.dataset.peer));
+}
+
+/** the Compare tab's plays are the lab's levers, ranked exactly as the lab ranks them */
+function drawLeverPlays(right, c) {
+  const R = rankLevers(), rl = r => RES.find(x => x[0] === r)[1];
+  const rest = R.rows.filter(x => !R.pressing.includes(x));
+  const why = R.worst
+    ? `<b>${rl(R.worst)}</b> is ${esc(c.host_city)}'s worst driver (${R.zWord(R.z[R.worst])}, z ${R.z[R.worst] >= 0 ? "+" : ""}${R.z[R.worst].toFixed(2)}), so plays that cut it come first.`
+    : `${esc(c.host_city)} is about average on energy, water and CO₂e, so nothing stands out and the biggest single cut comes first.`;
+  right.innerHTML =
+    `<div style="font-size:13px;color:var(--ink-2)">Plays for ${esc(c.host_city)} are the intervention lab's levers (<code>data/levers.json</code>, measured studies, not placeholders). ${why}
+       Effects are each lever alone, middle value, on this city's June–July totals; ranges and sources are in the lab.${R.heat.length ? ` Heat is a driver here (${R.heat.map(d => `${d.label.toLowerCase()} z +${d.z.toFixed(2)}`).join(", ")}), so energy cuts that touch cooling matter more than the number shows.` : ""}</div>` +
+    (R.pressing.length
+      ? R.pressing.map(x => leverPlayCard(x, R)).join("")
+      : `<div class="empty" style="margin-top:10px">No lever cuts ${rl(R.worst)} here.</div>`) +
+    (rest.length
+      ? `<details style="margin-top:6px"><summary style="cursor:pointer;font-size:12px;color:var(--ink-2)">${rest.length} more lever${rest.length === 1 ? "" : "s"} (${R.worst ? `no ${rl(R.worst) === "CO₂e" ? "CO₂e" : rl(R.worst).toLowerCase()} cut` : "no measurable cut"} in ${esc(c.host_city)})</summary>
+           <div style="margin-top:9px">${rest.map(x => leverPlayCard(x, R)).join("")}</div></details>`
+      : "");
+  right.querySelectorAll("[data-lab]").forEach(b => b.onclick = () => { state.levers.add(b.dataset.lab); drawLevers(); drawSurge(); pushToFrame(); setTab("scenarios"); });
+}
+function leverPlayCard(x, R) {
+  const { l, cut, reach } = x, ct = costTier(l);
+  const eff = RES.filter(([r]) => cut[r] > 1e-6).map(([r, lab, u]) =>
+    `<span title="this lever alone, middle value; range in the lab"><b>${lab}</b> ${cut[r] < 0.0005 ? "<0.1" : "−" + (cut[r]*100).toFixed(1)}% · ${fmt(cut[r]*R.tot[r])} ${u}</span>`).join("");
+  const when = { before:"before the tournament", during:"during the tournament", "match day":"match day, on the match card" }[l.bucket] || l.bucket;
+  return `<div class="playcard">
+    <div class="pt">${esc(l.title)} <span class="ev${l.custom ? " mine" : ""}">${esc(l.evidence)}</span></div>
+    <div class="meta"><span>Owner: ${esc(l.owner || "you")}</span><span>Cost: <b>${esc(ct ? ct.t : "not set")}</b></span><span>When: ${esc(when)}</span></div>
+    <div class="eff">${eff || `<span>No measurable cut in ${esc(cityName())}</span>`}</div>
+    <div class="why">${esc(l.plain)} ${l.offmap ? `Attendance × per fan over ${R.ms.length} fixture${R.ms.length === 1 ? "" : "s"} here (${full(R.seats)} fans).` : `Reaches ${(reach*100).toFixed(0)}% of the city's summer visits.`}</div>
+    <div class="steal"><button class="lnk" data-lab="${esc(l.id)}">Try it in the lab ↗</button></div></div>`;
 }
 
 function playCard(p) {
@@ -1268,9 +1304,8 @@ function segmentVisits() {
   });
   return { v, all };
 }
-function drawLeverRank() {
-  const box = document.getElementById("leverrank"); if (!box) return;
-  if (!LEV || !C) { box.innerHTML = ""; return; }
+/** the one ranking both the lab table and the Compare tab's plays read */
+function rankLevers() {
   const c = cardOf();
   const { seg, tot } = segmentPiles(); const { v: sv, all: allV } = segmentVisits();
   const ms = MATCHES.filter(m => isAll() || m.m === state.city); const seats = ms.reduce((s, m) => s + (m.a || m.cap || 0), 0);
@@ -1289,6 +1324,13 @@ function drawLeverRank() {
   });
   rows.sort((a, b) => (worst ? (b.cut[worst] - a.cut[worst]) : 0) || (b.best - a.best));
   const zWord = zz => zz == null ? "" : Math.abs(zz) < 0.25 ? "about average" : zz > 0.75 ? "well above the other hosts" : zz > 0 ? "above the other hosts" : zz < -0.75 ? "well below the other hosts" : "below the other hosts";
+  const pressing = worst ? rows.filter(x => x.cut[worst] > 1e-6) : rows.filter(x => x.best > 1e-6);
+  return { c, rows, pressing, worst, top, z, heat, ms, seats, tot, zWord };
+}
+function drawLeverRank() {
+  const box = document.getElementById("leverrank"); if (!box) return;
+  if (!LEV || !C) { box.innerHTML = ""; return; }
+  const { c, rows, worst, top, z, heat, ms, seats, zWord } = rankLevers();
   const rl = r => RES.find(x => x[0] === r)[1];
   const lead = !c
     ? `Levers ranked by their biggest single cut across all 11 hosts. Pick a city to rank against that city's own problem.`

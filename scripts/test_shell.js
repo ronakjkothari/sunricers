@@ -163,7 +163,7 @@ function run() {
   drew("struct", "Visit mix", "Busiest brands", "mixbar");
   drew("strip", "readiness", "card");
   drew("cmpleft", "Pressure drivers", "city_cards/", "per shop-month");
-  drew("cmpright", "playcard", "Owner:", "Effort:");
+  drew("cmpright", "playcard", "Owner:", "Cost:");   // plays are the lab's levers now
   drew("surgetbl", "Baseline summer");
   drew("levers", "lever");
   drew("drvfilter", "All hosts");
@@ -191,10 +191,8 @@ function run() {
   cities.forEach(city => {
     state.city = city; renderAll();
     const html = lastWrite("cmpright");
-    const plays = BY[city].recommended_plays.length, gen = BY[city].general_options.length;
-    const showsPlays = plays > 0 ? html.includes("playcard") : html.includes("No pressing plays");
-    const showsGen = gen > 0 ? html.includes("general option") : !html.includes("general option");
-    check(showsPlays && showsGen, `${city}: ${plays} plays / ${gen} general options render correctly`);
+    const n = (html.match(/class="playcard/g) || []).length;   // every lever renders, pressing or folded away
+    check(n > 0 && html.includes("levers.json"), `${city}: ${n} plays from levers.json render`);
   });
 
   section("Spatial wiring (the pop-out and the iframe must agree with the shell)");
