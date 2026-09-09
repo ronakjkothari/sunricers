@@ -442,10 +442,13 @@
 /* --- what sits under the map ------------------------------------------ */
 .mapdetail {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--sp-4);
   margin-top: var(--sp-4);
 }
+/* the intervention lab is built as one full-width screen (ranked list | answer);
+   beside the day chart it wrapped its own header and overlapped its columns */
+.mapdetail > #sp-lab { grid-column: 1 / -1; }
 
 .applyrow {
   display: grid;

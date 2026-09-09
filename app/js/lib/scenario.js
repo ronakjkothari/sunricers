@@ -88,7 +88,8 @@ const CUT_METRIC = { kwh: "e", water: "w", co2: "co2" };
  */
 export function buildMapLeversFromLab(LEV) {
   if (!LEV || !Array.isArray(LEV.levers)) return [];
-  return LEV.levers.filter(l => !l.offmap && !l.custom).map(l => {
+  // custom levers ride along: they carry the same shop types and cuts as the studied ones
+  return LEV.levers.filter(l => !l.offmap).map(l => {
     const layers = [...new Set((l.touches || []).map(s => SEG_LAYER[s]).filter(Boolean))];
     const scope = LAB_SCOPE[l.id] || (layers.length ? { layers, note: layers.join(", ") } : { note: "citywide" });
     const effect = { c: 0, e: 0, w: 0, co2: 0 };

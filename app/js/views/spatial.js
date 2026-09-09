@@ -175,7 +175,7 @@ export function mount(el, context) {
   const labEl = root.querySelector("#sp-lab");
   ctx.scrollToMap = scrollToMap;
   ctx.onLabLeversChanged = () => {
-    pullLabIntoMap();
+    rebuildLeverCatalogue();   // the lab may have added or deleted a custom lever
     if (ready) scenarioChanged(true);
   };
   if (ctx.lev) mountLab(labEl, ctx);
@@ -223,7 +223,7 @@ export function scrollToMap() {
 
 /** Shell calls this after the lab toggles a lever (or the hash restores one). */
 export function syncFromLab() {
-  pullLabIntoMap();
+  rebuildLeverCatalogue();
   if (ctx.lev && root && root.querySelector("#sc-list")) updateLab(ctx);
   if (ready) scenarioChanged(true);
 }
