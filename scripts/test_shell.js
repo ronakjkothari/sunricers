@@ -519,6 +519,99 @@ async function main() {
   ok("pretty month", pretty("2024-06") === "Jun 2024", pretty("2024-06"));
 
   /* ------------------------------------------------------------------ */
+  section("intervention lab");
+  // The lab's arithmetic is a pure module; run it against the real levers.json
+  // exactly as the Impact map lab and the Compare tab's plays do.
+  const LV = await mod("lib/levers.js");
+  let LEV = null;
+  try { LEV = readJSON("data/levers.json"); } catch (_) { /* reported below */ }
+  ok("data/levers.json exists (python3 scripts/build_levers.py)", !!LEV);
+  if (LEV) {
+    ok("levers carry the fields the cards need",
+      LEV.levers.every(l => l.id && l.title && l.plain && l.bucket && l.evidence && l.evidence_plain &&
+        Array.isArray(l.dials) && l.best_source && l.best_source.u && (l.offmap || l.cuts)));
+    ok("every bucket the lab lists exists on some lever",
+      LV.BUCKETS.every(([b]) => LEV.levers.some(l => l.bucket === b)),
+      LV.BUCKETS.map(b => b[0]).join(", "));
+    ok("every cut is [low, mid, high] fractions in order",
+      LEV.levers.filter(l => l.cuts).every(l => Object.values(l.cuts).every(cs => Object.values(cs).every(v =>
+        v.length === 3 && v[0] <= v[1] && v[1] <= v[2] && v[0] >= 0 && v[2] <= 1))));
+    ok("every shop type a lever touches has a factor",
+      LEV.levers.filter(l => l.cuts).every(l => Object.keys(l.cuts).every(s =>
+        LEV.segments[s] && ["kwh", "water", "co2"].every(r => isFinite(LEV.segments[s].factor[r])))));
+    ok("every lever has a cost tier", LEV.levers.every(l => l.cost_tier && typeof l.cost_tier.t === "string"));
+    let matches = [];
+    try { matches = readJSON("data/matches.json"); } catch (_) { /* optional */ }
+
+    for (const k of cards) {
+      const { seg, tot } = LV.segmentPiles(LEV, [k]);
+      const a = k.ops_scale.absolute;
+      const sums = Object.fromEntries(["kwh", "water", "co2"].map(r =>
+        [r, Object.values(seg).reduce((s, x) => s + x[r], 0)]));
+      ok(`${k.host_city}: shop-type piles add up to the city totals`,
+        Math.abs(sums.kwh - a.energy_kwh) < 1e-3 * a.energy_kwh &&
+        Math.abs(sums.water - a.water_liters) < 1e-3 * a.water_liters &&
+        Math.abs(sums.co2 - a.kg_co2e) < 1e-3 * a.kg_co2e,
+        JSON.stringify(sums));
+      ok(`${k.host_city}: totals are the absolutes`,
+        tot.kwh === a.energy_kwh && tot.water === a.water_liters && tot.co2 === a.kg_co2e);
+
+      const R = LV.rankLevers(LEV, [k], k, matches.filter(m => m.m === k.host_city));
+      ok(`${k.host_city}: every lever ranks with finite cuts in [0, 1]`,
+        R.rows.length === LEV.levers.length && R.rows.every(x =>
+          ["kwh", "water", "co2"].every(r => isFinite(x.cut[r]) && x.cut[r] >= 0 && x.cut[r] <= 1) &&
+          x.reach >= 0 && x.reach <= 1));
+      ok(`${k.host_city}: something helps`, R.pressing.length > 0);
+      if (R.worst) {
+        ok(`${k.host_city}: ranked by the worst driver's cut`,
+          R.rows.every((x, i) => i === 0 || R.rows[i - 1].cut[R.worst] >= x.cut[R.worst] - 1e-12));
+      }
+    }
+
+    const allOn = new Set(LEV.levers.map(l => l.id));
+    const keep = LV.combinedCuts(LEV, allOn);
+    ok("combined keep fractions stay inside (0, 1]",
+      Object.values(keep).every(cs => Object.values(cs).every(v => v.every(x => x > 0 && x <= 1))));
+    const H = cards[0];
+    const { seg: sH, tot: tH } = LV.segmentPiles(LEV, [H]);
+    const cut = LV.totalCut(sH, tH, keep);
+    const single = LEV.levers.filter(l => l.cuts).map(l => LV.aloneCut(l, sH, tH));
+    ok("all levers together cut less than or equal to the sum of each alone",
+      ["kwh", "water", "co2"].every(r => cut[r][1] <= single.reduce((s, x) => s + (x[r] || 0), 0) + 1e-9));
+    ok("low ≤ mid ≤ high after compounding",
+      ["kwh", "water", "co2"].every(r => cut[r][0] <= cut[r][1] + 1e-12 && cut[r][1] <= cut[r][2] + 1e-12));
+
+    const allPiles = LV.segmentPiles(LEV, cards);
+    ok("all-hosts totals are the sum of the cities",
+      Math.abs(allPiles.tot.kwh - cards.reduce((s, k) => s + k.ops_scale.absolute.energy_kwh, 0)) < 1e-6);
+
+    const seg0 = Object.keys(LEV.segments)[0], f0 = LEV.segments[seg0].factor;
+    const mine = LV.buildCustomLever(LEV, { id: "custom_t", title: "t", segs: [seg0], cost: 1,
+      pv: { [seg0]: { kwh: [f0.kwh / 4, f0.kwh / 2, f0.kwh] } } });
+    ok("custom lever: kWh per visit becomes a [low, mid, high] fraction",
+      mine.custom && mine.cuts[seg0] && Math.abs(mine.cuts[seg0].kwh[1] - 0.5) < 1e-12 && mine.cuts[seg0].kwh[2] === 1,
+      JSON.stringify(mine.cuts));
+    const fans = LV.buildCustomLever(LEV, { id: "custom_f", title: "f", fans: true, pf: { co2: [1, 2, 3] } });
+    ok("custom lever for fans lives on the match card", fans.offmap && fans.bucket === "match day" && !fans.cuts);
+  }
+
+  ok("boot loads levers.json and matches.json", /data\/levers\.json/.test(bootSrc) && /data\/matches\.json/.test(bootSrc));
+  ok("boot offers All 11 hosts", /ALL = "__all__"/.test(bootSrc) && /isAll/.test(bootSrc));
+  ok("boot keeps levers in the hash", /levers=/.test(bootSrc));
+  ok("boot listens to the map (levers and city)", /__leversFromMap/.test(bootSrc) && /__cityFromMap/.test(bootSrc));
+  ok("Impact map mounts the intervention lab and syncs lever state",
+    /mountLab/.test(spSrc) && /syncFromLab/.test(spSrc) && /buildMapLeversFromLab/.test(spSrc));
+  const labSrc = fs.readFileSync(path.join(APP, "js/views/spatial-lab.js"), "utf8");
+  ok("spatial-lab draws the ranked list, the answer, a lever's detail and the custom form",
+    /drawList/.test(labSrc) && /drawAnswer/.test(labSrc) && /drawDetail/.test(labSrc) && /customFormHtml/.test(labSrc));
+  const cmSrc = fs.readFileSync(path.join(APP, "js/views/compare.js"), "utf8");
+  ok("compare's plays come from levers.json", /rankLevers/.test(cmSrc) && /levers\.json/.test(cmSrc));
+  const ovSrc = fs.readFileSync(path.join(APP, "js/views/overview.js"), "utf8");
+  ok("the Overview's plays come from levers.json too", /rankLevers/.test(ovSrc) && /drawLeverPlays/.test(ovSrc));
+  const spatialCss = fs.readFileSync(path.join(APP, "css/spatial.css"), "utf8");
+  ok("css/spatial.css styles the lab", /\.lab2\b/.test(spatialCss) && /table\.rank/.test(spatialCss));
+
+  /* ------------------------------------------------------------------ */
   console.log(`\n${checks - failures}/${checks} checks passed`);
   if (failures) {
     console.error(`${failures} FAILED`);

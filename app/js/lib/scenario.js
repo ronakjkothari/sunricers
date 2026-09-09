@@ -65,6 +65,52 @@ export const SCOPE = {
   },
 };
 
+/** Spatial scopes for levers.json ids (may alias the contract SCOPE keys). */
+const LAB_SCOPE = {
+  ...SCOPE,
+  hotel_water_programme: SCOPE.hotel_water_reuse,
+  cool_roofs_shade: SCOPE.cool_roofs_shade_uhi,
+  free_transit_with_ticket: SCOPE.gasoline_visit_shift,
+  kitchen_energy_retrofits: { layers: ["Food"], note: "food service" },
+  grocery_fridge_doors: { layers: ["Food"], note: "grocery & convenience" },
+};
+
+const SEG_LAYER = {
+  restaurant: "Food", grocery: "Food", hotel: "Water",
+  venue: "Venue", gas: "Energy", other: "Other_EFW",
+};
+const CUT_METRIC = { kwh: "e", water: "w", co2: "co2" };
+
+/**
+ * Map-paint levers from data/levers.json. Mid (50th) cuts become the
+ * per-metric effect; spatial scope comes from LAB_SCOPE when present, else from
+ * the shop types the lever touches.
+ */
+export function buildMapLeversFromLab(LEV) {
+  if (!LEV || !Array.isArray(LEV.levers)) return [];
+  return LEV.levers.filter(l => !l.offmap && !l.custom).map(l => {
+    const layers = [...new Set((l.touches || []).map(s => SEG_LAYER[s]).filter(Boolean))];
+    const scope = LAB_SCOPE[l.id] || (layers.length ? { layers, note: layers.join(", ") } : { note: "citywide" });
+    const effect = { c: 0, e: 0, w: 0, co2: 0 };
+    for (const cuts of Object.values(l.cuts || {})) {
+      for (const [r, arr] of Object.entries(cuts || {})) {
+        const mk = CUT_METRIC[r];
+        if (!mk || !arr) continue;
+        const mid = +(arr[1] || 0);
+        if (mid > 0) effect[mk] = Math.min(effect[mk] || 0, -mid);
+      }
+    }
+    return {
+      id: l.id,
+      title: l.title,
+      owner: l.owner,
+      scope,
+      note: scope.note || "",
+      effect,
+    };
+  }).filter(l => l.effect.e || l.effect.w || l.effect.co2);
+}
+
 /**
  * Merge the contract's play catalogue with the scopes above.
  * @returns {{id,title,note,scope,effect:{e:number,w:number,co2:number}}[]}

@@ -22,9 +22,10 @@ import { icon } from "../lib/icons.js";
 import { c } from "../lib/palette.js";
 import { photo, cityOption, byRank } from "../lib/city.js";
 import {
-  FACTORS, METRICS, buildLevers, scenarioValue, deltaValue,
+  FACTORS, METRICS, buildLevers, buildMapLeversFromLab, scenarioValue, deltaValue,
   shopMultiplier, totals, km, setSurgeModel, surgeModel,
 } from "../lib/scenario.js";
+import { mountLab, updateLab } from "./spatial-lab.js";
 
 // vendored rather than pulled from a CDN: the demo has to work on venue wifi,
 // and a 900 KB script on the critical path of one tab is worth owning
@@ -108,7 +109,7 @@ let timer = null;
 export function mount(el, context) {
   root = el;
   ctx = context;
-  levers = buildLevers(ctx.contract);
+  rebuildLeverCatalogue();
 
   root.innerHTML = `
     <div class="mapstage bleed" id="sp-stage">
@@ -155,10 +156,7 @@ export function mount(el, context) {
         <div class="chartlegend" id="sp-daylegend"></div>
       </section>
 
-      <section class="card panel" style="margin-top:0">
-        <header><h2>Plays that apply here</h2></header>
-        <div class="body" id="sp-plays"></div>
-      </section>
+      <div id="sp-lab"></div>
     </div>`;
 
   root.querySelector("#sp-scenbtn").onclick = () => {
@@ -172,6 +170,69 @@ export function mount(el, context) {
       menu.hidden = true;
     }
   });
+
+  // Intervention lab (costs, ranking, custom levers) — same tab as the map
+  const labEl = root.querySelector("#sp-lab");
+  ctx.scrollToMap = scrollToMap;
+  ctx.onLabLeversChanged = () => {
+    pullLabIntoMap();
+    if (ready) scenarioChanged(true);
+  };
+  if (ctx.lev) mountLab(labEl, ctx);
+  else {
+    labEl.innerHTML = `<section class="card panel" style="margin-top:0"><div class="body">
+      <p class="note">Intervention lab needs <code>data/levers.json</code>.
+        Run <code>python scripts/build_levers.py</code> then refresh.</p></div></section>`;
+  }
+}
+
+function rebuildLeverCatalogue() {
+  levers = ctx.lev ? buildMapLeversFromLab(ctx.lev) : buildLevers(ctx.contract);
+  // keep any previously selected ids that still exist
+  const ok = new Set(levers.map(l => l.id));
+  for (const id of [...view.levers]) if (!ok.has(id)) view.levers.delete(id);
+  pullLabIntoMap();
+}
+
+/** Lab state → map paint set (shared ids). */
+function pullLabIntoMap() {
+  if (!ctx.state.levers) return;
+  const ok = new Set(levers.map(l => l.id));
+  view.levers = new Set([...ctx.state.levers].filter(id => ok.has(id)));
+  if (typeof ctx.state.surge === "number" && ctx.state.surge >= 1) view.surge = ctx.state.surge;
+}
+
+/** Map drawer → lab state (hash + lab UI). Does not re-enter map sync. */
+function pushMapIntoLab() {
+  if (!ctx.state.levers) return;
+  const mapIds = new Set(levers.map(l => l.id));
+  for (const id of [...ctx.state.levers]) if (mapIds.has(id)) ctx.state.levers.delete(id);
+  for (const id of view.levers) ctx.state.levers.add(id);
+  ctx.state.surge = view.surge;
+  // write the hash the same way the shell does, without calling leversChanged()
+  const ids = [...ctx.state.levers].join(",");
+  const want = `#${ctx.state.tab}/${encodeURIComponent(ctx.state.city)}${ids ? `?levers=${ids}` : ""}`;
+  if (location.hash !== want) history.replaceState(null, "", want);
+  if (ctx.lev) updateLab(ctx);
+}
+
+export function scrollToMap() {
+  const stage = root && root.querySelector("#sp-stage");
+  if (stage) stage.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/** Shell calls this after the lab toggles a lever (or the hash restores one). */
+export function syncFromLab() {
+  pullLabIntoMap();
+  if (ctx.lev && root && root.querySelector("#sc-list")) updateLab(ctx);
+  if (ready) scenarioChanged(true);
+}
+
+/* ----------------------------------------------------- plays that apply */
+
+function drawPlays() {
+  /* Lab below the map owns ranked plays + custom levers. Kept as a no-op so
+     older call sites do not throw during the merge. */
 }
 
 /**
@@ -235,6 +296,8 @@ function toggleHelp(force) {
 
 export function activate(context) {
   ctx = context;
+  rebuildLeverCatalogue();
+  if (ctx.lev && root && root.querySelector("#sp-lab")) updateLab(ctx);
   if (!ready && !loading) { boot(); return; }
   if (!ready) return;
   // the pane was hidden when the map was built if the user landed elsewhere
@@ -244,7 +307,10 @@ export function activate(context) {
   refreshCity();
 }
 
-export function update(context) { ctx = context; }
+export function update(context) {
+  ctx = context;
+  if (ctx.lev && root && root.querySelector("#sc-list")) updateLab(ctx);
+}
 
 /* ------------------------------------------------------------- loading */
 
@@ -774,7 +840,6 @@ function drawAll() {
   paint();
   drawPills();
   drawDay();
-  drawPlays();
   drawLegend();
   drawCaption();
 }
@@ -1106,15 +1171,16 @@ function surgeTable() {
       which is why a low R² sits near β&nbsp;1.</p>`;
 }
 
-function scenarioChanged() {
+function scenarioChanged(fromLab) {
   drawScenario();
   paint();
   refreshPopup();
   drawLegend();
   drawPills();
   drawDay();
-  drawPlays();
   drawCaption();
+  if (!fromLab) pushMapIntoLab();
+  else if (ctx.lev) updateLab(ctx);
 }
 
 function countScope(l) {
@@ -1236,37 +1302,6 @@ function drawDay() {
     : `<span><i style="background:${c(m.token)}"></i>7-day mean</span>
        <span><i style="background:${c("--ink-3")};opacity:.4"></i>as recorded</span>
        <span class="muted">Card spend is stamped on the settlement day, so raw days spike on Mondays.</span>`;
-}
-
-/* ----------------------------------------------------- plays that apply */
-
-function drawPlays() {
-  const k = ctx.stats.byCity[city.name];
-  const box = root.querySelector("#sp-plays");
-  if (!k) { box.innerHTML = ""; return; }
-  const pressing = new Set((k.recommended_plays || []).map(p => p.id));
-
-  box.innerHTML = `<p class="note" style="margin-bottom:12px">
-      Plays Plan D marks as pressing for ${esc(city.name)}. Switching one on models it
-      against the shops it names.</p>` +
-    levers.map(l => {
-      const on = view.levers.has(l.id);
-      const press = pressing.has(l.id);
-      return `<button class="applyrow ${on ? "on" : ""}" data-lever2="${l.id}">
-        <span class="arname">${esc(l.title)}</span>
-        <span class="archip ${press ? "press" : ""}">${press ? "pressing here" : "available"}</span>
-        <span class="arscope">${full(countScope(l))} shops</span>
-        <span class="arto">${on ? icon("check", 15) : icon("plus", 15)}</span>
-      </button>`;
-    }).join("");
-
-  box.querySelectorAll("[data-lever2]").forEach(b => {
-    b.onclick = () => {
-      const id = b.dataset.lever2;
-      view.levers.has(id) ? view.levers.delete(id) : view.levers.add(id);
-      scenarioChanged();
-    };
-  });
 }
 
 /* ------------------------------------------------------- city switching */

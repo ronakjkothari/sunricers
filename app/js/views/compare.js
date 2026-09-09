@@ -15,6 +15,7 @@ import { icon, DRIVER_ICON } from "../lib/icons.js";
 import { c, METRIC_COLOR, DRIVER_COLOR } from "../lib/palette.js";
 import { METRIC_ABS, pctLabel, polarRank } from "../lib/stats.js";
 import { photo, scoreColour, loadBlurs } from "../lib/city.js";
+import { RES, RES_LABEL, RES_COLOR, rankLevers, costTier } from "../lib/levers.js";
 
 const PLAIN = {
   energy_kwh: "Energy use", kg_co2e: "Food carbon", water_liters: "Water use",
@@ -581,6 +582,60 @@ function drawChart() {
   svg.onmouseleave = () => { tip.classList.remove("on"); cross.setAttribute("opacity", "0"); };
 }
 
+/* ------------------------------------------- plays = the lab's levers */
+
+function drawLeverPlays(right, k) {
+  const R = rankLevers(ctx.lev, ctx.cardsOf(), k, ctx.matchesHere());
+  const rest = R.rows.filter(x => !R.pressing.includes(x));
+  const rl = r => RES_LABEL[r];
+  const low = r => (rl(r) === "CO₂e" ? "CO₂e" : rl(r).toLowerCase());
+  const heat = R.heat.length
+    ? ` Heat is a driver here (${R.heat.map(d => `${d.label.toLowerCase()} z +${d.z.toFixed(2)}`).join(", ")}),
+        so energy cuts that touch cooling matter more than the number shows.`
+    : "";
+  const why = R.worst
+    ? `<b>${rl(R.worst)}</b> is ${esc(k.host_city)}'s worst driver (${R.zWord(R.z[R.worst])},
+       z ${R.z[R.worst] >= 0 ? "+" : ""}${R.z[R.worst].toFixed(2)}), so plays that cut it come first.`
+    : `${esc(k.host_city)} is about average on energy, water and CO₂e, so nothing stands out and the biggest single cut comes first.`;
+
+  right.innerHTML =
+    `<p class="note">Plays for ${esc(k.host_city)} are the intervention lab's levers
+       (<code>data/levers.json</code>, measured studies, not placeholders). ${why}
+       Effects are each lever alone, middle value, on this city's June–July totals; ranges and sources are in the lab.${heat}</p>` +
+    (R.pressing.length
+      ? `<div class="plays2">${R.pressing.map(x => leverPlay(x, R)).join("")}</div>`
+      : `<div class="empty">No lever cuts ${rl(R.worst)} here.</div>`) +
+    (rest.length
+      ? `<details class="pbdetails"><summary>${rest.length} more lever${rest.length === 1 ? "" : "s"}
+           (${R.worst ? `no ${low(R.worst)} cut` : "no measurable cut"} in ${esc(k.host_city)})</summary>
+          <div class="plays2">${rest.map(x => leverPlay(x, R)).join("")}</div></details>`
+      : "");
+
+  right.querySelectorAll("[data-lab]").forEach(b => {
+    b.onclick = () => { ctx.state.levers.add(b.dataset.lab); ctx.leversChanged(); ctx.showOnMap(); };
+  });
+}
+
+function leverPlay(x, R) {
+  const { l, cut, reach } = x, ct = costTier(l);
+  const eff = RES.filter(([r]) => cut[r] > 1e-6).map(([r, lab, u]) =>
+    `<span class="e" style="color:${c(RES_COLOR[r])}" title="this lever alone, middle value; range in the lab">${lab}
+       <b>${cut[r] < 0.0005 ? "<0.1" : "−" + (cut[r] * 100).toFixed(1)}%</b>
+       <span style="color:var(--ink-3)">≈ ${fmt(cut[r] * R.tot[r])} ${u} saved</span></span>`).join("");
+  const when = { before: "before the tournament", during: "during the tournament", "match day": "match day, on the match card" }[l.bucket] || l.bucket;
+  const scope = l.offmap
+    ? `Attendance × per fan over ${R.ms.length} fixture${R.ms.length === 1 ? "" : "s"} here (${full(R.seats)} fans).`
+    : `Reaches ${(reach * 100).toFixed(0)}% of the city's summer visits.`;
+  return `<article class="play playcard">
+    <h3>${esc(l.title)} <span class="ev${l.custom ? " mine" : ""}">${esc(l.evidence)}</span></h3>
+    <div class="pbars">${eff || `<span class="e">No measurable cut in ${esc(ctx.cityName())}</span>`}</div>
+    <p class="why">${esc(l.plain)} ${scope}</p>
+    <div class="foot"><span>Owner: ${esc(l.owner || "you")}</span><span>Cost: <b>${esc(ct ? ct.t : "not set")}</b></span>
+      <span>When: ${esc(when)}</span><button class="lnk" data-lab="${esc(l.id)}">Try it in the lab ${icon("arrow", 12)}</button></div>
+  </article>`;
+}
+
+
 /* ------------------------------------------------------- C. the playbook */
 
 function drawPlaybook() {
@@ -588,21 +643,29 @@ function drawPlaybook() {
   const box = root.querySelector("#cp-plays");
   if (!k) { box.innerHTML = `<div class="empty">Pick a host above.</div>`; return; }
 
-  const plays = k.recommended_plays || [], gen = k.general_options || [];
   root.querySelector("#cp-pbtitle").textContent = `Playbook · ${k.host_city}`;
-  root.querySelector("#cp-pbcap").textContent =
-    `${plays.length} pressing · modelled on ${k.host_city}'s own totals`;
 
-  box.innerHTML =
-    (plays.length
-      ? `<div class="plays2">${plays.map(p => playCard(p, k)).join("")}</div>`
-      : `<div class="empty">No pressing plays — no driver here sits above the 11-host mean.</div>`) +
-    (gen.length
-      ? `<details class="pbdetails">
-           <summary>${gen.length} general option${gen.length === 1 ? "" : "s"} — available, not pressing for ${esc(k.host_city)}</summary>
-           <div class="plays2">${gen.map(p => playCard(p, k)).join("")}</div>
-         </details>`
-      : "");
+  if (ctx.lev) {
+    const R = rankLevers(ctx.lev, ctx.cardsOf(), k, ctx.matchesHere());
+    root.querySelector("#cp-pbcap").textContent =
+      `${R.pressing.length} ranked from levers.json · middle cuts on ${k.host_city}'s summer totals`;
+    drawLeverPlays(box, k);
+  } else {
+    const plays = k.recommended_plays || [], gen = k.general_options || [];
+    root.querySelector("#cp-pbcap").textContent =
+      `${plays.length} pressing · modelled on ${k.host_city}'s own totals`;
+
+    box.innerHTML =
+      (plays.length
+        ? `<div class="plays2">${plays.map(p => playCard(p, k)).join("")}</div>`
+        : `<div class="empty">No pressing plays — no driver here sits above the 11-host mean.</div>`) +
+      (gen.length
+        ? `<details class="pbdetails">
+             <summary>${gen.length} general option${gen.length === 1 ? "" : "s"} — available, not pressing for ${esc(k.host_city)}</summary>
+             <div class="plays2">${gen.map(p => playCard(p, k)).join("")}</div>
+           </details>`
+        : "");
+  }
 
   root.querySelector("#cp-exits").innerHTML = `
     <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.md" download>
