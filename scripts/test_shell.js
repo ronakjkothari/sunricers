@@ -1,243 +1,623 @@
 /**
- * Regression test for the Plan A shell (app/index.html).
+ * Regression test for the Nexus Pulse shell.
  *
  *   node scripts/test_shell.js        # from the repo root
  *
- * There is no browser here. Instead the page's inline script is run against a
- * minimal DOM stub and the real app/data JSON, which catches the failures that
- * actually bite: a contract field that moved, a render path that throws on one
- * city, an empty state that renders as a hole, a deep link that will not restore.
+ * The shell is ES modules now, so instead of scraping an inline <script> and
+ * running it against a DOM stub, this imports the pure modules directly and
+ * checks them against the real app/data JSON. That catches what actually bites:
+ * a contract field that moved, weights that stopped parsing, a decomposition
+ * that no longer sums to the score it claims to explain, a city with no photo.
  *
- * What it cannot check is pixels — layout, the MapLibre resize inside the
- * iframe, and dark mode still need a human with a browser. See app/README.md.
+ * What it cannot check is pixels — layout, the map, and dark mode still need a
+ * human with a browser. See app/README.md.
  *
- * Stdlib only. Exits non-zero on the first category that fails.
+ * Stdlib only. Exits non-zero if anything fails.
  */
 "use strict";
 const fs = require("fs");
 const path = require("path");
-const vm = require("vm");
+const { pathToFileURL } = require("url");
 
 const ROOT = path.join(__dirname, "..");
 const APP = path.join(ROOT, "app");
 
-// --- minimal DOM ------------------------------------------------------------
-// Every innerHTML write is recorded so assertions can inspect what was drawn.
-const writes = [];
-const nodes = new Map();
+let failures = 0;
+let checks = 0;
 
-function makeNode(id) {
-  const node = {
-    id, hidden: false, value: "", textContent: "", dataset: {}, style: {},
-    _html: "",
-    classList: {
-      _s: new Set(),
-      add(c) { this._s.add(c); },
-      remove(c) { this._s.delete(c); },
-      contains(c) { return this._s.has(c); },
-      toggle(c, force) {
-        if (force === undefined) this._s.has(c) ? this._s.delete(c) : this._s.add(c);
-        else force ? this._s.add(c) : this._s.delete(c);
-      },
-    },
-    querySelectorAll() { return []; },
-    querySelector() { return node_(id + " > child"); },
-    setAttribute() {}, getAttribute() { return null; }, appendChild() {},
-    getBoundingClientRect() { return { left: 0, top: 0, width: 1000, height: 264 }; },
-    clientWidth: 1000, clientHeight: 264,
+function ok(label, cond, detail) {
+  checks++;
+  if (cond) return;
+  failures++;
+  console.error(`  FAIL  ${label}${detail ? `\n        ${detail}` : ""}`);
+}
+
+function section(name) {
+  console.log(`\n${name}`);
+}
+
+const mod = p => import(pathToFileURL(path.join(APP, "js", p)).href);
+const readJSON = p => JSON.parse(fs.readFileSync(path.join(APP, p), "utf8"));
+
+async function main() {
+  const { build, weightsOf, verdict, METRIC_ABS } = await mod("lib/stats.js");
+  const { fmt, ordinal, pretty, isSummer } = await mod("lib/format.js");
+  const { icon, DRIVER_ICON } = await mod("lib/icons.js");
+
+  const contract = readJSON("data/a_integration.json");
+  const series = readJSON("data/overview_kpis.json");
+  const S = build(contract, series);
+  const cards = contract.scorecards;
+
+  /* ------------------------------------------------------------------ */
+  section("contract");
+  ok("11 scorecards", cards.length === 11, `got ${cards.length}`);
+  ok("every card has ops_scale.absolute",
+    cards.every(k => k.ops_scale && k.ops_scale.absolute));
+  ok("every card has 5 drivers with z and raw",
+    cards.every(k => k.drivers.length === 5 && k.drivers.every(d =>
+      isFinite(d.z) && isFinite(d.raw))));
+  ok("ranks are 1..11 and unique",
+    new Set(cards.map(k => k.rank)).size === 11 &&
+    Math.min(...cards.map(k => k.rank)) === 1 &&
+    Math.max(...cards.map(k => k.rank)) === 11);
+
+  /* ------------------------------------------------------------------ */
+  section("weights");
+  const w = weightsOf(contract);
+  const sum = Object.values(w).reduce((a, b) => a + b, 0);
+  ok("five weights recovered", Object.keys(w).length === 5, JSON.stringify(w));
+  ok("weights sum to 1.0", Math.abs(sum - 1) < 1e-9, `sum = ${sum}`);
+  ok("every driver key has a weight",
+    cards[0].drivers.every(d => typeof w[d.key] === "number"));
+  // service.py now derives the string from weight_map, so "0.20" prints as
+  // "0.2" after a regen. The parser must survive that, and prefer `weights`.
+  const derived = weightsOf({ meta: { formula: {
+    stress: "0.35*z(energy)+0.25*z(co2e)+0.2*z(water)+0.1*z(cdd)+0.1*z(uhi)" } } });
+  ok("parser handles the regenerated string format",
+    Math.abs(Object.values(derived).reduce((a, b) => a + b, 0) - 1) < 1e-9 &&
+    derived.water_liters === 0.2, JSON.stringify(derived));
+  ok("structured weights win over the string",
+    weightsOf({ meta: { formula: { weights: { energy_kwh: 1 }, stress: "0.35*z(energy)" } } })
+      .energy_kwh === 1);
+
+  /* ------------------------------------------------------------------ */
+  section("decomposition");
+  // The waterfall claims to *be* the formula. If these stop summing, it lies.
+  for (const k of cards) {
+    const total = S.contributions(k).reduce((a, d) => a + d.value, 0);
+    ok(`${k.host_city}: contributions sum to stress_index`,
+      Math.abs(total - k.stress_index) < 5e-4,
+      `Σ=${total.toFixed(6)} vs ${k.stress_index}`);
+  }
+
+  // The waterfall is drawn in readiness points and claims to land on the score.
+  // If this identity breaks, the panel is showing a picture of a different number.
+  ok("neutral readiness is inside the 0-100 scale",
+    S.neutralReadiness > 0 && S.neutralReadiness < 100, String(S.neutralReadiness));
+  for (const k of cards) {
+    const landed = S.neutralReadiness +
+      S.contributions(k).reduce((a, d) => a + S.points(d.value), 0);
+    ok(`${k.host_city}: readiness points land on the score`,
+      Math.abs(landed - k.readiness_score) < 0.02,
+      `${landed.toFixed(3)} vs ${k.readiness_score}`);
+  }
+
+  /* ------------------------------------------------------------------ */
+  section("peer statistics");
+  for (const mk of Object.keys(METRIC_ABS)) {
+    const ranks = Object.values(S.rankOf[mk]);
+    ok(`${mk}: ranks are 1..11 and unique`,
+      new Set(ranks).size === 11 && Math.min(...ranks) === 1 && Math.max(...ranks) === 11);
+    ok(`${mk}: median series covers every month`,
+      S.band[mk].med.length === series.months.length &&
+      S.band[mk].med.every(isFinite));
+    ok(`${mk}: interquartile band is ordered`,
+      S.band[mk].lo.every((v, i) => v <= S.band[mk].med[i] + 1e-6 &&
+        S.band[mk].med[i] <= S.band[mk].hi[i] + 1e-6));
+  }
+  for (const mk of ["e", "w", "co2"]) {
+    const rr = Object.values(S.rateRankOf[mk]);
+    ok(`${mk}: rate ranks are 1..11 and unique`,
+      new Set(rr).size === 11 && Math.min(...rr) === 1 && Math.max(...rr) === 11);
+  }
+  ok("rate ranks differ from size ranks",
+    ["e", "w", "co2"].some(mk => S.cities.some(c => S.rateRankOf[mk][c] !== S.rankOf[mk][c])),
+    "if these always agree the chips carry no extra information");
+  ok("summer window is June and July only",
+    S.summerIdx.every(i => isSummer(series.months[i])) && S.summerIdx.length > 0);
+  ok("driverPct is finite for every city and driver",
+    cards.every(k => k.drivers.every(d => isFinite(S.driverPct(d.key, d.raw)))));
+  const { pctLabel } = await mod("lib/stats.js");
+  ok("pctLabel never leaks an unrounded float",
+    cards.every(k => k.drivers.every(d => {
+      const l = pctLabel(S.driverPct(d.key, d.raw));
+      return l === "at median" || /^[+−]\d+(\.\d)?%$/.test(l);
+    })), "e.g. +53.03090010925694%");
+  ok("pctLabel handles the tie case", pctLabel(0) === "at median");
+
+  // "10th highest rate of 11" reads as a criticism of a city that is doing
+  // well; a rank past the midpoint should be named from the near end instead.
+  const { polarRank } = await mod("lib/stats.js");
+  const pr = r => polarRank(r, 11, "highest rate", "lowest rate");
+  ok("top of the scale drops the ordinal", pr(1) === "highest rate", pr(1));
+  ok("bottom of the scale drops the ordinal", pr(11) === "lowest rate", pr(11));
+  ok("upper half counts from the top", pr(3) === "3rd highest rate", pr(3));
+  ok("lower half counts from the bottom", pr(10) === "2nd lowest rate", pr(10));
+  ok("the midpoint stays on the high side", pr(6) === "6th highest rate", pr(6));
+  ok("no rank is ever called 10th highest of 11",
+    Array.from({ length: 11 }, (_, i) => pr(i + 1))
+      .every(l => !/(7|8|9|10|11)(th|st|nd|rd) highest/.test(l)));
+  ok("polarRank takes alternative words",
+    polarRank(10, 11, "largest", "smallest") === "2nd smallest");
+
+  /* ------------------------------------------------------------------ */
+  section("series");
+  ok("every host has a series", S.cities.every(c => series.cities[c]));
+  ok("every metric series is 60 months",
+    S.cities.every(c => Object.keys(METRIC_ABS).every(mk =>
+      (series.cities[c][mk] || []).length === series.months.length)));
+  ok("no NaN in any series",
+    S.cities.every(c => Object.keys(METRIC_ABS).every(mk =>
+      series.cities[c][mk].every(isFinite))));
+
+  /* ------------------------------------------------------------------ */
+  section("verdict copy");
+  for (const k of cards) {
+    const v = verdict(k, cards.length);
+    ok(`${k.host_city}: verdict renders`,
+      typeof v === "string" && v.includes(k.host_city) && v.length > 30 && !/undefined|NaN/.test(v),
+      v);
+    ok(`${k.host_city}: verdict subject/verb agree`,
+      !/and[^.]*sits/.test(v.replace(/<\/?b>/g, "")), v);
+  }
+
+  /* ------------------------------------------------------------------ */
+  section("driver focus");
+  // Focusing a driver narrows every panel, including the play list. That only
+  // works if D keeps tagging plays with the drivers they act on.
+  const { DRIVER_METRIC, DRIVER_LAYER } = await mod("views/overview.js");
+  const driverKeys = cards[0].drivers.map(d => d.key);
+  ok("focus maps point at real drivers",
+    Object.keys(DRIVER_METRIC).every(k2 => driverKeys.includes(k2)) &&
+    Object.keys(DRIVER_LAYER).every(k2 => driverKeys.includes(k2)));
+  ok("mapped metrics exist", Object.values(DRIVER_METRIC)
+    .every(mk => Object.keys(METRIC_ABS).includes(mk)));
+  ok("mapped visit layers exist on every host",
+    cards.every(k => Object.values(DRIVER_LAYER)
+      .every(l => l in k.ops_scale.visit_mix)));
+
+  let tagged = 0, matched = 0;
+  for (const k of cards) {
+    for (const p2 of k.recommended_plays || []) {
+      ok(`${k.host_city}: "${p2.title.slice(0, 26)}" is tagged with drivers`,
+        Array.isArray(p2.targets) && p2.targets.length > 0 &&
+        p2.targets.every(t => driverKeys.includes(t)),
+        JSON.stringify(p2.targets));
+      tagged++;
+    }
+    for (const key of driverKeys) {
+      if ((k.recommended_plays || []).some(p2 => (p2.targets || []).includes(key))) matched++;
+    }
+  }
+  ok("plays are tagged at all", tagged > 0);
+  ok("focusing a driver finds plays for most host/driver pairs", matched >= cards.length,
+    `${matched} matching pairs across ${cards.length} hosts`);
+
+  /* ------------------------------------------------------------------ */
+  section("compare");
+  const cmp = await mod("views/compare.js");
+  ok("compare exports mount/update",
+    typeof cmp.mount === "function" && typeof cmp.update === "function");
+
+  // the leaderboard, matrix and decomposition all key off these
+  const cityHelpers = await mod("lib/city.js");
+  ok("photo() points at a derivative that exists",
+    S.cities.every(c2 => fs.existsSync(path.join(APP, cityHelpers.photo(c2, 320)))),
+    S.cities.map(c2 => cityHelpers.photo(c2, 320)).find(
+      f => !fs.existsSync(path.join(APP, f))));
+  ok("scoreColour is a function", typeof cityHelpers.scoreColour === "function");
+
+  // Compare's matrix labels every driver; a missing unit renders "undefined"
+  const cmpSrc = fs.readFileSync(path.join(APP, "js/views/compare.js"), "utf8");
+  const unitBlock = cmpSrc.split("const UNIT")[1].slice(0, 260);
+  const plainBlock = cmpSrc.split("const PLAIN")[1].slice(0, 260);
+  for (const d of cards[0].drivers) {
+    ok(`compare names and units "${d.key}"`,
+      unitBlock.includes(`${d.key}:`) && plainBlock.includes(`${d.key}:`));
+  }
+  ok("compare no longer emits the unstyled .eff markup", !/class="eff"/.test(cmpSrc));
+  ok("no ad-hoc inline padding survives on Compare",
+    !/style="padding|style="margin-top:1[0-9]px/.test(cmpSrc));
+
+  // the transfer matrix needs every play tagged with an id to dedupe rows
+  ok("every play carries an id",
+    cards.every(k => [...(k.recommended_plays || []), ...(k.general_options || [])]
+      .every(p2 => typeof p2.id === "string" && p2.id.length > 0)));
+
+  /* ------------------------------------------------------------------ */
+  section("impact map");
+  const sc = await mod("lib/scenario.js");
+  const lv = sc.buildLevers(contract);
+  ok("every scoped play became a lever", lv.length === Object.keys(sc.SCOPE).length,
+    `${lv.length} levers vs ${Object.keys(sc.SCOPE).length} scopes`);
+  ok("every lever names a real scope",
+    lv.every(l => l.scope && (l.scope.layers || l.scope.ring || l.scope.minHeat)));
+  ok("lever effects came from the contract, not hard-coded",
+    lv.every(l => ["e", "w", "co2"].some(k => l.effect[k] !== 0)));
+  ok("scoped layers are real shop types",
+    lv.every(l => !l.scope.layers ||
+      l.scope.layers.every(x => Object.keys(sc.FACTORS).includes(x))));
+
+  // the fitted surge response — the slider is only defensible if it is measured
+  const surgeModel = readJSON("data/surge_model.json");
+  sc.setSurgeModel(surgeModel);
+  ok("surge model covers every shop layer",
+    Object.keys(sc.FACTORS).every(l => surgeModel.layers[l]),
+    Object.keys(surgeModel.layers).join(","));
+  ok("elasticities are plausible", Object.values(surgeModel.layers)
+    .every(v => v.elasticity > 0.5 && v.elasticity < 2), JSON.stringify(surgeModel.layers));
+  ok("noisy estimates are shrunk toward proportional", Object.values(surgeModel.layers)
+    .every(v => Math.abs(v.elasticity - 1) <= Math.abs(v.raw - 1) + 1e-9));
+  ok("lodging and venues amplify a surge more than fuel retail",
+    surgeModel.layers.Water.elasticity > surgeModel.layers.Energy.elasticity &&
+    surgeModel.layers.Venue.elasticity > surgeModel.layers.Energy.elasticity);
+  ok("near-stadium shops carry extra elasticity", surgeModel.near_stadium.extra > 0,
+    JSON.stringify(surgeModel.near_stadium));
+  ok("a surge moves a lodging shop more than a fuel shop", (() => {
+    const hotel = sc.shopMultiplier({ l: "Water", u: 5, d: 99 }, [], "e", 8, 1.5);
+    const gas = sc.shopMultiplier({ l: "Energy", u: 5, d: 99 }, [], "e", 8, 1.5);
+    return hotel > gas;
+  })());
+  ok("a surge lands harder inside the stadium ring", (() => {
+    const near = sc.shopMultiplier({ l: "Food", u: 5, d: 1 }, [], "e", 8, 1.5);
+    const far = sc.shopMultiplier({ l: "Food", u: 5, d: 40 }, [], "e", 8, 1.5);
+    return near > far;
+  })());
+  ok("no surge means no change", sc.shopMultiplier({ l: "Food", u: 5, d: 1 }, [], "e", 8, 1) === 1);
+
+
+  // A minimal evaluator for the expression subset the map paints with. The
+  // whole design rests on the expressions and the JS totals agreeing; if they
+  // drift, the map shows one number and the pills show another.
+  const ev = (e, f) => {
+    if (!Array.isArray(e)) return e;
+    const [op, ...a] = e;
+    switch (op) {
+      case "get": return f[a[0]];
+      case "literal": return a[0];
+      case "coalesce": { for (const x of a) { const v = ev(x, f); if (v != null) return v; } return null; }
+      case "*": return a.reduce((n, x) => n * ev(x, f), 1);
+      case "+": return a.reduce((n, x) => n + ev(x, f), 0);
+      case "-": return ev(a[0], f) - ev(a[1], f);
+      case "^": return Math.pow(ev(a[0], f), ev(a[1], f));
+      case "all": return a.every(x => ev(x, f));
+      case "in": return ev(a[1], f).includes(ev(a[0], f));
+      case ">=": return ev(a[0], f) >= ev(a[1], f);
+      case "<=": return ev(a[0], f) <= ev(a[1], f);
+      case "case": {
+        for (let i = 0; i + 1 < a.length; i += 2) if (ev(a[i], f)) return ev(a[i + 1], f);
+        return ev(a[a.length - 1], f);
+      }
+      case "match": {
+        const v = ev(a[0], f);
+        for (let i = 1; i + 1 < a.length; i += 2) if (a[i] === v) return a[i + 1];
+        return a[a.length - 1];
+      }
+      default: throw new Error("unhandled expression op: " + op);
+    }
   };
-  Object.defineProperty(node, "innerHTML", {
-    get() { return this._html; },
-    set(v) { this._html = String(v); writes.push([id, this._html]); },
-  });
-  Object.defineProperty(node, "parentElement", { get: () => node_(id + " > parent") });
-  return node;
-}
-const node_ = id => {
-  if (!nodes.has(id)) nodes.set(id, makeNode(id));
-  return nodes.get(id);
-};
 
-global.document = {
-  getElementById: node_,
-  querySelectorAll: () => [],
-  documentElement: { setAttribute() {}, getAttribute() { return "light"; } },
-  body: { classList: node_("body").classList },
-};
-global.getComputedStyle = () => ({ getPropertyValue: () => "#123456" });
-global.location = { hash: "", search: "" };
-global.history = { replaceState(_s, _t, h) { global.location.hash = h; } };
-global.addEventListener = () => {};
-global.fetch = url => Promise.resolve({
-  ok: true,
-  json: () => Promise.resolve(JSON.parse(fs.readFileSync(path.join(APP, url), "utf8"))),
-});
-
-// --- load the page's script into the real global scope ----------------------
-// runInThisContext, not eval: the page's top-level `const`s (state, C, BY, ...)
-// must land in the global lexical scope for the assertions below to reach them.
-const html = fs.readFileSync(path.join(APP, "index.html"), "utf8");
-const inline = /<script>([\s\S]*?)<\/script>/.exec(html);
-if (!inline) fail("app/index.html has no inline <script> block");
-vm.runInThisContext(inline[1], { filename: "app/index.html" });
-
-// --- assertions -------------------------------------------------------------
-const results = [];
-let failed = 0;
-function check(ok, label) {
-  results.push(`${ok ? "  ok  " : "  FAIL"} ${label}`);
-  if (!ok) failed++;
-  return ok;
-}
-function section(name) { results.push(`\n${name}`); }
-function fail(msg) { console.error("test_shell: " + msg); process.exit(2); }
-const lastWrite = id => { const hit = writes.filter(([k]) => k === id).pop(); return hit ? hit[1] : null; };
-function drew(id, ...needles) {
-  const got = lastWrite(id);
-  if (got === null) return check(false, `#${id} never rendered`);
-  const missing = needles.filter(n => !got.includes(n));
-  return check(missing.length === 0,
-    `#${id} rendered${missing.length ? ` — missing ${JSON.stringify(missing)}` : ` (${got.length} chars)`}`);
-}
-
-setTimeout(run, 400);   // let the page's fetch/Promise.all settle
-
-function run() {
-  if (typeof C === "undefined" || !C) fail("the shell never finished booting — check app/data/*.json");
-  const cities = C.scorecards.map(c => c.host_city);
-
-  section("Contract shape (what the shell reads must exist)");
-  check(C.scorecards.length === 11, `11 scorecards (got ${C.scorecards.length})`);
-  const missing = [];
-  const need = (obj, keys, where) =>
-    keys.forEach(k => { if (obj == null || obj[k] === undefined) missing.push(`${where}.${k}`); });
-  need(C.meta, ["engine_version", "generated_at", "disclaimer", "formula", "indicator_source"], "meta");
-  need(C.meta.formula, ["stress", "readiness", "window", "uncertainty_pct"], "meta.formula");
-  C.scorecards.forEach(c => {
-    const w = `scorecards[${c.host_city}]`;
-    need(c, ["rank", "readiness_score", "readiness_band", "drivers", "raw_indicators",
-             "ops_scale", "peer_cities", "recommended_plays", "general_options"], w);
-    need(c.raw_indicators, ["energy_kwh", "water_liters", "kg_co2e", "cdd", "uhi", "shops", "shop_months"], `${w}.raw_indicators`);
-    need(c.ops_scale.absolute, ["energy_kwh", "water_liters", "kg_co2e", "visits"], `${w}.ops_scale.absolute`);
-    need(c.ops_scale, ["visit_mix", "spend", "poi_structure", "climate", "top_brands_by_visits"], `${w}.ops_scale`);
-    if (c.drivers.length !== 5) missing.push(`${w}.drivers has ${c.drivers.length}, expected 5`);
-    [...c.recommended_plays, ...c.general_options].forEach(p =>
-      need(p, ["id", "title", "owner", "effort", "legacy_use", "expected_effects",
-               "illustrative_absolute_delta", "rationale", "steal_from_peers"], `${w}.play[${p.id}]`));
-  });
-  check(missing.length === 0, missing.length ? `missing fields:\n       ${missing.join("\n       ")}` : "every field the shell reads is present");
-
-  section("Overview series");
-  check(S.months.length > 0, `${S.months.length} months (${S.months[0]}..${S.months[S.months.length - 1]})`);
-  const seriesBad = [];
-  cities.forEach(c => {
-    if (!S.cities[c]) return seriesBad.push(`${c}: no series`);
-    ["e", "w", "co2", "v", "cdd"].forEach(k => {
-      const a = S.cities[c][k];
-      if (!Array.isArray(a) || a.length !== S.months.length) seriesBad.push(`${c}.${k}`);
-    });
-  });
-  check(seriesBad.length === 0, seriesBad.length ? `bad series: ${seriesBad.join(", ")}` : "all 11 hosts have 5 complete series");
-
-  // the Overview chart and D's Compare tab must agree about the same city
-  const summer = S.months.map((m, i) => (+m.slice(5, 7) === 6 || +m.slice(5, 7) === 7) ? i : -1).filter(i => i >= 0);
-  let worst = 0, worstAt = "";
-  cities.forEach(city => {
-    const abs = BY[city].ops_scale.absolute;
-    [["e", "energy_kwh"], ["w", "water_liters"], ["co2", "kg_co2e"], ["v", "visits"]].forEach(([k, f]) => {
-      const mine = summer.reduce((t, i) => t + S.cities[city][k][i], 0);
-      const drift = abs[f] ? Math.abs(mine - abs[f]) / abs[f] : 0;
-      if (drift > worst) { worst = drift; worstAt = `${city}.${f}`; }
-    });
-  });
-  check(worst <= 0.005, `Overview summer totals match ops_scale.absolute (worst ${(worst * 100).toFixed(4)}% at ${worstAt || "—"})`);
-
-  section("First paint");
-  drew("kpis", "Energy", "Water", "CO₂e", "Visits", "summer total");
-  drew("kpiline", "absolute footprint");
-  drew("presschips", "datum");
-  drew("chart", "polyline", "rect");
-  drew("serielegend", "month");
-  drew("struct", "Visit mix", "Busiest brands", "mixbar");
-  drew("strip", "readiness", "card");
-  drew("cmpleft", "Pressure drivers", "city_cards/", "per shop-month");
-  drew("cmpright", "playcard", "Owner:", "Effort:");
-  drew("surgetbl", "Baseline summer");
-  drew("levers", "lever");
-  drew("drvfilter", "All hosts");
-  drew("rankline", "Readiness", "±");
-
-  section("Render sweep — every city × metric × surge × tab");
-  const errors = [];
-  for (const city of cities.concat(["__all__"])) {
-    for (const metric of ["e", "w", "co2", "v"]) {
-      for (const surge of [1, 1.55, 2]) {
-        for (const tab of ["overview", "compare", "spatial", "scenarios"]) {
-          state.city = city; state.metric = metric; state.surge = surge; state.tab = tab;
-          try { renderAll(); }
-          catch (e) { errors.push(`${city}/${metric}/${surge}/${tab}: ${e.message}`); }
+  const shops = [
+    { l: "Food", u: 9.5, d: 1.2 }, { l: "Water", u: 4, d: 20 },
+    { l: "Venue", u: 8.5, d: 3 }, { l: "Energy", u: 6, d: 4 },
+    { l: "Other_EFW", u: 10, d: 90 },
+  ];
+  let agreed = 0, checked = 0;
+  for (const metric of ["e", "w", "co2"]) {
+    for (const combo of [[], [lv[0]], [lv[0], lv[1]], lv]) {
+      for (const heatMin of [1, 8, 11]) {
+        for (const surge of [1, 1.35]) {
+          const expr = sc.multiplier(combo, metric, heatMin, surge);
+          for (const sh of shops) {
+            checked++;
+            const fromExpr = ev(expr, { ...sh, m0: 1 });
+            const fromJs = sc.shopMultiplier(sh, combo, metric, heatMin, surge);
+            if (Math.abs(fromExpr - fromJs) < 1e-9) agreed++;
+          }
         }
       }
     }
   }
-  check(errors.length === 0, errors.length
-    ? `render errors:\n       ${errors.slice(0, 8).join("\n       ")}`
-    : `${(cities.length + 1) * 4 * 3 * 4} combinations rendered clean`);
+  ok(`map expressions match the JS totals (${checked} combinations)`, agreed === checked,
+    `${checked - agreed} disagreed`);
 
-  section("Empty states");
-  state.surge = 1; state.tab = "compare";
-  cities.forEach(city => {
-    state.city = city; renderAll();
-    const html = lastWrite("cmpright");
-    const plays = BY[city].recommended_plays.length, gen = BY[city].general_options.length;
-    const showsPlays = plays > 0 ? html.includes("playcard") : html.includes("No pressing plays");
-    const showsGen = gen > 0 ? html.includes("general option") : !html.includes("general option");
-    check(showsPlays && showsGen, `${city}: ${plays} plays / ${gen} general options render correctly`);
-  });
+  ok("a lever with no scope match leaves a shop untouched",
+    sc.shopMultiplier({ l: "Energy", u: 1, d: 99 },
+      lv.filter(l => l.id === "hotel_water_reuse"), "w", 8) === 1);
+  ok("hotel reuse does hit a lodging shop",
+    sc.shopMultiplier({ l: "Water", u: 1, d: 99 },
+      lv.filter(l => l.id === "hotel_water_reuse"), "w", 8) < 1);
 
-  section("Spatial wiring (the pop-out and the iframe must agree with the shell)");
-  for (const city of ["Miami", "New York/New Jersey", "__all__"]) {
-    state.city = city; state.theme = "dark"; state.tab = "spatial"; renderAll();
-    const href = nodes.get("popout").href || "";
-    const title = nodes.get("spatialtitle").textContent;
-    const wantCity = `city=${encodeURIComponent(city)}`;
-    check(href.includes(wantCity) && href.includes("theme=dark") && title.length > 0,
-      `${city}: pop-out carries city+theme (${href}), title "${title}"`);
+  // the split tables the map now loads instead of the 11.7 MB all-city set
+  const mapIndex = readJSON("data/index.json").cities;
+  ok("index.json covers all 11 hosts", Object.keys(mapIndex).length === 11);
+  for (const [cityName, meta] of Object.entries(mapIndex)) {
+    ok(`${cityName}: split tables exist`,
+      ["places", "heat", "daily"].every(d =>
+        fs.existsSync(path.join(APP, "data", d, `${meta.slug}.json`))),
+      meta.slug);
   }
-  state.theme = "light";
+  ok("the largest city bundle is under 2 MB",
+    Math.max(...Object.values(mapIndex).map(m => m.bytes)) < 2e6,
+    `${(Math.max(...Object.values(mapIndex).map(m => m.bytes)) / 1e6).toFixed(2)} MB`);
 
-  section("Pressure filter");
-  Object.entries(C.indexes.by_primary_driver).forEach(([driver, expected]) => {
-    state.filter = driver; drawStrip();
-    const n = (lastWrite("strip").match(/data-city=/g) || []).length;
-    check(n === expected.length, `${driver} → ${n} hosts (contract says ${expected.length})`);
-  });
-  state.filter = null; drawStrip();
-  check((lastWrite("strip").match(/data-city=/g) || []).length === 11, "no filter → all 11 hosts");
+  ok("MapLibre is vendored, not pulled from a CDN at runtime",
+    fs.existsSync(path.join(APP, "vendor/maplibre-gl.js")) &&
+    fs.existsSync(path.join(APP, "vendor/maplibre-gl.css")));
+  const spSrc = fs.readFileSync(path.join(APP, "js/views/spatial.js"), "utf8");
+  ok("no CDN script URL survives in the map view", !/unpkg\.com/.test(spSrc));
+  // MapLibre's own stylesheet is injected after ours and sets
+  // `.maplibregl-map { position: relative }` on the very element we position —
+  // a plain `.mapcanvas` rule loses the cascade and the map collapses to 0px
+  const spCss = fs.readFileSync(path.join(APP, "css/spatial.css"), "utf8");
+  ok("the map container outranks MapLibre's own positioning",
+    /\.mapstage\s*>\s*\.mapcanvas\s*\{[^}]*position:\s*absolute/.test(spCss) &&
+    /\.mapstage\s*>\s*\.mapcanvas\s*\{[^}]*height:\s*100%/.test(spCss));
+  ok("the map waits for a sized container before it is built",
+    /whenSized/.test(spSrc) && /ResizeObserver/.test(spSrc));
+  ok("the basemap falls back to a local style when unreachable",
+    /function fallbackStyle/.test(spSrc) && /resolveStyle/.test(spSrc));
+  ok("no debug handles left on window", !/__probeMap/.test(spSrc));
+  ok("no probe page left behind", !fs.existsSync(path.join(APP, "probe.html")));
 
-  section("Deep links (a demo URL must survive a reload)");
-  let hashBad = [];
-  for (const city of cities.concat(["__all__"])) {
-    for (const tab of ["overview", "compare", "spatial", "scenarios"]) {
-      state.city = city; state.tab = tab; writeHash();
-      const url = global.location.hash;
-      state.city = null; state.tab = null;          // simulate a cold load on that URL
-      readHash();
-      if (state.city !== city || state.tab !== tab) hashBad.push(`${url} → ${state.tab}/${state.city}`);
+  // Normalising each metric by its own p95 put the median shop at ~6px whichever
+  // metric you picked, so the buttons looked inert. Opacity carries the contrast.
+  ok("metric choice changes opacity, not only size",
+    /circle-stroke-opacity/.test(spSrc) && /const fade =/.test(spSrc));
+  // an open popup shows the month and scenario it was opened in; both move
+  ok("the popup re-renders when month or scenario changes",
+    /function refreshPopup/.test(spSrc) &&
+    (spSrc.match(/refreshPopup\(\)/g) || []).length >= 3);
+  ok("difference mode keeps dots clickable",
+    /const floor = view\.diff \? 5 : 2/.test(spSrc));
+  ok("the heat threshold is never disabled",
+    !/id="sp-heatmin"[^>]*disabled/.test(spSrc));
+  ok("the surge elasticities are behind a disclosure", /scendisc/.test(spSrc));
+  ok("a guide is reachable from the map", /function toggleHelp/.test(spSrc) &&
+    /sp-helpbtn/.test(spSrc));
+  ok("the guide explains the heat index", /Urban heat, 1 \(cool\) to 11/.test(spSrc));
+  // both pickers render the same row from one function, so they cannot drift
+  const citySrc = fs.readFileSync(path.join(APP, "js/lib/city.js"), "utf8");
+  ok("the picker row is defined once and shared",
+    /export function cityOption/.test(citySrc) &&
+    /cityOption\(/.test(spSrc) &&
+    /cityOption\(/.test(fs.readFileSync(path.join(APP, "js/views/overview.js"), "utf8")));
+  ok("the picker row carries rank and readiness",
+    /rank/.test(citySrc) && /readiness_score/.test(citySrc) && /scoreColour/.test(citySrc));
+  // four hand-guessed bottom offsets used to disagree and overlap each other
+  ok("map chrome clears the bottom stack from one token",
+    /--map-bottom:/.test(spCss) &&
+    (spCss.match(/var\(--map-bottom\)/g) || []).length >= 3);
+  ok("the basemap follows the theme",
+    /function applyTheme/.test(spSrc) && /setStyle/.test(spSrc));
+  ok("the day chart shows the scenario against the baseline",
+    /function layerRatios/.test(spSrc) && /with the scenario/.test(spSrc));
+  const baseCss = fs.readFileSync(path.join(APP, "css/base.css"), "utf8");
+  ok("the city picker styles are shared, not duplicated",
+    /\.citymenu \{/.test(baseCss) &&
+    !/\.citymenu \{/.test(fs.readFileSync(path.join(APP, "css/overview.css"), "utf8")));
+
+  /* ------------------------------------------------------------------ */
+  section("assets");
+  const IMG_SLUG = {
+    "New York/New Jersey": "new-york",
+    "San Francisco Bay Area": "san-francisco",
+    "Kansas City": "kansas-city",
+    "Los Angeles": "los-angeles",
+  };
+  const slugOf = c => IMG_SLUG[c] || c.toLowerCase().replace(/[^a-z]+/g, "-");
+  let lqip = {};
+  try { lqip = readJSON("assets/img/lqip.json"); } catch (_) { /* reported below */ }
+  ok("lqip.json exists with 11 entries", Object.keys(lqip).length === 11);
+  for (const c of S.cities) {
+    const s = slugOf(c);
+    ok(`${c}: photo derivatives exist`,
+      fs.existsSync(path.join(APP, "assets/img", `${s}-1200.webp`)) &&
+      fs.existsSync(path.join(APP, "assets/img", `${s}-320.webp`)),
+      `expected assets/img/${s}-{1200,320}.webp`);
+    ok(`${c}: has a blur-up placeholder`, typeof lqip[c] === "string" && lqip[c].startsWith("data:"));
+  }
+  for (const c of S.cities) {
+    const f = path.join(APP, "data", "city_cards", `${c.toLowerCase().replace(/\//g, "_").replace(/ /g, "_")}.md`);
+    ok(`${c}: one-pager exists`, fs.existsSync(f), f);
+  }
+
+  /* ------------------------------------------------------------------ */
+  section("wiring");
+  const html = fs.readFileSync(path.join(APP, "index.html"), "utf8");
+  ok("index.html has no iframe", !/<iframe/i.test(html));
+  const bootSrc = fs.readFileSync(path.join(APP, "js/boot.js"), "utf8");
+  ok("the rail is three tabs — Scenarios folded into the map",
+    (bootSrc.match(/\{ id: "/g) || []).length === 3 && !/scenarios/.test(bootSrc));
+  for (const gone of ["spatial.html", "pulse.css", "css/pages.css", "js/views/scenarios.js"]) {
+    ok(`${gone} is gone`, !fs.existsSync(path.join(APP, gone)));
+  }
+  ok("index.html loads boot.js as a module", /type="module"[^>]*js\/boot\.js/.test(html));
+  for (const css of ["css/base.css", "css/overview.css", "css/compare.css", "css/spatial.css"]) {
+    ok(`${css} is linked and present`,
+      html.includes(css) && fs.existsSync(path.join(APP, css)));
+  }
+  // the compositing cost that made the old shell drop frames — comments don't count
+  const stripComments = s => s.replace(/\/\*[\s\S]*?\*\//g, "");
+
+  // The host picker opens past the banner's bottom edge. overflow:hidden on the
+  // banner clips it with no error — the photo is clipped by .bmedia instead.
+  const ovCss = stripComments(fs.readFileSync(path.join(APP, "css/overview.css"), "utf8"));
+  const bannerRule = (ovCss.match(/\.banner\s*\{[^}]*\}/) || [""])[0];
+  ok("the banner does not clip its overflow", !/overflow\s*:\s*hidden/.test(bannerRule), bannerRule);
+  ok(".bmedia clips the photo instead",
+    /\.banner\s+\.bmedia\s*\{[^}]*overflow\s*:\s*hidden/.test(ovCss));
+  ok("the picker markup uses the media wrapper",
+    /class="bmedia"/.test(fs.readFileSync(path.join(APP, "js/views/overview.js"), "utf8")));
+  ok("no backdrop-filter declared in css/",
+    !fs.readdirSync(path.join(APP, "css"))
+      .some(f => /backdrop-filter\s*:/.test(
+        stripComments(fs.readFileSync(path.join(APP, "css", f), "utf8")))));
+  ok("every driver has an icon", cards[0].drivers.every(d => DRIVER_ICON[d.key]));
+  ok("icon() returns svg", icon("energy").startsWith("<svg"));
+  // hairline icons read as tentative next to the display face
+  ok("icons are drawn at a heavy stroke", /stroke-width="2(\.\d)?"/.test(icon("grid")), icon("grid"));
+  for (const n of ["grid", "chev", "chevDown", "map", "layers", "sliders", "moon", "sun"]) {
+    ok(`icon "${n}" is defined`, icon(n).length > 90 && icon(n) !== icon("__missing__"));
+  }
+
+  for (const f of ["favicon.ico", "assets/icon.png",
+                   "assets/img/icon-32.png", "assets/img/icon-64.png", "assets/img/icon-192.png"]) {
+    ok(`${f} exists`, fs.existsSync(path.join(APP, f)));
+  }
+  ok("index.html links the favicon", /rel="icon"/.test(html));
+  ok("the rail uses the icon asset, not initials",
+    /icon-64\.png/.test(fs.readFileSync(path.join(APP, "js/boot.js"), "utf8")));
+  ok("both display and text faces are loaded",
+    /Montserrat/.test(html) && /Manrope/.test(html));
+
+  /* ------------------------------------------------------------------ */
+  section("theme parity");
+  // Views bake colours into markup by reading these at render time, so a token
+  // the dark block forgets silently renders a light-theme colour on a dark card.
+  const base = fs.readFileSync(path.join(APP, "css", "base.css"), "utf8");
+  const block = re => (base.match(re) || [""])[0];
+  const props = s => new Set([...s.matchAll(/(--[a-z0-9-]+)\s*:/gi)].map(m => m[1]));
+
+  const lightBlock = block(/:root\s*\{[\s\S]*?\n\}/);
+  const light = props(lightBlock);
+  const dark = props(block(/:root\[data-theme="dark"\]\s*\{[\s\S]*?\n\}/));
+
+  // a token whose value is itself var(--x) resolves at use time and tracks the
+  // dark --x automatically, so the dark block need not restate it
+  const aliases = new Set(
+    [...lightBlock.matchAll(/(--[a-z0-9-]+)\s*:\s*var\(/gi)].map(m => m[1]));
+
+  ok("dark theme defines tokens", dark.size > 10, `got ${dark.size}`);
+  const COLOURY = /^--(bg|surface|line|ink|accent|c-|v-|sh-)/;
+  const missing = [...light].filter(p => COLOURY.test(p) && !dark.has(p) && !aliases.has(p));
+  ok("dark theme overrides every colour token", missing.length === 0, missing.join(", "));
+  const orphan = [...dark].filter(p => !light.has(p));
+  ok("no token is defined only in the dark block", orphan.length === 0, orphan.join(", "));
+
+  // palette.js caches a fixed key list; anything it asks for must actually exist
+  const paletteSrc = fs.readFileSync(path.join(APP, "js/lib/palette.js"), "utf8");
+  const asked = [...paletteSrc.matchAll(/"(--[a-z0-9-]+)"/g)].map(m => m[1]);
+  const unknown = asked.filter(p => !light.has(p));
+  ok("palette.js only reads tokens that exist", unknown.length === 0, unknown.join(", "));
+
+  /* ------------------------------------------------------------------ */
+  section("formatting");
+  ok("fmt compacts billions", fmt(24_700_000_000) === "24.7B", fmt(24_700_000_000));
+  ok("ordinal", ordinal(1) === "1st" && ordinal(2) === "2nd" && ordinal(11) === "11th");
+  ok("pretty month", pretty("2024-06") === "Jun 2024", pretty("2024-06"));
+
+  /* ------------------------------------------------------------------ */
+  section("intervention lab");
+  // The lab's arithmetic is a pure module; run it against the real levers.json
+  // exactly as the Impact map lab and the Compare tab's plays do.
+  const LV = await mod("lib/levers.js");
+  let LEV = null;
+  try { LEV = readJSON("data/levers.json"); } catch (_) { /* reported below */ }
+  ok("data/levers.json exists (python3 scripts/build_levers.py)", !!LEV);
+  if (LEV) {
+    ok("levers carry the fields the cards need",
+      LEV.levers.every(l => l.id && l.title && l.plain && l.bucket && l.evidence && l.evidence_plain &&
+        Array.isArray(l.dials) && l.best_source && l.best_source.u && (l.offmap || l.cuts)));
+    ok("every bucket the lab lists exists on some lever",
+      LV.BUCKETS.every(([b]) => LEV.levers.some(l => l.bucket === b)),
+      LV.BUCKETS.map(b => b[0]).join(", "));
+    ok("every cut is [low, mid, high] fractions in order",
+      LEV.levers.filter(l => l.cuts).every(l => Object.values(l.cuts).every(cs => Object.values(cs).every(v =>
+        v.length === 3 && v[0] <= v[1] && v[1] <= v[2] && v[0] >= 0 && v[2] <= 1))));
+    ok("every shop type a lever touches has a factor",
+      LEV.levers.filter(l => l.cuts).every(l => Object.keys(l.cuts).every(s =>
+        LEV.segments[s] && ["kwh", "water", "co2"].every(r => isFinite(LEV.segments[s].factor[r])))));
+    ok("every lever has a cost tier", LEV.levers.every(l => l.cost_tier && typeof l.cost_tier.t === "string"));
+    let matches = [];
+    try { matches = readJSON("data/matches.json"); } catch (_) { /* optional */ }
+
+    for (const k of cards) {
+      const { seg, tot } = LV.segmentPiles(LEV, [k]);
+      const a = k.ops_scale.absolute;
+      const sums = Object.fromEntries(["kwh", "water", "co2"].map(r =>
+        [r, Object.values(seg).reduce((s, x) => s + x[r], 0)]));
+      ok(`${k.host_city}: shop-type piles add up to the city totals`,
+        Math.abs(sums.kwh - a.energy_kwh) < 1e-3 * a.energy_kwh &&
+        Math.abs(sums.water - a.water_liters) < 1e-3 * a.water_liters &&
+        Math.abs(sums.co2 - a.kg_co2e) < 1e-3 * a.kg_co2e,
+        JSON.stringify(sums));
+      ok(`${k.host_city}: totals are the absolutes`,
+        tot.kwh === a.energy_kwh && tot.water === a.water_liters && tot.co2 === a.kg_co2e);
+
+      const R = LV.rankLevers(LEV, [k], k, matches.filter(m => m.m === k.host_city));
+      ok(`${k.host_city}: every lever ranks with finite cuts in [0, 1]`,
+        R.rows.length === LEV.levers.length && R.rows.every(x =>
+          ["kwh", "water", "co2"].every(r => isFinite(x.cut[r]) && x.cut[r] >= 0 && x.cut[r] <= 1) &&
+          x.reach >= 0 && x.reach <= 1));
+      ok(`${k.host_city}: something helps`, R.pressing.length > 0);
+      if (R.worst) {
+        ok(`${k.host_city}: ranked by the worst driver's cut`,
+          R.rows.every((x, i) => i === 0 || R.rows[i - 1].cut[R.worst] >= x.cut[R.worst] - 1e-12));
+      }
     }
+
+    const allOn = new Set(LEV.levers.map(l => l.id));
+    const keep = LV.combinedCuts(LEV, allOn);
+    ok("combined keep fractions stay inside (0, 1]",
+      Object.values(keep).every(cs => Object.values(cs).every(v => v.every(x => x > 0 && x <= 1))));
+    const H = cards[0];
+    const { seg: sH, tot: tH } = LV.segmentPiles(LEV, [H]);
+    const cut = LV.totalCut(sH, tH, keep);
+    const single = LEV.levers.filter(l => l.cuts).map(l => LV.aloneCut(l, sH, tH));
+    ok("all levers together cut less than or equal to the sum of each alone",
+      ["kwh", "water", "co2"].every(r => cut[r][1] <= single.reduce((s, x) => s + (x[r] || 0), 0) + 1e-9));
+    ok("low ≤ mid ≤ high after compounding",
+      ["kwh", "water", "co2"].every(r => cut[r][0] <= cut[r][1] + 1e-12 && cut[r][1] <= cut[r][2] + 1e-12));
+
+    const allPiles = LV.segmentPiles(LEV, cards);
+    ok("all-hosts totals are the sum of the cities",
+      Math.abs(allPiles.tot.kwh - cards.reduce((s, k) => s + k.ops_scale.absolute.energy_kwh, 0)) < 1e-6);
+
+    const seg0 = Object.keys(LEV.segments)[0], f0 = LEV.segments[seg0].factor;
+    const mine = LV.buildCustomLever(LEV, { id: "custom_t", title: "t", segs: [seg0], cost: 1,
+      pv: { [seg0]: { kwh: [f0.kwh / 4, f0.kwh / 2, f0.kwh] } } });
+    ok("custom lever: kWh per visit becomes a [low, mid, high] fraction",
+      mine.custom && mine.cuts[seg0] && Math.abs(mine.cuts[seg0].kwh[1] - 0.5) < 1e-12 && mine.cuts[seg0].kwh[2] === 1,
+      JSON.stringify(mine.cuts));
+    const fans = LV.buildCustomLever(LEV, { id: "custom_f", title: "f", fans: true, pf: { co2: [1, 2, 3] } });
+    ok("custom lever for fans lives on the match card", fans.offmap && fans.bucket === "match day" && !fans.cuts);
   }
-  check(hashBad.length === 0, hashBad.length
-    ? `broken round-trips:\n       ${hashBad.join("\n       ")}`
-    : `${(cities.length + 1) * 4} round-trips restore exactly`);
 
-  global.location.hash = "#compare"; state.city = null; readHash();
-  check(state.tab === "compare" && !!state.city, `#compare with no city → ${state.tab}/${state.city}`);
-  global.location.hash = "#nonsense"; state.city = null; readHash();
-  check(state.tab === "overview" && !!state.city, `unknown hash falls back → ${state.tab}/${state.city}`);
+  ok("boot loads levers.json and matches.json", /data\/levers\.json/.test(bootSrc) && /data\/matches\.json/.test(bootSrc));
+  ok("boot offers All 11 hosts", /ALL = "__all__"/.test(bootSrc) && /isAll/.test(bootSrc));
+  ok("boot keeps levers in the hash", /levers=/.test(bootSrc));
+  ok("boot listens to the map (levers and city)", /__leversFromMap/.test(bootSrc) && /__cityFromMap/.test(bootSrc));
+  ok("Impact map mounts the intervention lab and syncs lever state",
+    /mountLab/.test(spSrc) && /syncFromLab/.test(spSrc) && /buildMapLeversFromLab/.test(spSrc));
+  const labSrc = fs.readFileSync(path.join(APP, "js/views/spatial-lab.js"), "utf8");
+  ok("spatial-lab draws the ranked list, the answer, a lever's detail and the custom form",
+    /drawList/.test(labSrc) && /drawAnswer/.test(labSrc) && /drawDetail/.test(labSrc) && /customFormHtml/.test(labSrc));
+  const cmSrc = fs.readFileSync(path.join(APP, "js/views/compare.js"), "utf8");
+  ok("compare's plays come from levers.json", /rankLevers/.test(cmSrc) && /levers\.json/.test(cmSrc));
+  const ovSrc = fs.readFileSync(path.join(APP, "js/views/overview.js"), "utf8");
+  ok("the Overview's plays come from levers.json too", /rankLevers/.test(ovSrc) && /drawLeverPlays/.test(ovSrc));
+  const spatialCss = fs.readFileSync(path.join(APP, "css/spatial.css"), "utf8");
+  ok("css/spatial.css styles the lab", /\.lab2\b/.test(spatialCss) && /table\.rank/.test(spatialCss));
 
-  console.log(results.join("\n"));
-  console.log(failed
-    ? `\n${failed} check(s) FAILED`
-    : `\nAll checks passed. Pixels still need a browser: layout, the map's size inside the iframe, and dark mode.`);
-  process.exit(failed ? 1 : 0);
+  /* ------------------------------------------------------------------ */
+  console.log(`\n${checks - failures}/${checks} checks passed`);
+  if (failures) {
+    console.error(`${failures} FAILED`);
+    process.exit(1);
+  }
+  console.log("shell OK");
 }
+
+main().catch(err => { console.error(err); process.exit(1); });

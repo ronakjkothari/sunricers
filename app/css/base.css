@@ -1,0 +1,649 @@
+/* Nexus Pulse — design tokens and primitives.
+
+   Montserrat carries the display voice (wide, geometric, confident); Manrope
+   carries everything you actually read. The neutral ramp is warm rather than
+   blue-grey, so white, off-white and the well tone read as one family instead
+   of three unrelated greys.
+
+   No backdrop-filter, no blend modes, no clip-path corners, no ambient
+   animation. Numbers use tabular figures; mono is reserved for axis ticks. */
+
+:root {
+  color-scheme: light;
+
+  /* ground and surfaces — warm, and spaced far enough apart to read as steps */
+  --bg: #f1eeea;
+  --surface: #ffffff;
+  --surface-2: #faf8f5;
+  --surface-3: #ebe6e0;   /* wells, bar tracks, hover */
+  --surface-4: #ded7cf;   /* pressed, stronger fills */
+  --line: rgba(28, 25, 23, 0.12);
+  --line-2: rgba(28, 25, 23, 0.20);
+
+  /* ink — warm near-black, not slate */
+  --ink: #1c1917;
+  --ink-2: #57534e;
+  --ink-3: #8a827b;
+
+  /* accent — one, and it carries weight. Burnt sienna: close enough to the
+     energy hue to stay coherent, deep enough to read as deliberate. */
+  --accent: #b4471d;
+  --accent-2: #93370f;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(180, 71, 29, 0.11);
+  --accent-line: rgba(180, 71, 29, 0.42);
+
+  /* resource semantics — the only colours allowed to encode data */
+  --c-energy: #dd6a2b;
+  --c-water: #2589a8;
+  --c-carbon: #0e8a68;
+  --c-visits: #5b62b3;
+  --c-cooling: #c8941a;
+  --c-heat: #8f6410;
+  --c-venue: #7a6ab5;
+  --c-other: #a8a09a;
+
+  /* valence — elevated vs not. Deliberately not red/green: high resource use
+     is not a moral failing, and the data does not support that reading. */
+  --v-up: var(--accent);
+  --v-up-soft: var(--accent-soft);
+  --v-down: #6b635c;
+  --v-down-soft: rgba(107, 99, 92, 0.12);
+
+  /* spacing — every gap on the page comes from this scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 44px;
+  --gutter: var(--sp-6);   /* the one horizontal inset for page content */
+  --col: 1320px;           /* the reading column the gutter centres */
+
+  /* shape — generous radii and real separation instead of hairlines */
+  --r-1: 10px;
+  --r-2: 14px;
+  --r-3: 18px;
+  --r-4: 24px;
+  --r-pill: 999px;
+
+  --sh-1: 0 1px 2px rgba(28, 25, 23, 0.06);
+  --sh-2: 0 2px 6px rgba(28, 25, 23, 0.07), 0 1px 2px rgba(28, 25, 23, 0.05);
+  --sh-3: 0 10px 30px rgba(28, 25, 23, 0.11);
+  --sh-4: 0 20px 50px rgba(28, 25, 23, 0.17);
+
+  --display: "Montserrat", "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --fast: 150ms var(--ease);
+  --med: 260ms var(--ease);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #13100e;
+  --surface: #1c1917;
+  --surface-2: #232019;
+  --surface-3: #2e2823;
+  --surface-4: #3b3430;
+  --line: rgba(245, 241, 237, 0.12);
+  --line-2: rgba(245, 241, 237, 0.22);
+
+  --ink: #f5f1ed;
+  --ink-2: #b5aca4;
+  --ink-3: #857c74;
+
+  --accent: #e2703c;
+  --accent-2: #f28a56;
+  /* the dark accent is light enough that white text on it fails contrast */
+  --accent-ink: #1a0f08;
+  --accent-soft: rgba(226, 112, 60, 0.16);
+  --accent-line: rgba(226, 112, 60, 0.50);
+
+  --c-energy: #ef7d40;
+  --c-water: #3aa9cc;
+  --c-carbon: #22a983;
+  --c-visits: #858cdb;
+  --c-cooling: #e0ae35;
+  --c-heat: #b1832a;
+  --c-venue: #9a8ad0;
+  --c-other: #857c74;
+
+  --v-down: #9d948c;
+  --v-down-soft: rgba(157, 148, 140, 0.14);
+
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sh-2: 0 2px 6px rgba(0, 0, 0, 0.45);
+  --sh-3: 0 10px 30px rgba(0, 0, 0, 0.55);
+  --sh-4: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* ------------------------------------------------------------------ reset */
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 14px/1.6 var(--font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* x-scrollbars are never acceptable; wide content scrolls inside its own box */
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+p { margin: 0; }
+svg { display: block; }
+img { max-width: 100%; display: block; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------------ shell */
+.app {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* left icon rail — the nav pattern shared by all three reference designs */
+.rail {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-5) 0;
+  z-index: 60;
+}
+.rail .mark {
+  width: 32px; height: 32px;
+  margin-bottom: var(--sp-4);
+  display: grid; place-items: center;
+  padding: 0; border: 0; cursor: pointer;
+  transition: transform var(--fast);
+}
+/* the mark is the logo, not a nav chip: it takes no tint on hover, only lift */
+.rail button.mark,
+.rail button.mark:hover { background: none; }
+.rail .mark:hover { transform: scale(1.07); }
+.rail .mark img { width: 100%; height: 100%; object-fit: contain; }
+
+.rail button {
+  position: relative;
+  width: 44px; height: 44px;
+  border: 0; border-radius: var(--r-2);
+  background: transparent;
+  color: var(--ink-3);
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: background var(--fast), color var(--fast);
+}
+.rail button:hover { background: var(--surface-3); color: var(--ink); }
+/* a soft tint carries the active state; a solid accent block out-shouted
+   everything it was meant to be navigation for */
+.rail button.on { background: var(--accent-soft); color: var(--accent); }
+.rail button.on:hover { background: var(--accent-soft); color: var(--accent); }
+.rail .sp { flex: 1; }
+
+/* rail tooltip — labels on hover, so icons stay unlabelled but not opaque */
+.rail button::after {
+  content: attr(data-label);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 11px;
+  border-radius: var(--r-1);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--fast);
+  box-shadow: var(--sh-2);
+  z-index: 70;
+}
+.rail button:hover::after,
+.rail button:focus-visible::after { opacity: 1; }
+
+.main { min-width: 0; }
+
+/* The page itself is not capped — the banner and the sticky header run edge to
+   edge of the main area. The reading column is capped instead, so every block
+   below the fold shares a single left edge without boxing in the hero. */
+.page { padding: 0 0 var(--sp-8); }
+.pane > *:not(.bleed) {
+  width: min(var(--col), 100% - var(--gutter) * 2);
+  margin-inline: auto;
+}
+
+/* --------------------------------------------------------------- surfaces */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  box-shadow: var(--sh-2);
+}
+
+.panel { margin-top: var(--sp-5); }
+.panel > header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-6);
+  border-bottom: 1px solid var(--line);
+}
+.panel > header h2 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.panel > header .sp { flex: 1; }
+.panel .body { padding: var(--sp-6); }
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- buttons */
+.btn {
+  font: 600 13px/1 var(--font);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-1);
+  padding: 11px 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  transition: background var(--fast), border-color var(--fast), color var(--fast);
+}
+.btn:hover { background: var(--surface-3); border-color: var(--ink-3); }
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.btn.primary:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--ink-2); }
+.btn.ghost:hover { background: var(--surface-3); color: var(--ink); }
+.btn.sm { padding: 8px 12px; font-size: 12px; }
+
+.linkbtn {
+  font: 600 13px/1 var(--font);
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.linkbtn:hover { color: var(--accent-2); text-decoration: underline; }
+
+/* ------------------------------------------------------------------ chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.chip.up { background: var(--v-up-soft); color: var(--accent); }
+.chip.down { background: var(--v-down-soft); color: var(--v-down); }
+.chip.solid { background: var(--ink); color: var(--bg); }
+
+/* filter chips are interactive, so they look pressable */
+.fchip {
+  font: 600 12px/1 var(--font);
+  padding: 9px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  transition: all var(--fast);
+}
+.fchip:hover { border-color: var(--ink-3); color: var(--ink); }
+.fchip.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+
+/* ---------------------------------------------------------------- tooltip */
+.tip {
+  position: absolute;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -100%);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-2);
+  box-shadow: var(--sh-3);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: 12px;
+  color: var(--ink-2);
+  min-width: 140px;
+  transition: opacity var(--fast);
+}
+.tip.on { opacity: 1; }
+.tip b {
+  display: block; color: var(--ink); font-weight: 700;
+  margin-bottom: var(--sp-2); font-family: var(--display); font-size: 12.5px;
+}
+.tip .r { display: flex; justify-content: space-between; gap: var(--sp-5); }
+.tip .r + .r { margin-top: 3px; }
+.tip .r span:last-child { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+/* info popover — the single methods surface, opened on demand */
+.info {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--ink-3);
+  display: inline-grid; place-items: center;
+  cursor: pointer;
+  padding: 0;
+  flex: none;
+  transition: all var(--fast);
+}
+.info:hover { color: var(--ink); border-color: var(--ink-3); background: var(--surface-3); }
+.pop {
+  position: absolute;
+  z-index: 90;
+  width: min(420px, calc(100vw - 48px));
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-2);
+  box-shadow: var(--sh-4);
+  padding: var(--sp-5);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.pop[hidden] { display: none; }
+.pop h4 { font-size: 14px; margin-bottom: var(--sp-2); color: var(--ink); }
+.pop dl {
+  display: grid; grid-template-columns: auto 1fr;
+  gap: var(--sp-1) var(--sp-4); margin: var(--sp-3) 0 0; font-size: 12.5px;
+}
+.pop dt { color: var(--ink-3); }
+.pop dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+/* ----------------------------------------------------- play card (shared)
+   Overview shows the top two; Compare shows the whole playbook. Same card. */
+.play {
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  padding: var(--sp-5);
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.play h3 { font-size: 16px; font-weight: 600; line-height: 1.32; }
+.play .why { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+.play .foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin-top: auto;
+  align-items: center;
+}
+.play .foot .lnk {
+  color: var(--accent); background: none; border: 0; padding: 0;
+  cursor: pointer; font: 600 12.5px var(--font);
+}
+.play .foot .lnk:hover { text-decoration: underline; }
+
+/* before/after: the current total, with the avoided share carved out of it */
+.pbars { display: grid; gap: var(--sp-4); }
+.pbar { display: grid; gap: var(--sp-2); }
+.pbar .ph { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.pbar .pn {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+}
+.pbar .pd { font-family: var(--display); font-size: 15px; font-weight: 700; }
+.pbar .ptrack {
+  position: relative;
+  height: 12px;
+  border-radius: var(--r-pill);
+  background: repeating-linear-gradient(
+    -45deg, var(--surface-4) 0 5px, var(--surface-3) 5px 10px);
+  overflow: hidden;
+}
+.pbar .pfill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  border-radius: var(--r-pill);
+  transition: width var(--med);
+}
+.pbar .pf {
+  display: flex; justify-content: space-between; gap: var(--sp-3);
+  font-size: 11.5px; color: var(--ink-3);
+}
+.pbar .pf b { color: var(--ink); font-weight: 700; }
+.pbar .psaved { color: var(--ink-2); font-weight: 600; }
+
+/* ------------------------------------------------- charts (shared) ------
+   Overview and Compare draw the same axes, bullets and metric switcher. */
+/* Bullet bar. The track spans the 11-host min..max, the tick marks the median,
+   and the fill runs from the tick to this city's value — so the distribution's
+   skew stays visible instead of being normalised away. */
+.bullet { position: relative; height: 7px; background: var(--surface-3); border-radius: var(--r-pill); }
+.bullet i {
+  position: absolute; top: 0; bottom: 0;
+  border-radius: var(--r-pill);
+  background: var(--dc, var(--ink-3));
+  transition: width var(--med), left var(--med);
+}
+.bullet .mid {
+  position: absolute;
+  top: -3px; bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--ink-2);
+  opacity: 0.55;
+  z-index: 1;   /* the tick sits before the fill in the DOM, so lift it */
+}
+
+.mswitch { display: flex; gap: var(--sp-1); flex-wrap: wrap; }
+.mswitch button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 600 12.5px/1 var(--font);
+  padding: 9px 13px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all var(--fast);
+}
+.mswitch button:hover { border-color: var(--m); color: var(--ink); }
+.mswitch button.on {
+  background: var(--m);
+  border-color: var(--m);
+  color: #fff;
+}
+
+.chartwrap { position: relative; padding: var(--sp-4) var(--sp-5) 0; }
+.chartwrap svg { width: 100%; height: auto; }
+.gline { stroke: var(--line); stroke-width: 1; }
+.axis { stroke: var(--line-2); stroke-width: 1; }
+.glabel { fill: var(--ink-3); font: 11px var(--mono); }
+.serie { fill: none; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.median { fill: none; stroke: var(--ink-2); stroke-width: 1.6; stroke-dasharray: 5 4; opacity: 0.8; }
+.iqr { fill: var(--ink-3); opacity: 0.15; }
+.win { fill: var(--c-cooling); opacity: 0.15; }
+.chartlegend {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  padding: var(--sp-3) var(--sp-6) var(--sp-5);
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.chartlegend span { display: inline-flex; align-items: center; gap: var(--sp-2); }
+.chartlegend i { width: 16px; height: 3px; border-radius: 2px; flex: none; }
+.chartlegend i.dash { background: repeating-linear-gradient(90deg, var(--ink-2) 0 5px, transparent 5px 9px); }
+.chartlegend i.box { height: 11px; border-radius: 3px; }
+
+/* ------------------------------------------------- text primitives ---- */
+.note { font-size: 12.5px; color: var(--ink-3); line-height: 1.55; }
+.note b { color: var(--ink-2); }
+.pre {
+  font: 12px/1.6 var(--mono);
+  background: var(--surface-3);
+  border-radius: var(--r-1);
+  padding: 12px 14px;
+  overflow-x: auto;
+  color: var(--ink-2);
+  margin: 10px 0 0;
+}
+.lnk {
+  color: var(--accent);
+  background: none; border: 0; padding: 0;
+  font: 500 inherit/1 var(--font);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.lnk:hover { text-decoration: underline; }
+
+/* ----------------------------------------------- city picker (shared) ---
+   The Overview banner and the Impact map both offer the same choice, so they
+   offer it the same way: photo, rank, readiness. */
+.citymenu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 70;
+  width: min(560px, calc(100vw - 120px));
+  max-height: 62vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-3);
+  box-shadow: var(--sh-4);
+}
+.citymenu[hidden] { display: none; }
+.cityopt {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-2);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background var(--fast), border-color var(--fast);
+}
+.cityopt:hover { background: var(--surface-3); }
+.cityopt.on { border-color: var(--accent); background: var(--accent-soft); }
+.cityopt img {
+  width: 56px; height: 42px; object-fit: cover; border-radius: var(--r-1);
+  flex: none; background: var(--surface-3) center/cover;
+}
+.cityopt .con { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+.cityopt .cn { font-size: 13.5px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+.cityopt .cr { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.cityopt .cr b { font-weight: 700; }
+.cityopt .cbar {
+  height: 4px; border-radius: var(--r-pill); background: var(--surface-3);
+  overflow: hidden; margin-top: 2px;
+}
+.cityopt .cbar i { display: block; height: 100%; border-radius: var(--r-pill); }
+
+@media (max-width: 860px) {
+  .citymenu { grid-template-columns: 1fr; width: min(340px, calc(100vw - 40px)); }
+}
+
+/* ------------------------------------------------------------------ misc */
+.muted { color: var(--ink-3); }
+.empty {
+  color: var(--ink-3);
+  font-size: 13px;
+  padding: var(--sp-7);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 900px) {
+  :root { --gutter: var(--sp-4); }
+  .app { grid-template-columns: 1fr; }
+  .rail {
+    position: fixed; bottom: 0; top: auto; left: 0; right: 0;
+    height: auto; width: 100%;
+    flex-direction: row; justify-content: center;
+    border-right: 0; border-top: 1px solid var(--line);
+    padding: var(--sp-2) 0;
+  }
+  .rail .mark, .rail .sp { display: none; }
+  .rail button::after { display: none; }
+  .page { padding-bottom: 96px; }
+}
