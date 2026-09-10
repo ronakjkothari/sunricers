@@ -1,4 +1,4 @@
-# Nexus Pulse — the app
+# Pulse — the app
 
 No build step. MapLibre is vendored in `vendor/`, so the only runtime network
 dependencies are Montserrat + Manrope from Google Fonts and Carto's keyless

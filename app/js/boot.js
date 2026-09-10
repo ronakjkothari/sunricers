@@ -1,4 +1,4 @@
-/* Nexus Pulse shell.
+/* Pulse shell.
 
    Owns state, routing and view mounting. Views are ES modules loaded on first
    activation, so the map's ~11 MB of place data and MapLibre stay off the boot
@@ -219,7 +219,7 @@ function mergeCustomLevers() {
 function buildRail() {
   const rail = document.getElementById("rail");
   rail.innerHTML =
-    `<button class="mark" id="railhome" data-label="Overview" aria-label="Nexus Pulse — go to Overview"
+    `<button class="mark" id="railhome" data-label="Overview" aria-label="Pulse — go to Overview"
        ><img src="assets/img/icon-64.png" alt="" width="64" height="64"></button>` +
     TABS.map(t => `<button data-tab="${t.id}" data-label="${t.label}"
       aria-label="${t.label}">${icon(t.icon, 19)}</button>`).join("") +
@@ -249,7 +249,7 @@ async function render() {
   TABS.forEach(t => {
     document.getElementById("pane-" + t.id).hidden = t.id !== state.tab;
   });
-  document.title = `${cityName()} · Nexus Pulse`;
+  document.title = `${cityName()} · Pulse`;
 
   // only the visible view renders — hidden tabs are not redrawn
   const id = state.tab;

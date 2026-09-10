@@ -1,4 +1,4 @@
-# Plan A — Feature Requirements (Nexus Pulse shell)
+# Plan A — Feature Requirements (Pulse shell)
 
 **Audience:** teammate building Iteration 1 of A  
 **Product:** FIFA 2026 Track 2 — Energy–Food–Water Resource Intelligence Platform  
@@ -10,7 +10,7 @@
 
 Your framing is directionally right. Tighten it for judges:
 
-> **Nexus Pulse** is a command suite for FIFA and host-city resource managers to **monitor** Energy–Food–Water footprints across the 11 U.S. hosts, **compare** intervention strategies on the same evidence base, and **carry forward** a reusable playbook for future mega-events.
+> **Pulse** is a command suite for FIFA and host-city resource managers to **monitor** Energy–Food–Water footprints across the 11 U.S. hosts, **compare** intervention strategies on the same evidence base, and **carry forward** a reusable playbook for future mega-events.
 
 Avoid “foolproof” (sample data is noisy by design) and “controlled environments” (unclear). Prefer: transparent methods, scenario compare, legacy playbook.
 
@@ -71,13 +71,13 @@ Iteration 1 is a **working shell**, not a redesign of B/D.
 
 ## 4. What A should look like (front-end)
 
-Think **operations console**, not marketing site. One product name in the header: **Nexus Pulse**.
+Think **operations console**, not marketing site. One product name in the header: **Pulse**.
 
 ### Layout (every page)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ Nexus Pulse · FIFA 2026 EFW Command                          │
+│ Pulse · FIFA 2026 EFW Command                                │
 │ [Host city ▾] [Season: Jun–Jul ▾] [Disclaimer ▾]             │
 ├──────── Tabs ───────────────────────────────────────────────┤
 │  Overview  |  Compare hosts  |  Spatial map  |  Scenarios   │
@@ -160,7 +160,7 @@ If CSV-in-browser is annoying, add a tiny `scripts/build_overview_kpis.py` that 
 
 ```
                  ┌──────────────────────┐
-                 │   A · Nexus Pulse    │
+                 │      A · Pulse       │
                  │  global city + tabs  │
                  └──────────┬───────────┘
         ┌───────────────────┼───────────────────┐
@@ -189,7 +189,7 @@ If CSV-in-browser is annoying, add a tiny `scripts/build_overview_kpis.py` that 
 
 ### Global
 
-- [ ] Product name **Nexus Pulse** in header  
+- [ ] Product name **Pulse** in header  
 - [ ] Host-city selector (11 U.S. hosts + optional “All hosts”)  
 - [ ] Persistent disclaimer  
 - [ ] Tab navigation with deep links (`#overview`, `#compare`, `#spatial`, `#scenarios`)  
@@ -252,7 +252,7 @@ UNLEASH-style framing for the pitch (optional copy block):
 - **Problem:** mega-events spike EFW load unevenly across hosts and districts.  
 - **User:** FIFA / city resource managers who need comparable evidence, not one-off charts.  
 - **Insight:** pressure is a nexus (heat×lodging×food), so plays must transfer across peer cities.  
-- **Solution:** Nexus Pulse shell + spatial truth (B) + readiness playbook (D) + intervention lab (C).  
+- **Solution:** Pulse shell + spatial truth (B) + readiness playbook (D) + intervention lab (C).  
 - **Prototype:** working tabs on sample host-city data with transparent factors.
 
 ---

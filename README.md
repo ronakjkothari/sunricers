@@ -15,7 +15,7 @@ cd app && python -m http.server 8000                                # http://loc
 Check the shell still works after changing it: `node scripts/test_shell.js`
 (everything except pixels — layout, dark mode and the embedded map still need a browser).
 
-**Nexus Pulse** (`app/index.html`) is the front door: a left rail driving three tabs —
+**Pulse** (`app/index.html`) is the front door: a left rail driving three tabs —
 Overview (the city dossier), Compare hosts (leaderboard, head-to-head, full playbook),
 and the Impact map (where the load sits, and what moves it).
 

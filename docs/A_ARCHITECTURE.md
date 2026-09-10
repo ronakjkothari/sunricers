@@ -1,4 +1,4 @@
-# Plan A — Nexus Pulse shell, as built
+# Plan A — Pulse shell, as built
 
 **What this is:** the as-built reference for `app/index.html`. Requirements live in
 [`A_FEATURE_REQUIREMENTS.md`](./A_FEATURE_REQUIREMENTS.md); this describes what actually

@@ -1,6 +1,6 @@
 # Plan D — Eleven Hosts Playbook (standalone back-engine)
 
-**Role:** comparative sustainability-**readiness** scorecards for the 11 U.S. host cities, plus peer sets and transferable intervention plays. Built to plug into Plan A (Nexus Pulse) later — no A UI dependency.
+**Role:** comparative sustainability-**readiness** scorecards for the 11 U.S. host cities, plus peer sets and transferable intervention plays. Built to plug into Plan A (Pulse) later — no A UI dependency.
 
 ## A integration (start here)
 

@@ -1,6 +1,6 @@
 # Plan A — Iteration 1 Feature Requirements
 
-**Product:** Nexus Pulse (FIFA 2026 Resource Intelligence Platform)  
+**Product:** Pulse (FIFA 2026 Resource Intelligence Platform)  
 **Track:** Energy–Food–Water Nexus · [Rice Urban Sustainability Hackathon](https://rice-urban-sustainability.devpost.com/)  
 **Role of A:** The command shell. B (map), C (intervention lab), and D (playbook) are modules A hosts and connects.  
 **Audience for this doc:** teammate building Iteration 1 of A  
@@ -25,7 +25,7 @@
 
 **Preferred one-liner for pitch / UI masthead:**
 
-> Nexus Pulse is a command suite for host-city sustainability and FIFA resource managers to monitor Energy–Food–Water footprints across all 11 U.S. host cities, stress-test interventions with transparent data, and leave a reusable playbook for future mega-events.
+> Pulse is a command suite for host-city sustainability and FIFA resource managers to monitor Energy–Food–Water footprints across all 11 U.S. host cities, stress-test interventions with transparent data, and leave a reusable playbook for future mega-events.
 
 **Why this beats the draft you floated**
 
@@ -68,7 +68,7 @@ One app shell, four regions. Desktop-first (judges on laptops). Light/dark optio
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│ NEXUS PULSE                          [City ▾] [Month/Match ▾]   │
+│ PULSE                                [City ▾] [Month/Match ▾]   │
 │ E–F–W command suite · 11 hosts       Scenario: Baseline | Active │
 ├────────────┬─────────────────────────────────────────────────────┤
 │ Nav        │  HOME — City Command                                │

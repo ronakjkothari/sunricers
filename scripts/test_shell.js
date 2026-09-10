@@ -1,5 +1,5 @@
 /**
- * Regression test for the Nexus Pulse shell.
+ * Regression test for the Pulse shell.
  *
  *   node scripts/test_shell.js        # from the repo root
  *

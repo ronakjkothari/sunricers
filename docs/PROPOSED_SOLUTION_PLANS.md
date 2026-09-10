@@ -9,7 +9,7 @@ Each plan below is sized for a hackathon: uses only curated CSVs, ships an inter
 
 ---
 
-## Plan A — “Nexus Pulse” City Command Dashboard
+## Plan A — “Pulse” City Command Dashboard
 
 **One-liner:** Cross-city E–F–W command center with summer surge scenarios and ranked interventions for mayors / FIFA ops.
 
@@ -157,7 +157,7 @@ FIFA Environment / city sustainability working group stress-testing a portfolio 
 | −10% gasoline visits | −10% energy @ fuel | −2% | 0% |
 
 ### Pitch punchline
-“Single-resource dashboards miss tradeoffs. Nexus Pulse shows how a menu change ripples into water and cooling demand — and which lever wins on a Pareto frontier.”
+“Single-resource dashboards miss tradeoffs. Pulse shows how a menu change ripples into water and cooling demand — and which lever wins on a Pareto frontier.”
 
 ---
 
@@ -216,7 +216,7 @@ Compute on June–July months only for “tournament analog.”
 
 | Plan | Best judging fit | Build risk | Wow factor |
 |------|------------------|------------|------------|
-| **A Nexus Pulse** | Balanced / safest 1st | Low | High if scenarios polish |
+| **A Pulse** | Balanced / safest 1st | Low | High if scenarios polish |
 | **B District Metabolism** | Visualization + Innovation | Medium (maps) | Very high |
 | **C Intervention Simulator** | Impact + Innovation | Medium (coupling UX) | Very high |
 | **D Eleven Hosts Playbook** | Legacy + Feasibility | Low–medium | High for judges panel |
@@ -225,7 +225,7 @@ Compute on June–July months only for “tournament analog.”
 Ship **A as the shell**, embed **B’s map** as the spatial tab, and **C’s levers** as the scenario engine. Use **D’s stress index** on the landing comparison strip.
 
 ```
-Nexus Pulse (A)
+Pulse (A)
  ├─ Tab: Compare hosts (D scorecards)
  ├─ Tab: District map (B)
  └─ Tab: Intervention lab (C)
