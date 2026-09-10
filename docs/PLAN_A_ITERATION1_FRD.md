@@ -106,7 +106,7 @@ One app shell, four regions. Desktop-first (judges on laptops). Light/dark optio
 | **A-FR7** | Peer jump: clicking a peer city updates global `host_city` | Required |
 | **A-FR8** | Deep-link to B: “Inspect districts” opens B map with same city (+ month if B supports) | Required |
 | **A-FR9** | Deep-link / tab to C: Intervention Lab with ≥3 levers and before/after deltas | **Minimum viable C inside A** (see §5) |
-| **A-FR10** | Export: download/print one city playbook (JSON or use D `city_cards/*.md`) | Required for Legacy story |
+| **A-FR10** | Export: download/print one city playbook (JSON or use D `city_cards/*.pdf`) | Required for Legacy story |
 | **A-FR11** | Method drawer: intensity factors + stress/readiness formula + match-day note (+30% / 2 km from B) | Required for Data Analytics |
 | **A-FR12** | Empty/error states: missing JSON → tell user to run `python -m engines.playbook.cli` | Required |
 

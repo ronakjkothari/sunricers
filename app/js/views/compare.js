@@ -313,8 +313,8 @@ function drawMatrix() {
   box.style.gridTemplateColumns = `minmax(150px, 210px) repeat(${cities.length}, minmax(0, 1fr))`;
 
   root.querySelector("#cp-matrixcap").textContent =
-    `Rates per trading shop-month — the grain readiness is scored on. The tick is the ` +
-    `11-host median; the bar runs from it to each host's value.`;
+    `Rates per trading shop-month. The tick is the ` +
+    `11-host median; the bar runs from the tick to each host's value.`;
 
   let html = `<span class="mhead">Driver</span>` + cities.map((city, i) =>
     `<span class="mcity" style="--mc:${slotColour(i)}">
@@ -367,8 +367,8 @@ function drawDecomp() {
   const neutral = stats.neutralReadiness;
 
   root.querySelector("#cp-decompcap").innerHTML =
-    `Readiness points each driver adds or costs, against the <b>${neutral.toFixed(1)}</b> a host ` +
-    `sitting at the 11-host average on every driver would score.`;
+    `Readiness points each driver adds or costs, against the point average of ` +
+    `<b>${neutral.toFixed(1)}</b> that a host sitting at the 11-host average on every driver would score.`;
 
   const per = cities.map(city => {
     const k = stats.byCity[city];
@@ -668,7 +668,7 @@ function drawPlaybook() {
   }
 
   root.querySelector("#cp-exits").innerHTML = `
-    <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.md" download>
+    <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.pdf" download>
       ${icon("download", 15)} ${esc(k.host_city)} one-pager</a>
     <span class="note" style="align-self:center">Closest peers:
       ${(k.peer_cities || []).map(p =>

@@ -261,7 +261,7 @@ Built by Plan D — `python -m engines.playbook.cli --source map --sync-app`:
 
 - `a_integration.json` — **the spine.** 11 scorecards: readiness + band, 5
   z-drivers with raw values, peers, plays, and the `ops_scale` absolutes
-- `city_cards/*.md` — per-host one-pagers, offered as downloads
+- `city_cards/*.pdf` — per-host one-pagers, offered as downloads
 - `scorecards.json`, `ops_context.json` — compact forms for the map page
 
 Built by `python scripts/build_overview_kpis.py`:

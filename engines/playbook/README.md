@@ -33,7 +33,7 @@ Do **not** blend store-visits totals with spend rates into one z-score. Use `--s
 | File | Consumer |
 |------|----------|
 | `a_integration_v1.json` → `app/data/a_integration.json` | A shell (Compare + Overview KPIs) |
-| `city_cards/*.md` → `app/data/city_cards/` | A Compare tab "download the one-pager" |
+| `city_cards/*.pdf` → `app/data/city_cards/` | A Compare tab "download the one-pager" |
 | `ops_context_v1.json` | C baselines |
 | `ops_context_for_app.json` → `app/data/ops_context.json` | B side panel |
 | `scorecards_for_app.json` → `app/data/scorecards.json` | B standalone readiness strip |

@@ -98,9 +98,11 @@ def main(argv: list[str] | None = None) -> int:
         if "city_cards_dir" in paths:
             cards_dest = app_data / "city_cards"
             cards_dest.mkdir(parents=True, exist_ok=True)
-            for card in sorted(paths["city_cards_dir"].glob("*.md")):
+            for stale in cards_dest.glob("*.md"):
+                stale.unlink()
+            for card in sorted(paths["city_cards_dir"].glob("*.pdf")):
                 shutil.copyfile(card, cards_dest / card.name)
-            print(f"  synced -> {cards_dest} ({len(list(cards_dest.glob('*.md')))} cards)")
+            print(f"  synced -> {cards_dest} ({len(list(cards_dest.glob('*.pdf')))} cards)")
 
     if errors:
         print("A-CONTRACT INVALID:", file=sys.stderr)

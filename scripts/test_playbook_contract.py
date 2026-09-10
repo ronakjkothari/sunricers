@@ -49,9 +49,13 @@ def main() -> int:
         return 1
 
     assert paths["a_integration"].exists()
-    assert (paths["city_cards_dir"] / "miami.md").exists() or any(
-        paths["city_cards_dir"].glob("*.md")
-    )
+    pdfs = list(paths["city_cards_dir"].glob("*.pdf"))
+    assert (paths["city_cards_dir"] / "miami.pdf").exists() or pdfs
+    sample = paths["city_cards_dir"] / "miami.pdf"
+    if not sample.exists():
+        sample = pdfs[0]
+    blob = sample.read_bytes()
+    assert blob.startswith(b"%PDF-"), f"{sample.name} is not a PDF"
     assert (ROOT / "data" / "playbook" / "preview.html").exists()
     assert paths.get("ops_context") and paths["ops_context"].exists()
 

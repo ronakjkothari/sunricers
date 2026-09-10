@@ -429,7 +429,7 @@ async function main() {
     ok(`${c}: has a blur-up placeholder`, typeof lqip[c] === "string" && lqip[c].startsWith("data:"));
   }
   for (const c of S.cities) {
-    const f = path.join(APP, "data", "city_cards", `${c.toLowerCase().replace(/\//g, "_").replace(/ /g, "_")}.md`);
+    const f = path.join(APP, "data", "city_cards", `${c.toLowerCase().replace(/\//g, "_").replace(/ /g, "_")}.pdf`);
     ok(`${c}: one-pager exists`, fs.existsSync(f), f);
   }
 
