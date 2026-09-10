@@ -45,7 +45,7 @@ Never mix rates and totals into one z-score. Show both, labeled.
 | Readiness, peers, steal-this-play | `a_integration_v1.json` from `--source map` | Canonical |
 | Driver chart | Same contract `drivers[]` | Already includes CDD + UHI |
 | Play citywide Δ | `illustrative_absolute_delta` | **Ready** — % × summer absolutes |
-| Export one-pager | `data/playbook/city_cards/*.md` | Includes ops scale section |
+| Export one-pager | `data/playbook/city_cards/*.pdf` | Includes ops scale section |
 
 ### B · Spatial map
 

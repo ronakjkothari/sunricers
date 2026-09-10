@@ -101,7 +101,7 @@ This is where D becomes a playbook, not a strip.
 **Filter:** pressure driver chips (Energy / CO₂e / Water / CDD / Heat) using D’s `indexes.by_primary_driver`.  
 **Middle-left:** driver bars or simple radar from `drivers[]`.  
 **Middle-right:** **Steal this play** cards from `recommended_plays[]` — show title, effort, owner, legacy use, expected Δ%, steal-from peers (clickable), rationale.  
-**Bottom:** optional “Download city one-pager” (link to `city_cards/*.md` or export JSON).
+**Bottom:** optional “Download city one-pager” (link to `city_cards/*.pdf` or export JSON).
 
 Do **not** invent new scores in the UI. Read D’s contract only.
 

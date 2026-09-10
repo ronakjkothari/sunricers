@@ -30,7 +30,7 @@ KPI presentation, the month chart, and the surge scenario.
         ▼                                           ▼
   data/a_integration.json                    app/spatial.html
   data/overview_kpis.json                    (Plan B, unmodified logic)
-  data/city_cards/*.md
+  data/city_cards/*.pdf
         ▲                                           ▲
         │ built by                                  │ built by
   engines/playbook (Plan D)                   notebooks/build_map_tables
@@ -50,7 +50,7 @@ real-time capability, no presentation of rankings as ground truth.
 | `app/spatial.html` | Plan B's map. Runs standalone; also embedded by A. Three additive hooks, no logic changed. |
 | `app/data/a_integration.json` | D's contract, synced into the serving root |
 | `app/data/overview_kpis.json` | 11 hosts × 60 months of E/W/CO₂e/visits/CDD |
-| `app/data/city_cards/*.md` | One-pagers, offered as downloads on Compare |
+| `app/data/city_cards/*.pdf` | One-pagers, offered as downloads on Compare |
 | `scripts/build_overview_kpis.py` | Builds the series above; asserts it reconciles with D |
 | `scripts/test_shell.js` | Regression test for everything except pixels |
 
@@ -98,7 +98,7 @@ A consumes the contract; it never writes back and never re-scores. Slot mapping:
 | **Overview KPI subtitle** | `scorecards[].raw_indicators` |
 | Mix / brands / spend / climate | `ops_scale.visit_mix / top_brands_by_visits / spend / climate` |
 | Disclaimer drawer | `meta.disclaimer / formula / indicator_source / engine_version` |
-| One-pager download | `data/city_cards/<slug>.md`, slug = lowercase, `/`→`_`, ` `→`_` |
+| One-pager download | `data/city_cards/<slug>.pdf`, slug = lowercase, `/`→`_`, ` `→`_` |
 
 ### The dual-grain rule
 

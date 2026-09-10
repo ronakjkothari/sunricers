@@ -309,8 +309,8 @@ function drawKpis() {
   const sizeRank = stats.rankOf.v[k.host_city];
   root.querySelector("#ov-kpicap").textContent =
     `June–July totals. ${k.host_city} is the ${polarRank(sizeRank, stats.n, "largest", "smallest")} ` +
-    `of the ${stats.n} hosts by volume; each chip ranks the rate per trading shop-month, ` +
-    `which is what readiness scores.`;
+    `of the ${stats.n} hosts by volume; each chip ranks the rate per trading shop-month. ` +
+    `The city's readiness score is derived from here.`;
 
   root.querySelector("#ov-kpis").innerHTML = ORDER.map(mk => {
     const m = METRICS[mk];
@@ -731,7 +731,7 @@ function drawPlays() {
   root.querySelector("#ov-exits").innerHTML = `
     <button class="btn primary" id="ov-go-compare">${icon("book", 15)} Open the full playbook</button>
     <button class="btn" id="ov-go-map">${icon("map", 15)} See ${esc(k.host_city)} on the map</button>
-    <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.md" download>
+    <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.pdf" download>
       ${icon("download", 15)} One-pager</a>`;
   root.querySelector("#ov-go-compare").onclick = () => ctx.goCompare(null, "playbook");
   root.querySelector("#ov-go-map").onclick = () => ctx.setTab("spatial");
@@ -768,7 +768,7 @@ function drawExits(k) {
   root.querySelector("#ov-exits").innerHTML = `
     <button class="btn primary" id="ov-go-compare">${icon("book", 15)} Open the full playbook</button>
     <button class="btn" id="ov-go-map">${icon("map", 15)} See ${esc(k.host_city)} on the map</button>
-    <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.md" download>
+    <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.pdf" download>
       ${icon("download", 15)} One-pager</a>`;
   root.querySelector("#ov-go-compare").onclick = () => ctx.goCompare(null, "playbook");
   root.querySelector("#ov-go-map").onclick = () => ctx.setTab("spatial");

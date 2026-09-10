@@ -197,7 +197,7 @@ function select(city) {
 
   const slug = city.toLowerCase().replace(/\//g,"_").replace(/ /g,"_");
   document.getElementById("exportBody").innerHTML =
-    `<a class="download" href="./city_cards/${slug}.md" download>Download ${city} one-pager (.md)</a>
+    `<a class="download" href="./city_cards/${slug}.pdf" download>Download ${city} one-pager (.pdf)</a>
      <div style="margin-top:8px;font-size:12px;color:var(--muted)">Or copy scorecard JSON:</div>
      <pre>${escapeHtml(JSON.stringify(c, null, 2))}</pre>`;
 }

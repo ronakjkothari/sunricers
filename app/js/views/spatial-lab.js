@@ -220,7 +220,7 @@ function drawAnswer() {
       `<span>${f ? "−" + (f * axisMax * 100).toFixed(axisMax < 0.1 ? 1 : 0) + "%" : "0"}</span>`).join("");
     impact.innerHTML = `<div class="hl">${hl}</div>${bars}
       <div class="axis"><span></span><div class="ticks">${ticks}</div><span></span></div>
-      <p class="note">Share of ${esc(ctx.cityName())}'s June–July total. The black whisker is the low–high range: 8 in 10 chance the truth is inside.</p>`;
+      <p class="note">Share of ${esc(ctx.cityName())}'s June–July total. The black whisker is the low–high range.</p>`;
   }
 
   // under Details: who does what, the match card, the numbers
@@ -254,10 +254,8 @@ function drawAnswer() {
     `<tr><th>Resource</th><th>Baseline summer${k > 1 ? ` × ${k.toFixed(2)}` : ""}</th><th>With levers (middle)</th><th>Δ middle (low to high)</th></tr>${rows}
      <tr><td>Visits</td><td class="num">${fmt(visits)}</td><td class="num">${fmt(visits * k)}</td>
        <td class="num" style="color:var(--ink-3)">${k > 1 ? "+" + fmt(visits * (k - 1)) : "—"}</td></tr>`;
-  note.innerHTML = `Baseline is the June–July total for ${esc(ctx.cityName())} (store-visits × intensity factors, the same numbers
-    as the Overview), split into shop types by visit mix. Each lever cuts only the shop types it touches; levers on the same type
-    compound. Low and high are the 10th and 90th percentiles of each lever's simulation. The percent is what to trust; the absolute
-    kWh and litres inherit the baseline's noise. On the map the touched shops get a dark ring; match-day levers appear on the match card.`;
+  note.innerHTML = `'Baseline Summer' is the June–July total for ${esc(ctx.cityName())} (store-visits × intensity factors, the same numbers
+    as the Overview), split into shop types based on the visitor mix. Each lever cuts only the relevant shop types. Low and high are the 10th and 90th percentiles of each lever's simulation. On the map, the shops being affected get a dark ring; match-day levers appear on the match card.`;
 }
 
 function offmapHtml() {
