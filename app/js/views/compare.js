@@ -368,7 +368,7 @@ function drawDecomp() {
 
   root.querySelector("#cp-decompcap").innerHTML =
     `Readiness points each driver adds or costs, against the point average of ` +
-    `<b>${neutral.toFixed(1)}</b> that a host sitting at the 11-host average on every driver would score.`;
+    `<b>${neutral.toFixed(1)}</b> that a host sitting in the middle of the 11 hosts on every driver would score.`;
 
   const per = cities.map(city => {
     const k = stats.byCity[city];

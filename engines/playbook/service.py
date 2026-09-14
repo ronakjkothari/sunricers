@@ -22,7 +22,7 @@ from .ops_context import (
 from .peers import attach_peers
 from .city_card_pdf import render_city_card_pdf
 from .plays import attach_plays
-from .scoring import Scorecard, compute_scorecards
+from .scoring import PART_CURVES, Scorecard, compute_scorecards
 
 ENGINE_VERSION = "0.4.0"
 
@@ -138,7 +138,7 @@ class PlaybookService:
                     # the same source, and can no longer drift from it.
                     "weights": dict(self.config.weight_map()),
                     "stress": "+".join(
-                        f"{w:g}*z({label})"
+                        f"{w:g}*(p({label})-0.5)"
                         for label, w in (
                             ("energy", self.config.weight_energy),
                             ("co2e", self.config.weight_food_co2e),
@@ -146,6 +146,11 @@ class PlaybookService:
                             ("cdd", self.config.weight_cdd),
                             ("uhi", self.config.weight_uhi),
                         )
+                    ),
+                    "curves": {k: name for k, (name, _) in PART_CURVES.items()},
+                    "p": (
+                        "a city's position on the distribution fitted to that part "
+                        "across the 11 hosts, 0 = lowest load, 1 = highest"
                     ),
                     "readiness": (
                         "min-max rescale of inverted stress to 0–100 across 11 hosts; "
@@ -209,6 +214,7 @@ class PlaybookService:
                         round(c.readiness_band[1], 1),
                     ],
                     "z": {k: round(v, 2) for k, v in c.z_components.items()},
+                    "p": {k: round(v, 3) for k, v in c.p_components.items()},
                     "raw": {k: round(v, 3) for k, v in c.raw.items()},
                     "peers": c.peer_cities,
                     "plays": [

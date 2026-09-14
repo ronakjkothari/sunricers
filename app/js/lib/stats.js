@@ -35,7 +35,7 @@ export function weightsOf(contract) {
   const f = (contract.meta && contract.meta.formula) || {};
   if (f.weights && typeof f.weights === "object") return { ...f.weights };
   const out = {};
-  const re = /([\d.]+)\s*\*\s*z\(\s*([a-z0-9_]+)\s*\)/gi;
+  const re = /([\d.]+)\s*\*\s*\(?\s*[zp]\(\s*([a-z0-9_]+)\s*\)/gi;
   let m;
   while ((m = re.exec(f.stress || "")) !== null) {
     const key = FORMULA_TOKENS[m[2].toLowerCase()];
@@ -78,11 +78,11 @@ export function build(contract, series) {
   }
 
   /* --- stress -> readiness is a linear rescale, so contributions can be
-     expressed in readiness points rather than in abstract z-units.
+     expressed in readiness points rather than in abstract units.
 
          readiness = (maxStress - stress) / span * 100
 
-     A host sitting exactly at the 11-host mean on every driver has stress 0
+     A host sitting in the middle of every driver's fitted curve (p = 0.5) has stress 0
      and therefore scores `neutral`. Each driver then moves it from there by
      `points(contribution)`, and those land exactly on its readiness score —
      which is what makes the waterfall readable as "why this number". */
@@ -138,7 +138,8 @@ export function build(contract, series) {
     },
 
     /**
-     * Each driver's weighted contribution to the stress index.
+     * Each driver's weighted contribution to the stress index: weight x (p - 0.5),
+     * or weight x z for an older contract without p.
      * These sum to stress_index, so the waterfall built from them *is* the
      * formula rather than a picture of it. test_shell.js asserts the identity.
      */
@@ -149,7 +150,8 @@ export function build(contract, series) {
         z: d.z,
         raw: d.raw,
         weight: weights[d.key] || 0,
-        value: (weights[d.key] || 0) * d.z,
+        p: d.p,
+        value: (weights[d.key] || 0) * (isFinite(d.p) ? d.p - 0.5 : d.z),
         elevated: d.elevated,
       }));
     },

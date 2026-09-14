@@ -495,7 +495,7 @@ function drawDecomp() {
 
   root.querySelector("#ov-decomp").innerHTML = `
     <div class="wf">
-      <p class="cap">A host sitting at the 11-host average on every driver would score
+      <p class="cap">A host sitting in the middle of the 11 hosts on every driver would score
         <b>${neutral.toFixed(1)}</b>. These are the readiness points each driver moves
         ${esc(k.host_city)} from there.</p>
       ${waterfall(contrib, k, neutral)}
@@ -862,10 +862,11 @@ function toggleMethods(ev) {
   const w = ctx.stats.weights;
   pop.innerHTML = `
     <h4>How readiness is scored</h4>
-    <p>Each host's June–July rates become z-scores across the eleven hosts, weighted,
-       and summed into a stress index. That index is inverted and rescaled so the
-       least-pressured host scores 100 and the most-pressured 0 — a linear map, which
-       is why each driver's push can be shown directly in readiness points.</p>
+    <p>For each driver we fit a curve to the eleven hosts' June and July rates and
+       read off where each host sits on it, from 0 (lowest load) to 1 (highest).
+       Those positions are weighted and added into a stress index. The index is flipped
+       and rescaled so the least pressured host scores 100 and the most pressured scores 0.
+       The rescale is a straight line, so each driver's push can be shown in readiness points.</p>
     <dl>
       ${Object.entries(w).map(([k2, v]) =>
         `<dt>${PLAIN_DRIVER[k2] || k2}</dt><dd>${(v * 100).toFixed(0)}% of the score</dd>`).join("")}

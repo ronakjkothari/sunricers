@@ -70,6 +70,7 @@ def build_a_contract_payload(engine_payload: dict[str, Any]) -> dict[str, Any]:
                 "drivers": c.get("drivers") or [],
                 "primary_pressure_drivers": c.get("primary_pressure_drivers") or [],
                 "z_components": c["z_components"],
+                "p_components": c.get("p_components") or {},
                 "raw_indicators": c.get("raw_indicators") or {},
                 "ops_scale": c.get("ops_scale"),
                 "peer_cities": c.get("peer_cities") or [],
