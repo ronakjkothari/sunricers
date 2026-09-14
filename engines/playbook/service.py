@@ -320,6 +320,7 @@ class PlaybookService:
             pdf = render_city_card_pdf(
                 c,
                 ops_scale=ctx,
+                all_cards=cards,
                 engine_version=ENGINE_VERSION,
                 contract_version=CONTRACT_VERSION,
             )
