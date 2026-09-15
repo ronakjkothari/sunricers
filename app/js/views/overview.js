@@ -306,6 +306,7 @@ function drawKpis() {
   // The absolutes are what a city must provision; the rate is what readiness
   // ranks on. Stating that bridge here is what stops "8th largest" beside
   // "#10 of 11" reading as a contradiction. June–July is named once, here.
+  const sizeRank = stats.rankOf.v[k.host_city];
   root.querySelector("#ov-kpicap").textContent =
     `Each chip ranks the rate per trading shop-month. ` +
     `The city's readiness score is derived from here.`;
