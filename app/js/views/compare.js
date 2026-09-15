@@ -590,8 +590,7 @@ function drawLeverPlays(right, k) {
   const rl = r => RES_LABEL[r];
   const low = r => (rl(r) === "CO₂e" ? "CO₂e" : rl(r).toLowerCase());
   const heat = R.heat.length
-    ? ` Heat is a factor here (${R.heat.map(d => `${d.label.toLowerCase()} z +${d.z.toFixed(2)}`).join(", ")}),
-        so energy cuts that touch cooling matter more than the number shows.`
+    ? ` This is a hot city, so cutting air conditioning energy is worth more than the small percentage suggests.`
     : "";
   const why = R.worst
     ? `<b>${rl(R.worst)}</b> is ${esc(k.host_city)}'s worst factor (${R.zWord(R.z[R.worst])},
