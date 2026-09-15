@@ -184,7 +184,7 @@ export function verdict(card, total) {
   else standing = `sits in the <b>less pressured half</b> of the 11 hosts`;
 
   if (!hot.length) {
-    return `${card.host_city} ${standing}. No single driver sits above the host average.`;
+    return `${card.host_city} ${standing}. No single factor sits above the host average.`;
   }
   const driven = hot.length === 1 ? hot[0] : `${hot[0]} and ${hot[1]}`;
 

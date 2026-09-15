@@ -269,7 +269,7 @@ function toggleHelp(force) {
         scale is fixed across all months, so growth is real growth and not a rescale.</dd>
 
       <dt>Scenario</dt>
-      <dd>A visitor surge, and the plays from the playbook. Each play acts only on the
+      <dd>A visitor surge, and the steps from the action plan. Each step acts only on the
         shops it names — "hotel linen reuse" touches lodging, not all 20,569 — and the
         pills at the top show what moves. <b>Show the change only</b> turns the map into
         a difference view: what the scenario avoids, and where.</dd>
@@ -855,7 +855,7 @@ function drawCaption() {
     `Every shop in ${city.name}, sized by ${METRICS[view.metric].label.toLowerCase()} in ` +
     `${pretty(ctx.months[view.i])}. ` +
     (n ? `${n} lever${n === 1 ? "" : "s"} active — the map shows where they land.`
-       : `Open Scenario to model a play and see where it would bite.`);
+       : `Open Scenario to model a step and see where it would bite.`);
 }
 
 function drawControls() {
@@ -1050,12 +1050,12 @@ function drawScenario() {
     </div>
 
     <div class="scenblock">
-      <label class="scenlabel">Plays</label>
+      <label class="scenlabel">Steps</label>
       ${levers.map(l => {
         const on = view.levers.has(l.id);
         const hit = countScope(l);
         return `<button class="lever ${on ? "on" : ""}" data-lever="${l.id}"
-            ${hit ? "" : "disabled title=\"No shop in this city falls in this play's scope\""}>
+            ${hit ? "" : "disabled title=\"No shop in this city falls in this step's scope\""}>
           <span class="lvtop"><span class="lvname">${esc(l.title)}</span>
             ${on ? icon("check", 14) : icon("plus", 14)}</span>
           <span class="lvscope">${esc(l.note)} · <b>${full(hit)}</b> shops${hit ? "" : " — nothing to act on here"}</span>

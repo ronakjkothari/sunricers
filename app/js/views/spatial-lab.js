@@ -111,7 +111,7 @@ function drawList() {
   const rl = r => RES_LABEL[r], low = r => (rl(r) === "CO₂e" ? "CO₂e" : rl(r).toLowerCase());
   const name = esc(ctx.cityName());
   const heatNote = heat.length
-    ? ` Heat is a driver too, so energy cuts that touch cooling matter more than the number shows.` : "";
+    ? ` Heat is a factor too, so energy cuts that touch cooling matter more than the number shows.` : "";
   lead.innerHTML = !card
     ? `Ranked by the biggest single cut across all 11 hosts. Pick a city to rank against its own problem.`
     : !worst

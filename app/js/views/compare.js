@@ -61,7 +61,7 @@ export function mount(el, context) {
     <div class="secthead">
       <div class="shtxt">
         <h2>Compare hosts</h2>
-        <p>All eleven on one scale, any of them side by side, and the full playbook
+        <p>All eleven on one scale, any of them side by side, and the full action plan
            for whichever host you select.</p>
       </div>
     </div>
@@ -120,7 +120,7 @@ export function mount(el, context) {
 
     <section class="card panel" id="cp-playbook">
       <header>
-        <h2 id="cp-pbtitle">Playbook</h2>
+        <h2 id="cp-pbtitle">Action plan</h2>
         <span class="sp"></span>
         <span class="eyebrow" id="cp-pbcap"></span>
       </header>
@@ -130,8 +130,8 @@ export function mount(el, context) {
 
     <section class="card panel">
       <header>
-        <h2>Where these plays transfer</h2>
-        <span class="chip">the case for stealing one</span>
+        <h2>Other cities where these steps help</h2>
+        
       </header>
       <div class="body">
         <div class="pmatrix" id="cp-pmatrix"></div>
@@ -245,7 +245,7 @@ function drawBoard() {
     const band = k.readiness_band;
 
     const add = isAnchor
-      ? `<button class="ladd" disabled title="Selected. The playbook below follows this host"
+      ? `<button class="ladd" disabled title="Selected. The action plan below follows this host"
            aria-label="${esc(city)} is selected">${icon("anchor", 15)}</button>`
       : `<button class="ladd ${isPartner ? "on" : ""}" data-add="${esc(city)}"
            aria-pressed="${isPartner}"
@@ -254,7 +254,7 @@ function drawBoard() {
 
     return `<div class="lrow ${isAnchor ? "anchor" : ""} ${isPartner ? "partner" : ""}">
       <button class="lmain" data-anchor="${esc(city)}"
-          title="Select ${esc(city)} for the playbook">
+          title="Select ${esc(city)} for the action plan">
         <span class="lrank">#${k.rank}</span>
         <img class="lthumb" src="${photo(city, 320)}" alt="" loading="lazy" width="320" height="214">
         <span class="lname">${esc(city)}${slot >= 0
@@ -268,7 +268,7 @@ function drawBoard() {
       </button>
       ${add}
     </div>`;
-  }).join("") : `<div class="empty">No host is elevated on that driver.</div>`;
+  }).join("") : `<div class="empty">No host is elevated on that factor.</div>`;
 
   root.querySelectorAll("#cp-board [data-anchor]").forEach(b => {
     b.onclick = () => setAnchor(b.dataset.anchor);
@@ -280,7 +280,7 @@ function drawBoard() {
   root.querySelector("#cp-note").innerHTML = ctx.state.filter
     ? `Showing ${cards.length} of ${stats.n} hosts elevated on <b>${PLAIN[ctx.state.filter]}</b>.
        The pale block is the ±15 uncertainty band. Click a host to select it; ⊕ adds it to the comparison.`
-    : `The pale block is the ±15 uncertainty band. Click a host to select it for the playbook;
+    : `The pale block is the ±15 uncertainty band. Click a host to select it for the action plan;
        ⊕ adds it to the comparison above.`;
 }
 
@@ -316,7 +316,7 @@ function drawMatrix() {
     `Rates per trading shop-month. The marker is the ` +
     `11-host median; the bar runs from the marker to each host's value.`;
 
-  let html = `<span class="mhead">Driver</span>` + cities.map((city, i) =>
+  let html = `<span class="mhead">Factor</span>` + cities.map((city, i) =>
     `<span class="mcity" style="--mc:${slotColour(i)}">
        <img src="${photo(city, 320)}" alt="" loading="lazy"><span>${esc(city)}</span>
      </span>`).join("");
@@ -367,8 +367,8 @@ function drawDecomp() {
   const neutral = stats.neutralReadiness;
 
   root.querySelector("#cp-decompcap").innerHTML =
-    `Readiness points each driver adds or costs, against the point average of ` +
-    `<b>${neutral.toFixed(1)}</b> that a host sitting in the middle of the 11 hosts on every driver would score.`;
+    `Readiness points each factor adds or costs, against the point average of ` +
+    `<b>${neutral.toFixed(1)}</b> that a host sitting in the middle of the 11 hosts on every factor would score.`;
 
   const per = cities.map(city => {
     const k = stats.byCity[city];
@@ -391,7 +391,7 @@ function drawDecomp() {
   const X = pts => mid + (pts / reach) * ((W - padL - padR) / 2);
 
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img"
-    aria-label="Readiness points contributed by each driver, for the compared hosts">`;
+    aria-label="Readiness points contributed by each factor, for the compared hosts">`;
 
   const step = reach > 45 ? 20 : reach > 22 ? 10 : 5;
   for (let v = -Math.floor(reach / step) * step; v <= reach; v += step) {
@@ -590,12 +590,12 @@ function drawLeverPlays(right, k) {
   const rl = r => RES_LABEL[r];
   const low = r => (rl(r) === "CO₂e" ? "CO₂e" : rl(r).toLowerCase());
   const heat = R.heat.length
-    ? ` Heat is a driver here (${R.heat.map(d => `${d.label.toLowerCase()} z +${d.z.toFixed(2)}`).join(", ")}),
+    ? ` Heat is a factor here (${R.heat.map(d => `${d.label.toLowerCase()} z +${d.z.toFixed(2)}`).join(", ")}),
         so energy cuts that touch cooling matter more than the number shows.`
     : "";
   const why = R.worst
-    ? `<b>${rl(R.worst)}</b> is ${esc(k.host_city)}'s worst driver (${R.zWord(R.z[R.worst])},
-       z ${R.z[R.worst] >= 0 ? "+" : ""}${R.z[R.worst].toFixed(2)}), so plays that cut it come first.`
+    ? `<b>${rl(R.worst)}</b> is ${esc(k.host_city)}'s worst factor (${R.zWord(R.z[R.worst])},
+       z ${R.z[R.worst] >= 0 ? "+" : ""}${R.z[R.worst].toFixed(2)}), so steps that cut it come first.`
     : `${esc(k.host_city)} is about average on energy, water and CO₂e, so nothing stands out and the biggest single cut comes first.`;
 
   right.innerHTML =
@@ -641,7 +641,7 @@ function drawPlaybook() {
   const box = root.querySelector("#cp-plays");
   if (!k) { box.innerHTML = `<div class="empty">Pick a host above.</div>`; return; }
 
-  root.querySelector("#cp-pbtitle").textContent = `Playbook · ${k.host_city}`;
+  root.querySelector("#cp-pbtitle").textContent = `Action plan · ${k.host_city}`;
 
   if (ctx.lev) {
     const R = rankLevers(ctx.lev, ctx.cardsOf(), k, ctx.matchesHere());
@@ -656,7 +656,7 @@ function drawPlaybook() {
     box.innerHTML =
       (plays.length
         ? `<div class="plays2">${plays.map(p => playCard(p, k)).join("")}</div>`
-        : `<div class="empty">No pressing plays — no driver here sits above the 11-host mean.</div>`) +
+        : `<div class="empty">No urgent steps, no factor here sits above the 11-host mean.</div>`) +
       (gen.length
         ? `<details class="pbdetails">
              <summary>${gen.length} general option${gen.length === 1 ? "" : "s"} — available, not pressing for ${esc(k.host_city)}</summary>
@@ -716,7 +716,7 @@ function playCard(p, k) {
   }).join("");
 
   const steal = (p.steal_from_peers || []).length
-    ? `<span>Also pressing for ${p.steal_from_peers.map(s =>
+    ? `<span>Also works in: ${p.steal_from_peers.map(s =>
         `<button class="lnk" data-peer="${esc(s)}">${esc(s)}</button>`).join(", ")}</span>`
     : "";
 
@@ -758,7 +758,7 @@ function drawPlayMatrix() {
   const box = root.querySelector("#cp-pmatrix");
   box.style.gridTemplateColumns = `minmax(190px, 1.5fr) repeat(${cards.length}, minmax(0, 1fr))`;
 
-  let html = `<span class="pmh" style="text-align:left">Play</span>` +
+  let html = `<span class="pmh" style="text-align:left">Step</span>` +
     cards.map(k => `<span class="pmh ${k.host_city === ctx.state.city ? "on" : ""}"
       title="${esc(k.host_city)} · readiness ${k.readiness_score.toFixed(1)}">#${k.rank}</span>`).join("");
 

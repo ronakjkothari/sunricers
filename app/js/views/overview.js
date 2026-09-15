@@ -166,7 +166,7 @@ function drawFocus() {
     <span class="fl" style="--dc:${c(DRIVER_COLOR[key])}">
       ${icon(DRIVER_ICON[key], 15)} Focused on <b>${PLAIN_DRIVER[key]}</b>
     </span>
-    <button class="fclear" id="ov-clearfocus">${icon("close", 13)} Show all drivers</button>`;
+    <button class="fclear" id="ov-clearfocus">${icon("close", 13)} Show all factors</button>`;
   root.querySelector("#ov-clearfocus").onclick = () => setDriver(key);
 }
 
@@ -546,7 +546,7 @@ function waterfall(contrib, k, neutral) {
   const floor = Y(y0);   // the total column rests on the plot floor, not on 0
 
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img"
-    aria-label="Readiness points contributed by each driver">`;
+    aria-label="Readiness points contributed by each factor">`;
 
   s += `<line x1="${padL - 6}" y1="${Y(neutral).toFixed(1)}" x2="${W}" y2="${Y(neutral).toFixed(1)}"
     stroke="${c("--line-2")}" stroke-width="1" stroke-dasharray="3 3"/>`;
@@ -717,9 +717,9 @@ function drawPlays() {
   box.innerHTML = plays.length
     ? plays.map(p => playCard(p, k)).join("")
     : `<div class="empty" style="grid-column:1/-1">${focus
-        ? `No recommended play for ${esc(k.host_city)} targets <b>${PLAIN_DRIVER[focus].toLowerCase()}</b>.
-           ${all.length ? "Clear the focus to see the plays that are indicated." : ""}`
-        : `No pressing plays for ${esc(k.host_city)} — no driver here sits above the 11-host mean.
+        ? `No step for ${esc(k.host_city)} targets <b>${PLAIN_DRIVER[focus].toLowerCase()}</b>.
+           ${all.length ? "Clear the focus to see the steps that are indicated." : ""}`
+        : `No urgent steps for ${esc(k.host_city)} — no factor here sits above the 11-host mean.
            The full catalogue is on Compare.`}</div>`;
 
   box.querySelectorAll("[data-peer]").forEach(b => {
@@ -727,7 +727,7 @@ function drawPlays() {
   });
 
   root.querySelector("#ov-exits").innerHTML = `
-    <button class="btn primary" id="ov-go-compare">${icon("book", 15)} Open the full playbook</button>
+    <button class="btn primary" id="ov-go-compare">${icon("book", 15)} Open the full action plan</button>
     <button class="btn" id="ov-go-map">${icon("map", 15)} See ${esc(k.host_city)} on the map</button>
     <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.pdf" download>
       ${icon("download", 15)} One-pager</a>`;
@@ -746,7 +746,7 @@ function drawLeverPlays() {
 
   root.querySelector("#ov-playcap").textContent = rows.length
     ? (focus ? `levers that cut ${PLAIN_DRIVER[focus].toLowerCase()}` : R.worst
-      ? `levers that cut ${RL[R.worst] === "CO₂e" ? "CO₂e" : RL[R.worst].toLowerCase()}, ${k.host_city}'s worst driver`
+      ? `levers that cut ${RL[R.worst] === "CO₂e" ? "CO₂e" : RL[R.worst].toLowerCase()}, ${k.host_city}'s worst factor`
       : `biggest single cuts on ${k.host_city}'s own totals`)
     : "";
 
@@ -764,7 +764,7 @@ function drawLeverPlays() {
 
 function drawExits(k) {
   root.querySelector("#ov-exits").innerHTML = `
-    <button class="btn primary" id="ov-go-compare">${icon("book", 15)} Open the full playbook</button>
+    <button class="btn primary" id="ov-go-compare">${icon("book", 15)} Open the full action plan</button>
     <button class="btn" id="ov-go-map">${icon("map", 15)} See ${esc(k.host_city)} on the map</button>
     <a class="btn" href="data/city_cards/${esc(slug(k.host_city))}.pdf" download>
       ${icon("download", 15)} One-pager</a>`;
@@ -837,7 +837,7 @@ function playCard(p, k) {
   }).join("");
 
   const steal = (p.steal_from_peers || []).length
-    ? `<span>Also indicated for
+    ? `<span>Also works in:
         ${p.steal_from_peers.map(s => `<button class="lnk" data-peer="${esc(s)}">${esc(s)}</button>`).join(", ")}</span>`
     : "";
 
