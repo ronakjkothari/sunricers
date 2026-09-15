@@ -178,8 +178,8 @@ export function verdict(card, total) {
     .map(d => PLAIN[d.key] || d.label.toLowerCase());
 
   let standing;
-  if (card.rank === total) standing = "carries the <b>most summer pressure</b> of the 11 hosts";
-  else if (card.rank === 1) standing = "carries the <b>least summer pressure</b> of the 11 hosts";
+  if (card.rank === total) standing = "carries the <b>most resource strain</b> of the 11 hosts";
+  else if (card.rank === 1) standing = "carries the <b>least resource strain</b> of the 11 hosts";
   else if (card.rank > total / 2) standing = `sits in the <b>more pressured half</b> of the 11 hosts`;
   else standing = `sits in the <b>less pressured half</b> of the 11 hosts`;
 

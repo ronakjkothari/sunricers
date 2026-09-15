@@ -486,7 +486,9 @@
 /* Above the legend and the scrubber (both z-index 3), below the drawers, which
    a popup is nudged clear of rather than allowed to fight with. */
 .maplibregl-popup { z-index: 5; }
-.maplibregl-popup-content {
+/* the map library adds its own stylesheet at runtime, after this one, and it
+   paints popups white; the extra class keeps our themed card on top of it */
+.maplibregl-map .maplibregl-popup-content {
   background: var(--surface);
   color: var(--ink);
   border: 1px solid var(--line-2);
@@ -501,7 +503,7 @@
 .maplibregl-popup-content .phead b { margin-bottom: 0; padding-right: 18px; }
 .maplibregl-popup-content div { color: var(--ink-2); }
 .maplibregl-popup-tip { display: none; }
-.maplibregl-popup-close-button {
+.maplibregl-map .maplibregl-popup-close-button {
   top: 4px; right: 4px;
   width: 22px; height: 22px;
   border-radius: var(--r-1);

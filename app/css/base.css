@@ -416,6 +416,11 @@ img { max-width: 100%; display: block; }
   gap: var(--sp-1) var(--sp-4); margin: var(--sp-3) 0 0; font-size: 12.5px;
 }
 .pop dt { color: var(--ink-3); }
+.poptbl { width: 100%; border-collapse: collapse; margin-top: var(--sp-3); font-size: 12.5px; }
+.poptbl th { text-align: left; font-weight: 600; color: var(--ink-3); padding: 0 0 6px; border-bottom: 1px solid var(--line); }
+.poptbl td { padding: 6px 0; color: var(--ink); border-bottom: 1px solid var(--line); }
+.poptbl tr:last-child td { border-bottom: 0; }
+.poptbl .num { text-align: right; font-variant-numeric: tabular-nums; }
 .pop dd { margin: 0; font-variant-numeric: tabular-nums; }
 
 /* ----------------------------------------------------- play card (shared)

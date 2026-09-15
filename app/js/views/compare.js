@@ -69,7 +69,7 @@ export function mount(el, context) {
     <section class="card panel" style="margin-top:0">
       <header>
         <h2>Readiness leaderboard</h2>
-        <span class="chip">0–100 · higher means less summer pressure</span>
+        <span class="chip">0–100 · higher means less resource strain</span>
       </header>
       <div class="body">
         <div class="filterrow" id="cp-filter"></div>

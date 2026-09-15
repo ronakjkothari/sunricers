@@ -308,7 +308,7 @@ function drawKpis() {
   // "#10 of 11" reading as a contradiction. June–July is named once, here.
   const sizeRank = stats.rankOf.v[k.host_city];
   root.querySelector("#ov-kpicap").textContent =
-    `Each chip ranks the rate per trading shop-month. ` +
+    `Each section ranks the rate per trading shop-month. ` +
     `The city's readiness score is derived from here.`;
 
   root.querySelector("#ov-kpis").innerHTML = ORDER.map(mk => {
@@ -860,21 +860,19 @@ function toggleMethods(ev) {
   const w = ctx.stats.weights;
   pop.innerHTML = `
     <h4>How readiness is scored</h4>
-    <p>For each driver we fit a curve to the eleven hosts' June and July rates and
-       read off where each host sits on it, from 0 (lowest load) to 1 (highest).
-       Those positions are weighted and added into a stress index. The index is flipped
-       and rescaled so the least pressured host scores 100 and the most pressured scores 0.
-       The rescale is a straight line, so each driver's push can be shown in readiness points.</p>
-    <dl>
-      ${Object.entries(w).map(([k2, v]) =>
-        `<dt>${PLAIN_DRIVER[k2] || k2}</dt><dd>${(v * 100).toFixed(0)}% of the score</dd>`).join("")}
-      <dt>Window</dt><dd>${esc(f.window || "June–July")}</dd>
-      <dt>Uncertainty</dt><dd>±${((f.uncertainty_pct || 0.15) * 100).toFixed(0)} points</dd>
-    </dl>
+    <p>We compare the 11 host cities on five things. 100 means the least resource strain, 0 the most.</p>
+    <table class="poptbl">
+      <thead><tr><th>What we measure</th><th class="num">Share of score</th></tr></thead>
+      <tbody>${Object.entries(w).map(([k2, v]) =>
+        `<tr><td>${PLAIN_DRIVER[k2] || k2}</td><td class="num">${(v * 100).toFixed(0)}%</td></tr>`).join("")}</tbody>
+    </table>
+    <table class="poptbl">
+      <tbody>
+        <tr><td>Months used</td><td class="num">June and July</td></tr>
+      </tbody>
+    </table>
     <p style="margin-top:12px;font-size:12.5px;color:var(--ink-3)">
-      Readiness uses per-shop-month rates, so a large city is not ranked as pressured
-      simply for being large. The tiles above are citywide absolutes — the load a city
-      actually has to provision.</p>`;
+      Big cities are not marked down just for being big.</p>`;
 
   const btn = root.querySelector("#ov-methods");
   const host = root.querySelector("#ov-why");
