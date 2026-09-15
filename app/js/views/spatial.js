@@ -264,32 +264,15 @@ function toggleHelp(force) {
       <dd>The same shops summed into 1.1 km squares. Use it to see where load
         concentrates rather than which business carries it.</dd>
 
-      <dt>Heat index</dt>
-      <dd>Urban heat, 1 (cool) to 11 (hot), from surface-temperature readings averaged
-        into the same 1.1 km squares. It matters because cooling load rides on it: a
-        hot corridor full of hotels and kitchens costs more energy to run for the same
-        trade. <b>It has no dates</b>, so unlike everything else here it does not change
-        as you move through time.</dd>
-
       <dt>The month scrubber</dt>
       <dd>61 months, Dec 2019 to Dec 2024. Press play to watch demand move. The dot
         scale is fixed across all months, so growth is real growth and not a rescale.</dd>
-
-      <dt>Matches</dt>
-      <dd>Picking one of the 78 fixtures flies to that stadium and draws the 2 km and
-        5 km rings. The measured match-day effect is <b>+30%</b> within 2 km — from 566
-        NFL games and 19 Copa América matches, not a forecast.</dd>
 
       <dt>Scenario</dt>
       <dd>A visitor surge, and the plays from the playbook. Each play acts only on the
         shops it names — "hotel linen reuse" touches lodging, not all 20,569 — and the
         pills at the top show what moves. <b>Show the change only</b> turns the map into
         a difference view: what the scenario avoids, and where.</dd>
-
-      <dt>Two things this is not</dt>
-      <dd>Not a forecast — a 2026 match is shown against the same calendar month of
-        2024. And the sample data are transformed, so these demonstrate a method rather
-        than ground truth for any real city.</dd>
     </dl>`;
   root.querySelector("#sp-helpclose").onclick = () => toggleHelp(false);
 }
@@ -893,13 +876,7 @@ function drawControls() {
       <button data-v="shops" class="${view.mode === "shops" ? "on" : ""}">Shops</button>
       <button data-v="districts" class="${view.mode === "districts" ? "on" : ""}">Districts</button>
     </div>
-    <button class="mtog ${view.heat ? "on" : ""}" id="sp-heat">${icon("heat", 15)} Heat</button>
-    <select id="sp-match" class="mmatch">
-      <option value="">No match selected</option>
-      ${ctx.matches.filter(m => m.m === city.name).map(m =>
-        `<option value="${m.id}" ${view.matchId === m.id ? "selected" : ""}
-          >${m.d.slice(5)} · ${esc(m.t1)} v ${esc(m.t2)}</option>`).join("")}
-    </select>`;
+`;
 
   root.querySelector("#sp-citypick").onclick = ev => {
     ev.stopPropagation();
@@ -923,17 +900,6 @@ function drawControls() {
       drawControls(); paint(); drawLegend();
     };
   });
-  root.querySelector("#sp-heat").onclick = () => { view.heat = !view.heat; drawControls(); paint(); };
-  root.querySelector("#sp-match").onchange = e => {
-    view.matchId = e.target.value === "" ? null : +e.target.value;
-    const m = ctx.matches.find(x => x.id === view.matchId);
-    if (m) {
-      const at = ctx.months.indexOf("2024-" + m.d.slice(5, 7));
-      if (at >= 0) view.i = at;
-      map.flyTo({ center: [city.stadium.x, city.stadium.y], zoom: 11.4, duration: 500 });
-    }
-    drawAll();
-  };
 }
 
 function drawCityMenu() {
@@ -1066,7 +1032,6 @@ function drawScenario() {
   badge.textContent = String(n);
   if (!view.panel) return;
 
-  const gated = levers.filter(l => l.scope.minHeat).map(l => l.title);
 
   el.innerHTML = `
     <div class="scenhead">
@@ -1100,16 +1065,6 @@ function drawScenario() {
       }).join("")}
     </div>
 
-    <div class="scenblock">
-      <label class="scenlabel">Heat threshold
-        <span class="num">${view.heatMin.toFixed(1)} <em>of 11</em></span></label>
-      <input type="range" id="sp-heatmin" min="1" max="11" step="0.5" value="${view.heatMin}">
-      <p class="scennote">A shop counts as a "high-UHI corridor" above this urban-heat
-        index. It is a judgement call, so it is yours to set rather than ours to bury.
-        Gates <b>${esc(gated.join(", ") || "no play")}</b> — and the shop counts below
-        move as you drag it.</p>
-    </div>
-
     <label class="difftog">
       <input type="checkbox" id="sp-diff" ${view.diff ? "checked" : ""}>
       Show the change only
@@ -1119,9 +1074,6 @@ function drawScenario() {
   root.querySelector("#sp-scenclose").onclick = () => { view.panel = false; drawScenario(); };
   root.querySelector("#sp-surge").oninput = e => {
     view.surge = +e.target.value; scenarioChanged();
-  };
-  root.querySelector("#sp-heatmin").oninput = e => {
-    view.heatMin = +e.target.value; scenarioChanged();
   };
   root.querySelector("#sp-diff").onchange = e => { view.diff = e.target.checked; scenarioChanged(); };
   root.querySelector("#sp-reset").onclick = () => {
@@ -1154,21 +1106,22 @@ function surgeTable() {
     .map(([k, v]) => `<tr>
       <td>${named[k] || k}</td>
       <td class="num">×${Math.pow(view.surge, v.elasticity).toFixed(2)}</td>
-      <td class="num el">β ${v.elasticity.toFixed(2)}</td>
-      <td class="num r2">R²&nbsp;${v.r2.toFixed(2)}</td></tr>`).join("");
+      <td class="num el">${v.elasticity.toFixed(2)}</td></tr>`).join("");
 
   const near = m.near_stadium;
   const nearRow = near && near.extra
     ? `<tr class="nearrow"><td>within ${near.within_km} km</td>
        <td class="num">+${((Math.pow(view.surge, near.extra) - 1) * 100).toFixed(0)}%</td>
-       <td class="num el">β +${near.extra.toFixed(2)}</td>
-       <td class="num r2">R²&nbsp;${near.r2.toFixed(2)}</td></tr>` : "";
+       <td class="num el">+${near.extra.toFixed(2)}</td></tr>` : "";
 
-  return `<table class="surgetbl">${rows}${nearRow}</table>
-    <p class="scennote">Measured, not assumed: each segment's response to a busier
-      city, fitted across 61 months and 11 hosts. Lodging and venues amplify a
-      surge; fuel retail lags it. Noisy estimates are shrunk toward proportional,
-      which is why a low R² sits near β&nbsp;1.</p>`;
+  return `<table class="surgetbl">
+      <thead><tr><th>Shop type</th><th class="num">Multiplier</th>
+        <th class="num">Beta</th></tr></thead>
+      <tbody>${rows}${nearRow}</tbody></table>
+    <p class="scennote">Beta shows how much a shop type grows when the whole city gets
+      busier. 1.00 means it grows at the same pace as the city. Above 1 means faster,
+      below 1 means slower. For example, if the city is 10% busier, a shop type with a
+      Beta of 1.12 gets about 11% busier.</p>`;
 }
 
 function scenarioChanged(fromLab) {

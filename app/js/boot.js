@@ -220,7 +220,7 @@ function buildRail() {
   rail.innerHTML =
     `<button class="mark" id="railhome" data-label="Overview" aria-label="Pulse — go to Overview"
        ><img src="assets/img/icon-64.png" alt="" width="64" height="64"></button>` +
-    TABS.map(t => `<button data-tab="${t.id}" data-label="${t.label}"
+    TABS.filter(t => t.id !== "overview").map(t => `<button data-tab="${t.id}" data-label="${t.label}"
       aria-label="${t.label}">${icon(t.icon, 19)}</button>`).join("") +
     `<div class="sp"></div>
      <button id="themebtn" data-label="Theme" aria-label="Switch light and dark theme">

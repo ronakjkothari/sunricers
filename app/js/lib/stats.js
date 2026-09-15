@@ -164,7 +164,7 @@ export function build(contract, series) {
 
 const PLAIN = {
   energy_kwh: "energy use",
-  kg_co2e: "food carbon",
+  kg_co2e: "CO₂e and food",
   water_liters: "water use",
   cdd: "cooling demand",
   uhi: "urban heat",

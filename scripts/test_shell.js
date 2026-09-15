@@ -386,7 +386,7 @@ async function main() {
   ok("the surge elasticities are behind a disclosure", /scendisc/.test(spSrc));
   ok("a guide is reachable from the map", /function toggleHelp/.test(spSrc) &&
     /sp-helpbtn/.test(spSrc));
-  ok("the guide explains the heat index", /Urban heat, 1 \(cool\) to 11/.test(spSrc));
+  ok("the map has no heat button or heat threshold", !/sp-heat/.test(spSrc));
   // both pickers render the same row from one function, so they cannot drift
   const citySrc = fs.readFileSync(path.join(APP, "js/lib/city.js"), "utf8");
   ok("the picker row is defined once and shared",
@@ -605,7 +605,7 @@ async function main() {
   ok("spatial-lab draws the ranked list, the answer, a lever's detail and the custom form",
     /drawList/.test(labSrc) && /drawAnswer/.test(labSrc) && /drawDetail/.test(labSrc) && /customFormHtml/.test(labSrc));
   const cmSrc = fs.readFileSync(path.join(APP, "js/views/compare.js"), "utf8");
-  ok("compare's plays come from levers.json", /rankLevers/.test(cmSrc) && /levers\.json/.test(cmSrc));
+  ok("compare's plays come from the lab's levers", /rankLevers/.test(cmSrc));
   const ovSrc = fs.readFileSync(path.join(APP, "js/views/overview.js"), "utf8");
   ok("the Overview's plays come from levers.json too", /rankLevers/.test(ovSrc) && /drawLeverPlays/.test(ovSrc));
   const spatialCss = fs.readFileSync(path.join(APP, "css/spatial.css"), "utf8");

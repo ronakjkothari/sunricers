@@ -21,7 +21,7 @@ LEVERS = [
         "id": "hotel_water_programme",
         "title": "Hotel water programme",
         "bucket": "before",
-        "plain": "Hotels put the “hang up your towel” card in rooms, and grants pay for low-flow showerheads, tap aerators and low-flush toilets.",
+        "plain": "Hotels ask guests to reuse towels, recycle laundry water, and fit showers, taps and toilets that use less water. Grants help pay.",
         "owner": "Hotel association + water utility",
         "touches": ["hotel"],
         "cuts": {"hotel": {"water": pc(10.9, 13.7, 17.0), "kwh": pc(6.2, 8.6, 11.8)}},

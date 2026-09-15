@@ -18,7 +18,7 @@ import { photo, scoreColour, loadBlurs } from "../lib/city.js";
 import { RES, RES_LABEL, RES_COLOR, rankLevers, costTier } from "../lib/levers.js";
 
 const PLAIN = {
-  energy_kwh: "Energy use", kg_co2e: "Food carbon", water_liters: "Water use",
+  energy_kwh: "Energy use", kg_co2e: "CO₂e and food", water_liters: "Water use",
   cdd: "Cooling demand", uhi: "Urban heat",
 };
 const UNIT = {
@@ -62,7 +62,7 @@ export function mount(el, context) {
       <div class="shtxt">
         <h2>Compare hosts</h2>
         <p>All eleven on one scale, any of them side by side, and the full playbook
-           for whichever host you anchor on.</p>
+           for whichever host you select.</p>
       </div>
     </div>
 
@@ -245,8 +245,8 @@ function drawBoard() {
     const band = k.readiness_band;
 
     const add = isAnchor
-      ? `<button class="ladd" disabled title="Anchor — the playbook below follows this host"
-           aria-label="${esc(city)} is the anchor">${icon("anchor", 15)}</button>`
+      ? `<button class="ladd" disabled title="Selected. The playbook below follows this host"
+           aria-label="${esc(city)} is selected">${icon("anchor", 15)}</button>`
       : `<button class="ladd ${isPartner ? "on" : ""}" data-add="${esc(city)}"
            aria-pressed="${isPartner}"
            title="${isPartner ? "Remove from the comparison" : "Add to the comparison"}"
@@ -254,7 +254,7 @@ function drawBoard() {
 
     return `<div class="lrow ${isAnchor ? "anchor" : ""} ${isPartner ? "partner" : ""}">
       <button class="lmain" data-anchor="${esc(city)}"
-          title="Anchor the playbook on ${esc(city)}">
+          title="Select ${esc(city)} for the playbook">
         <span class="lrank">#${k.rank}</span>
         <img class="lthumb" src="${photo(city, 320)}" alt="" loading="lazy" width="320" height="214">
         <span class="lname">${esc(city)}${slot >= 0
@@ -279,8 +279,8 @@ function drawBoard() {
 
   root.querySelector("#cp-note").innerHTML = ctx.state.filter
     ? `Showing ${cards.length} of ${stats.n} hosts elevated on <b>${PLAIN[ctx.state.filter]}</b>.
-       The pale block is the ±15 uncertainty band. Click a host to anchor it; ⊕ adds it to the comparison.`
-    : `The pale block is the ±15 uncertainty band. Click a host to anchor the playbook on it;
+       The pale block is the ±15 uncertainty band. Click a host to select it; ⊕ adds it to the comparison.`
+    : `The pale block is the ±15 uncertainty band. Click a host to select it for the playbook;
        ⊕ adds it to the comparison above.`;
 }
 
@@ -293,7 +293,7 @@ function drawSet() {
       <img src="${photo(city, 320)}" alt="" loading="lazy">
       ${esc(city)}
       ${isAnchor
-        ? `<span class="tag">anchor</span>`
+        ? `<span class="tag">selected</span>`
         : `<i style="background:${slotColour(i)}"></i>
            <button class="drop" data-drop="${esc(city)}"
              aria-label="Remove ${esc(city)}">${icon("close", 12)}</button>`}
@@ -313,8 +313,8 @@ function drawMatrix() {
   box.style.gridTemplateColumns = `minmax(150px, 210px) repeat(${cities.length}, minmax(0, 1fr))`;
 
   root.querySelector("#cp-matrixcap").textContent =
-    `Rates per trading shop-month. The tick is the ` +
-    `11-host median; the bar runs from the tick to each host's value.`;
+    `Rates per trading shop-month. The marker is the ` +
+    `11-host median; the bar runs from the marker to each host's value.`;
 
   let html = `<span class="mhead">Driver</span>` + cities.map((city, i) =>
     `<span class="mcity" style="--mc:${slotColour(i)}">
@@ -599,9 +599,7 @@ function drawLeverPlays(right, k) {
     : `${esc(k.host_city)} is about average on energy, water and CO₂e, so nothing stands out and the biggest single cut comes first.`;
 
   right.innerHTML =
-    `<p class="note">Plays for ${esc(k.host_city)} are the intervention lab's levers
-       (<code>data/levers.json</code>, measured studies, not placeholders). ${why}
-       Effects are each lever alone, middle value, on this city's June–July totals; ranges and sources are in the lab.${heat}</p>` +
+    `<p class="note">The steps that help ${esc(k.host_city)} most.</p>` +
     (R.pressing.length
       ? `<div class="plays2">${R.pressing.map(x => leverPlay(x, R)).join("")}</div>`
       : `<div class="empty">No lever cuts ${rl(R.worst)} here.</div>`) +
@@ -648,7 +646,7 @@ function drawPlaybook() {
   if (ctx.lev) {
     const R = rankLevers(ctx.lev, ctx.cardsOf(), k, ctx.matchesHere());
     root.querySelector("#cp-pbcap").textContent =
-      `${R.pressing.length} ranked from levers.json · middle cuts on ${k.host_city}'s summer totals`;
+      `${R.pressing.length} ranked · middle cuts on ${k.host_city}'s summer totals`;
     drawLeverPlays(box, k);
   } else {
     const plays = k.recommended_plays || [], gen = k.general_options || [];

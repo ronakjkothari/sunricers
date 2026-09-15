@@ -34,7 +34,7 @@ const EQUIV = {
 
 const PLAIN_DRIVER = {
   energy_kwh: "Energy use",
-  kg_co2e: "Food carbon",
+  kg_co2e: "CO₂e and food",
   water_liters: "Water use",
   cdd: "Cooling demand",
   uhi: "Urban heat",
@@ -306,10 +306,8 @@ function drawKpis() {
   // The absolutes are what a city must provision; the rate is what readiness
   // ranks on. Stating that bridge here is what stops "8th largest" beside
   // "#10 of 11" reading as a contradiction. June–July is named once, here.
-  const sizeRank = stats.rankOf.v[k.host_city];
   root.querySelector("#ov-kpicap").textContent =
-    `June–July totals. ${k.host_city} is the ${polarRank(sizeRank, stats.n, "largest", "smallest")} ` +
-    `of the ${stats.n} hosts by volume; each chip ranks the rate per trading shop-month. ` +
+    `Each chip ranks the rate per trading shop-month. ` +
     `The city's readiness score is derived from here.`;
 
   root.querySelector("#ov-kpis").innerHTML = ORDER.map(mk => {
@@ -495,19 +493,18 @@ function drawDecomp() {
 
   root.querySelector("#ov-decomp").innerHTML = `
     <div class="wf">
-      <p class="cap">A host sitting in the middle of the 11 hosts on every driver would score
-        <b>${neutral.toFixed(1)}</b>. These are the readiness points each driver moves
-        ${esc(k.host_city)} from there.</p>
+      <p class="cap">The score is built from five things: energy use, water use, CO₂e and food,
+        cooling need and urban heat. A typical host city scores <b>${neutral.toFixed(0)}</b>.
+        Each row shows how many points one of these adds to or takes away from
+        ${esc(k.host_city)}'s score.</p>
       ${waterfall(contrib, k, neutral)}
     </div>
     <div class="rows">
       <div class="dhead">
-        <span></span><span>Driver</span><span></span>
+        <span></span><span>What we measure</span><span></span>
         <span>vs median</span><span>points</span><span></span>
       </div>
       ${rows}
-      <p class="cap foot">The tick is the 11-host median. Click a driver to highlight it;
-        the arrow opens every host elevated on it.</p>
     </div>`;
 
   root.querySelectorAll("#ov-decomp [data-focus]").forEach(b => {

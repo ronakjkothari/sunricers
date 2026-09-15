@@ -298,8 +298,7 @@ function drawDetail() {
       <div class="dr"><b>Evidence</b> ${esc(l.evidence_plain)}</div>
       <div class="dr"><b>What an organiser can turn</b> ${l.dials.map(esc).join("; ")}.</div>
       ${l.cost ? `<div class="dr"><b>What it costs</b> ${esc(l.cost)}</div>` : ""}
-      <div class="dr"><b>Best source</b> <a href="${esc(l.best_source.u)}" target="_blank" rel="noopener">${esc(l.best_source.t)}</a>
-        · card <code>${esc(l.card)}</code> · ${esc(l.placeholder)}</div>`;
+      <div class="dr"><b>Best source</b> <a href="${esc(l.best_source.u)}" target="_blank" rel="noopener">${esc(l.best_source.t)}</a></div>`;
   box.hidden = false;
   box.innerHTML = `<div class="ldetail">
     <div class="dh">
