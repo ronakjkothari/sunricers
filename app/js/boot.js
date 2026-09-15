@@ -86,9 +86,8 @@ function start(contract, series, lev, matches) {
     matchesHere, leversChanged, customLevers, saveCustomLevers,
   };
 
-  // default to the most-pressured host: the demo should open on the argument
-  const worst = contract.scorecards.find(k => k.rank === contract.scorecards.length);
-  state.city = worst ? worst.host_city : S.cities[0];
+  // the demo opens on Houston; fall back to the first city if it is missing
+  state.city = S.cities.includes("Houston") ? "Houston" : S.cities[0];
 
   buildRail();
   readHash();
